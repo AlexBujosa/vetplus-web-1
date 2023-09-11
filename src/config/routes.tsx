@@ -8,7 +8,6 @@ import DashboardPage from '@/pages/[admin]';
 import ClientsPage from '@/pages/[admin]/clients';
 import EmployeesPage from '@/pages/[admin]/employees';
 import { StoreOutlined } from '@mui/icons-material';
-import ClinicSummaryPage from '@/pages/[admin]/clinic';
 
 type Route = {
   icon: React.ReactNode;
@@ -46,13 +45,6 @@ const routes: Route[] = [
     href: '/employees',
     page: <EmployeesPage />,
     icon: <AssignmentIndOutlinedIcon />,
-    allowedRoles: [Role.CLINIC_OWNER],
-  },
-  {
-    name: 'Vista General',
-    href: '/clinic',
-    page: <ClinicSummaryPage />,
-    icon: <StoreOutlined />,
     allowedRoles: [Role.CLINIC_OWNER],
   },
   {
