@@ -1,52 +1,52 @@
-import React from 'react';
-import { Body } from '@/components/typography';
-import Button from '@/components/button';
-import Input from '@/components/input';
-import { IconButton, InputAdornment } from '@mui/material';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import * as yup from 'yup';
-import { useFormik } from 'formik';
-import { Link } from 'react-router-dom';
-import toast from 'react-hot-toast';
-import useAuth, { LoginSubmitForm } from '@/hooks/use-auth';
+import { Body } from '@/components/typography'
+import Button from '@/components/button'
+import Input from '@/components/input'
+import { IconButton, InputAdornment } from '@mui/material'
+import Visibility from '@mui/icons-material/Visibility'
+import VisibilityOff from '@mui/icons-material/VisibilityOff'
+import * as yup from 'yup'
+import { useFormik } from 'formik'
+import { Link } from 'react-router-dom'
+import toast from 'react-hot-toast'
+import useAuth, { LoginSubmitForm } from '@/hooks/use-auth'
+import React from 'react'
 
 const schema = yup.object({
   email: yup.string().email().required(),
   password: yup.string().required(),
-});
+})
 
 const initialValues: LoginSubmitForm = {
   email: '',
   password: '',
-};
+}
 
 export default function Login() {
-  const [showPassword, setShowPassword] = React.useState(false);
-  const { loginWithEmail } = useAuth();
+  const [showPassword, setShowPassword] = React.useState(false)
+  const { loginWithEmail } = useAuth()
 
   const onSubmit = async (data: LoginSubmitForm) => {
     try {
-      await loginWithEmail(data);
-      toast.success('Login was succesfull');
+      await loginWithEmail(data)
+      toast.success('Login was succesfull')
     } catch (error: any) {
-      toast.error(error.message);
+      toast.error(error.message)
     }
-  };
+  }
 
   const formik = useFormik({
     initialValues,
     validationSchema: schema,
     onSubmit,
-  });
+  })
 
-  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleClickShowPassword = () => setShowPassword((show) => !show)
 
   const handleMouseDownPassword = (
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
-    event.preventDefault();
-  };
+    event.preventDefault()
+  }
 
   return (
     <>
@@ -106,5 +106,5 @@ export default function Login() {
         />
       </Link>
     </>
-  );
+  )
 }

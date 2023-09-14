@@ -1,12 +1,11 @@
-import React from 'react';
-import cn from '@/utils/cn';
+import cn from '@/utils/cn'
 
 export interface Props extends React.HTMLAttributes<HTMLLabelElement> {
-  text: string;
+  text: string
 }
 
 export function ExtraLarge(props: Props) {
-  const { text, className, ...rest } = props;
+  const { text, className, ...rest } = props
 
   return (
     <label
@@ -15,11 +14,11 @@ export function ExtraLarge(props: Props) {
     >
       {text}
     </label>
-  );
+  )
 }
 
 export function Large(props: Props) {
-  const { text, className, ...rest } = props;
+  const { text, className, ...rest } = props
 
   return (
     <label
@@ -28,11 +27,11 @@ export function Large(props: Props) {
     >
       {text}
     </label>
-  );
+  )
 }
 
 export function XSLarge(props: Props) {
-  const { text, className, ...rest } = props;
+  const { text, className, ...rest } = props
 
   return (
     <label
@@ -41,11 +40,11 @@ export function XSLarge(props: Props) {
     >
       {text}
     </label>
-  );
+  )
 }
 
 export function Medium(props: Props) {
-  const { text, className, ...rest } = props;
+  const { text, className, ...rest } = props
 
   return (
     <label
@@ -54,11 +53,11 @@ export function Medium(props: Props) {
     >
       {text}
     </label>
-  );
+  )
 }
 
 export function Small(props: Props) {
-  const { text, className, ...rest } = props;
+  const { text, className, ...rest } = props
 
   return (
     <label
@@ -67,5 +66,5 @@ export function Small(props: Props) {
     >
       {text}
     </label>
-  );
+  )
 }

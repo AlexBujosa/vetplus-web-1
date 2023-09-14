@@ -1,12 +1,11 @@
-import React from 'react';
-import cn from '@/utils/cn';
+import cn from '@/utils/cn'
 
 export interface Props extends React.HTMLAttributes<HTMLSpanElement> {
-  text: string;
+  text: string
 }
 
 export function Large(props: Props) {
-  const { text, className, ...rest } = props;
+  const { text, className, ...rest } = props
 
   return (
     <span
@@ -18,11 +17,11 @@ export function Large(props: Props) {
     >
       {text}
     </span>
-  );
+  )
 }
 
 export function Medium(props: Props) {
-  const { text, className, ...rest } = props;
+  const { text, className, ...rest } = props
 
   return (
     <span
@@ -34,11 +33,11 @@ export function Medium(props: Props) {
     >
       {text}
     </span>
-  );
+  )
 }
 
 export function Small(props: Props) {
-  const { text, className, ...rest } = props;
+  const { text, className, ...rest } = props
 
   return (
     <span
@@ -50,5 +49,5 @@ export function Small(props: Props) {
     >
       {text}
     </span>
-  );
+  )
 }

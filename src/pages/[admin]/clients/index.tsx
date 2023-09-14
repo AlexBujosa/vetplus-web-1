@@ -1,10 +1,9 @@
-import React from 'react';
-import Input from '@/components/input';
-import { Title } from '@/components/typography';
-import { SearchOutlined } from '@mui/icons-material';
-import { Avatar, AvatarGroup, InputAdornment } from '@mui/material';
-import Table, { Row } from '@/components/table';
-import { Profile } from '@/components/profile';
+import Input from '@/components/input'
+import { Title } from '@/components/typography'
+import { SearchOutlined } from '@mui/icons-material'
+import { Avatar, AvatarGroup, InputAdornment } from '@mui/material'
+import Table, { Row } from '@/components/table'
+import { Profile } from '@/components/profile'
 
 export default function ClientsPage() {
   return (
@@ -26,7 +25,7 @@ export default function ClientsPage() {
 
       <Table columns={columns} rows={rows} />
     </>
-  );
+  )
 }
 
 const columns = [
@@ -35,7 +34,7 @@ const columns = [
   'Mascotas',
   'Teléfono',
   'Ultima cita',
-];
+]
 
 const rows: Row[] = [
   {
@@ -68,10 +67,10 @@ const rows: Row[] = [
       '7 junio, 4:00 PM',
     ],
   },
-];
+]
 
 function Pets() {
-  const pets = ['Firu', 'Scott', 'Firu2', 'a'];
+  const pets = ['Firu', 'Scott', 'Firu2', 'a']
 
   return (
     <AvatarGroup max={4}>
@@ -83,8 +82,8 @@ function Pets() {
             alt={pet}
             src='images/placeholder.png'
           />
-        );
+        )
       })}
     </AvatarGroup>
-  );
+  )
 }

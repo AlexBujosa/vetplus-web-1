@@ -1,8 +1,7 @@
-import React from 'react';
-import { SquaredProps } from '../props';
+import { SquaredProps } from '../props'
 
 export default function Isologo(props: SquaredProps) {
-  const { size, ...rest } = props;
+  const { size, ...rest } = props
 
   return (
     <svg
@@ -80,5 +79,5 @@ export default function Isologo(props: SquaredProps) {
         />
       </defs>
     </svg>
-  );
+  )
 }

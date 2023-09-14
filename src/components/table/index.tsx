@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Table as MuiTable,
   TableBody,
@@ -7,20 +6,20 @@ import {
   TableHead,
   TableRow,
   Paper,
-} from '@mui/material';
+} from '@mui/material'
 
 export type Row = {
-  key: string | number;
-  values: (string | JSX.Element)[];
-};
+  key: string | number
+  values: (string | JSX.Element)[]
+}
 
 interface Props {
-  columns: string[];
-  rows: Row[];
+  columns: string[]
+  rows: Row[]
 }
 
 export default function Table(props: Props) {
-  const { columns, rows } = props;
+  const { columns, rows } = props
 
   return (
     <TableContainer component={Paper}>
@@ -30,7 +29,7 @@ export default function Table(props: Props) {
         <Body rows={rows} />
       </MuiTable>
     </TableContainer>
-  );
+  )
 }
 
 function TableHeader({ columns }: { columns: string[] }) {
@@ -42,15 +41,15 @@ function TableHeader({ columns }: { columns: string[] }) {
             <TableCell key={column} align={index !== 0 ? 'left' : undefined}>
               {column}
             </TableCell>
-          );
+          )
         })}
       </TableRow>
     </TableHead>
-  );
+  )
 }
 
 function Body(props: { rows: Row[] }) {
-  const { rows } = props;
+  const { rows } = props
 
   return (
     <TableBody>
@@ -68,5 +67,5 @@ function Body(props: { rows: Row[] }) {
         </TableRow>
       ))}
     </TableBody>
-  );
+  )
 }

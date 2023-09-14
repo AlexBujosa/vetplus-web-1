@@ -1,16 +1,15 @@
-import React from 'react';
-import useUser from '@/hooks/use-user';
-import cn from '@/utils/cn';
+import useUser from '@/hooks/use-user'
+import cn from '@/utils/cn'
 import {
   ManageAccountsOutlined,
   NotificationsOutlined,
-} from '@mui/icons-material';
-import { Box, Divider, Popover } from '@mui/material';
-import { Body, Label, Title } from '../typography';
-import { useAtom } from 'jotai';
-import { userAtom } from '@/hooks/use-user/userAtom';
-import Button from '../button';
-import useAuth from '@/hooks/use-auth';
+} from '@mui/icons-material'
+import { Box, Divider, Popover } from '@mui/material'
+import { Body, Label, Title } from '../typography'
+import { useAtom } from 'jotai'
+import { userAtom } from '@/hooks/use-user/userAtom'
+import useAuth from '@/hooks/use-auth'
+import React from 'react'
 
 export default function Header() {
   return (
@@ -21,30 +20,30 @@ export default function Header() {
         <Profile />
       </div>
     </header>
-  );
+  )
 }
 
 function HeaderAction({ icon }: { icon: React.ReactNode }) {
-  return <button>{icon}</button>;
+  return <button>{icon}</button>
 }
 
 function Profile() {
-  const { getUserProfile } = useUser();
+  const { getUserProfile } = useUser()
 
-  const { data: user, loading } = getUserProfile();
+  const { data: user, loading } = getUserProfile()
 
-  const [anchorEl, setAnchorEl] = React.useState<HTMLImageElement | null>(null);
+  const [anchorEl, setAnchorEl] = React.useState<HTMLImageElement | null>(null)
 
   const handleClick = (event: React.MouseEvent<HTMLImageElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
+    setAnchorEl(event.currentTarget)
+  }
 
   const handleClose = () => {
-    setAnchorEl(null);
-  };
+    setAnchorEl(null)
+  }
 
-  const open = Boolean(anchorEl);
-  const id = open ? 'simple-popover' : undefined;
+  const open = Boolean(anchorEl)
+  const id = open ? 'simple-popover' : undefined
 
   return (
     <>
@@ -82,15 +81,15 @@ function Profile() {
         </Box>
       </Popover>
     </>
-  );
+  )
 }
 
 function ProfileWithName() {
-  const [user] = useAtom(userAtom);
+  const [user] = useAtom(userAtom)
 
-  if (!user) return null;
+  if (!user) return null
 
-  const { image, names, surnames, email } = user;
+  const { image, names, surnames, email } = user
 
   return (
     <div className='flex flex-row gap-x-5'>
@@ -104,11 +103,11 @@ function ProfileWithName() {
         <Body.Medium className='text-base-neutral-gray-700' text={email} />
       </span>
     </div>
-  );
+  )
 }
 
 function LogoutButton() {
-  const { logout } = useAuth();
+  const { logout } = useAuth()
 
   return (
     <button className='p-4' onClick={logout}>
@@ -117,5 +116,5 @@ function LogoutButton() {
         text='Cerrar sesión'
       />
     </button>
-  );
+  )
 }

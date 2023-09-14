@@ -1,13 +1,12 @@
-import React, { HTMLAttributes, PropsWithChildren } from 'react';
-import { Label, Title } from '@/components/typography';
+import React, { HTMLAttributes, PropsWithChildren } from 'react'
+import { Label, Title } from '@/components/typography'
 import {
   AssignmentIndOutlined,
   EventOutlined,
   PetsOutlined,
-} from '@mui/icons-material';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
-import cn from '@/utils/cn';
-import Table from '@/components/table';
+} from '@mui/icons-material'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts'
+import cn from '@/utils/cn'
 
 export default function DashboardPage() {
   return (
@@ -16,7 +15,7 @@ export default function DashboardPage() {
 
       <ChartsSection />
     </>
-  );
+  )
 }
 
 function DashboardCards() {
@@ -46,7 +45,7 @@ function DashboardCards() {
         amount={123}
       />
     </div>
-  );
+  )
 }
 
 function DashboardCard({
@@ -54,9 +53,9 @@ function DashboardCard({
   label,
   amount,
 }: {
-  icon: JSX.Element;
-  label: string;
-  amount: number;
+  icon: JSX.Element
+  label: string
+  amount: number
 }) {
   return (
     <Card className='rounded-[10px] flex flex-row gap-x-4'>
@@ -68,7 +67,7 @@ function DashboardCard({
         <Title.Large className='self-start' text={amount.toString()} />
       </div>
     </Card>
-  );
+  )
 }
 
 const data = [
@@ -120,7 +119,7 @@ const data = [
     name: 'Dec',
     clients: 112,
   },
-];
+]
 
 function ChartsSection() {
   return (
@@ -143,13 +142,13 @@ function ChartsSection() {
         <Bar dataKey='clients' className='fill-base-primary-500' />
       </BarChart>
     </Card>
-  );
+  )
 }
 
 interface CardProps extends PropsWithChildren, HTMLAttributes<HTMLDivElement> {}
 
 function Card(props: CardProps) {
-  const { className, children } = props;
+  const { className, children } = props
 
   return (
     <article
@@ -160,13 +159,5 @@ function Card(props: CardProps) {
     >
       {children}
     </article>
-  );
+  )
 }
-
-const serviceBadgesClassName: Record<string, string> = {
-  'Medicina preventiva': 'text-base-primary-700 bg-base-primary-50',
-  Cirugía: 'text-base-pink-50 bg-base-pink-700',
-  Consulta: 'text-base-semantic-warning-50 bg-base-semantic-warning-700',
-  Domicilio: 'text-indigo-50 bg-indigo-700',
-  Peluquería: 'text-base-neutral-gray-900 bg-base-neutral-gray-400',
-};

@@ -1,8 +1,7 @@
-import React from 'react';
-import { RectangleProps } from '@components/logo/props';
+import { RectangleProps } from "../props"
 
 export default function Imagotipo(props: RectangleProps) {
-  const { width = 212, height = 72, ...rest } = props;
+  const { width = 212, height = 72, ...rest } = props
 
   return (
     <svg
@@ -3091,5 +3090,5 @@ LTE2VDAzOjIzOjM4KzAyOjAw8YqbkwAAACV0RVh0ZGF0ZTptb2RpZnkAMjAyMy0wOC0xNlQwMzoy
 MzozOCswMjowMIDXIy8AAAAASUVORK5CYII='
       />
     </svg>
-  );
+  )
 }

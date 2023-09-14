@@ -1,23 +1,22 @@
-import { Role } from '@/types/role';
-import HomeIcon from '@mui/icons-material/Home';
-import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined';
-import EventOutlinedIcon from '@mui/icons-material/EventOutlined';
-import PeopleOutlineOutlinedIcon from '@mui/icons-material/PeopleOutlineOutlined';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import DashboardPage from '@/pages/[admin]';
-import ClientsPage from '@/pages/[admin]/clients';
-import EmployeesPage from '@/pages/[admin]/employees';
-import { StoreOutlined } from '@mui/icons-material';
+import { Role } from '@/types/role'
+import HomeIcon from '@mui/icons-material/Home'
+import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined'
+import EventOutlinedIcon from '@mui/icons-material/EventOutlined'
+import PeopleOutlineOutlinedIcon from '@mui/icons-material/PeopleOutlineOutlined'
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
+import DashboardPage from '@/pages/[admin]'
+import ClientsPage from '@/pages/[admin]/clients'
+import EmployeesPage from '@/pages/[admin]/employees'
 
 type Route = {
-  icon: React.ReactNode;
-  page?: React.ReactNode;
-  name: string;
-  href: string;
-  allowedRoles?: Role[];
-};
+  icon: React.ReactNode
+  page?: React.ReactNode
+  name: string
+  href: string
+  allowedRoles?: Role[]
+}
 
-export const allowedRoles = [Role.CLINIC_OWNER, Role.VETERINARIAN];
+export const allowedRoles = [Role.CLINIC_OWNER, Role.VETERINARIAN]
 
 const routes: Route[] = [
   {
@@ -53,6 +52,6 @@ const routes: Route[] = [
     icon: <SettingsOutlinedIcon />,
     allowedRoles,
   },
-];
+]
 
-export default routes;
+export default routes

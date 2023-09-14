@@ -1,7 +1,6 @@
-import React from 'react';
-import cn from '@/utils/cn';
-import { VariantProps, cva } from 'class-variance-authority';
-import { CircularProgress } from '@mui/material';
+import cn from '@/utils/cn'
+import { VariantProps, cva } from 'class-variance-authority'
+import { CircularProgress } from '@mui/material'
 
 const button = cva(
   [
@@ -41,37 +40,37 @@ const button = cva(
       size: 'small',
     },
   }
-);
+)
 
 interface Props
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof button> {
-  label: string;
-  loading?: boolean;
-  icon?: React.ReactNode;
+  label: string
+  loading?: boolean
+  icon?: React.ReactNode
 }
 
 export default function Button(props: Props) {
-  const { intent, size, label, loading, icon, ...rest } = props;
+  const { intent, size, label, loading, icon, ...rest } = props
 
   return (
     <button className={cn(button({ intent, size }))} {...rest}>
       <ButtonContent icon={icon} label={label} loading={loading} />
     </button>
-  );
+  )
 }
 
 interface ButtonContentProps {
-  label: string;
-  loading?: boolean;
-  icon?: React.ReactNode;
+  label: string
+  loading?: boolean
+  icon?: React.ReactNode
 }
 
 function ButtonContent(props: ButtonContentProps) {
-  const { icon, label, loading } = props;
+  const { icon, label, loading } = props
 
   if (loading) {
-    return <CircularProgress size={20} color='inherit' />;
+    return <CircularProgress size={20} color='inherit' />
   }
 
   return (
@@ -79,5 +78,5 @@ function ButtonContent(props: ButtonContentProps) {
       {icon}
       {label}
     </>
-  );
+  )
 }

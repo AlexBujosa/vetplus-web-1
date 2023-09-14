@@ -1,10 +1,9 @@
-import React from 'react';
-import { Imagotipo } from '@/components/logo';
-import { NavLink } from 'react-router-dom';
-import routes from '@/config/routes';
-import cn from '@/utils/cn';
-import KeyboardDoubleArrowLeftOutlinedIcon from '@mui/icons-material/KeyboardDoubleArrowLeftOutlined';
-import useUser from '@/hooks/use-user';
+import { Imagotipo } from '@/components/logo'
+import { NavLink } from 'react-router-dom'
+import routes from '@/config/routes'
+import cn from '@/utils/cn'
+import KeyboardDoubleArrowLeftOutlinedIcon from '@mui/icons-material/KeyboardDoubleArrowLeftOutlined'
+import useUser from '@/hooks/use-user'
 
 export default function Sidebar() {
   return (
@@ -19,23 +18,23 @@ export default function Sidebar() {
 
       <RouteOptions />
     </aside>
-  );
+  )
 }
 
 function RouteOptions() {
-  const { getUserRole } = useUser();
+  const { getUserRole } = useUser()
 
-  const { role } = getUserRole();
+  const { role } = getUserRole()
 
   return (
     <div className='flex flex-col px-[20px]'>
       {routes.map(({ href, allowedRoles, page, ...rest }) => {
-        if (!allowedRoles?.includes(role)) return;
+        if (!allowedRoles?.includes(role)) return
 
-        return <Option key={href} href={href} {...rest} />;
+        return <Option key={href} href={href} {...rest} />
       })}
     </div>
-  );
+  )
 }
 
 function Option({
@@ -43,9 +42,9 @@ function Option({
   name,
   href,
 }: {
-  icon: React.ReactNode;
-  name: string;
-  href: string;
+  icon: React.ReactNode
+  name: string
+  href: string
 }) {
   return (
     <NavLink
@@ -60,5 +59,5 @@ function Option({
       {icon}
       {name}
     </NavLink>
-  );
+  )
 }

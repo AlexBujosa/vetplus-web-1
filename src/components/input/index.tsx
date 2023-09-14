@@ -1,10 +1,9 @@
-import React from 'react';
-import { OutlinedTextFieldProps, TextField } from '@mui/material';
+import { OutlinedTextFieldProps, TextField } from '@mui/material'
 
 interface Props extends OutlinedTextFieldProps {}
 
 export default function Input(props: Props) {
-  const { id, label, variant = 'outlined', size = 'small', ...others } = props;
+  const { id, label, variant = 'outlined', size = 'small', ...others } = props
 
   return (
     <TextField
@@ -14,5 +13,5 @@ export default function Input(props: Props) {
       size={size}
       {...others}
     />
-  );
+  )
 }

@@ -1,13 +1,13 @@
-import React, { HTMLAttributes, PropsWithChildren } from 'react';
-import cn from '@/utils/cn';
-import { Body } from '../typography';
+import { HTMLAttributes, PropsWithChildren } from 'react'
+import cn from '@/utils/cn'
+import { Body } from '../typography'
 
 interface Props extends HTMLAttributes<HTMLDivElement>, PropsWithChildren {
-  label: string;
+  label: string
 }
 
 export function Badge(props: Props) {
-  const { children, label, className } = props;
+  const { children, label, className } = props
 
   return (
     <div
@@ -19,5 +19,5 @@ export function Badge(props: Props) {
       {children}
       <Body.Medium text={label} />
     </div>
-  );
+  )
 }

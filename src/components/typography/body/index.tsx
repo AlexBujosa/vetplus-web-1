@@ -1,12 +1,11 @@
-import React from 'react';
-import cn from '@/utils/cn';
+import cn from '@/utils/cn'
 
 export interface Props extends React.HTMLAttributes<HTMLParagraphElement> {
-  text: string;
+  text: string
 }
 
 export function ExtraLarge(props: Props) {
-  const { text, className, ...rest } = props;
+  const { text, className, ...rest } = props
 
   return (
     <p
@@ -15,11 +14,11 @@ export function ExtraLarge(props: Props) {
     >
       {text}
     </p>
-  );
+  )
 }
 
 export function Large(props: Props) {
-  const { text, className, ...rest } = props;
+  const { text, className, ...rest } = props
 
   return (
     <p
@@ -28,11 +27,11 @@ export function Large(props: Props) {
     >
       {text}
     </p>
-  );
+  )
 }
 
 export function XSLarge(props: Props) {
-  const { text, className, ...rest } = props;
+  const { text, className, ...rest } = props
 
   return (
     <p
@@ -41,11 +40,11 @@ export function XSLarge(props: Props) {
     >
       {text}
     </p>
-  );
+  )
 }
 
 export function Medium(props: Props) {
-  const { text, className, ...rest } = props;
+  const { text, className, ...rest } = props
 
   return (
     <p
@@ -54,11 +53,11 @@ export function Medium(props: Props) {
     >
       {text}
     </p>
-  );
+  )
 }
 
 export function Small(props: Props) {
-  const { text, className, ...rest } = props;
+  const { text, className, ...rest } = props
 
   return (
     <p
@@ -67,11 +66,11 @@ export function Small(props: Props) {
     >
       {text}
     </p>
-  );
+  )
 }
 
 export function Smaller(props: Props) {
-  const { text, className, ...rest } = props;
+  const { text, className, ...rest } = props
 
   return (
     <p
@@ -80,5 +79,5 @@ export function Smaller(props: Props) {
     >
       {text}
     </p>
-  );
+  )
 }
