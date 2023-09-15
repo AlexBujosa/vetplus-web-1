@@ -7,13 +7,15 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
 import DashboardPage from '@/pages/[admin]'
 import ClientsPage from '@/pages/[admin]/clients'
 import EmployeesPage from '@/pages/[admin]/employees'
+import EmployeesDetailPage from '@/pages/[admin]/employees/detail-page'
 
 type Route = {
-  icon: React.ReactNode
+  icon?: React.ReactNode
   page?: React.ReactNode
   name: string
   href: string
   allowedRoles?: Role[]
+  show?: boolean
 }
 
 export const allowedRoles = [Role.CLINIC_OWNER, Role.VETERINARIAN]
@@ -45,6 +47,13 @@ const routes: Route[] = [
     page: <EmployeesPage />,
     icon: <AssignmentIndOutlinedIcon />,
     allowedRoles: [Role.CLINIC_OWNER],
+  },
+  {
+    name: 'Detalle de empleados',
+    href: '/employees/:email',
+    page: <EmployeesDetailPage />,
+    allowedRoles: [Role.CLINIC_OWNER],
+    show: false,
   },
   {
     name: 'Configuración',

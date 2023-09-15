@@ -1,22 +1,24 @@
-import { gql } from '@apollo/client';
+import { gql } from '@apollo/client'
 
-export const GET_ALL_EMPLOYEES = gql`
-  query ($getAllEmployeeByIdInput: GetAllEmployeeByIdInput!) {
-    getAllEmployee(getAllEmployeeByIdInput: $getAllEmployeeByIdInput) {
-      employee {
-        names
-        surnames
-        email
+export const GET_MY_EMPLOYEES = gql`
+  query {
+    getMyEmployees {
+      clinicEmployees {
+        status
+        employee {
+          names
+          surnames
+          # image
+          email
+          VeterinarianSummaryScore {
+            total_points
+            total_users
+          }
+        }
       }
-      id_clinic
-      id_employee
-      employee_invitation_status
-      created_at
-      updated_at
-      status
     }
   }
-`;
+`
 
 export const GET_MY_CLINIC = gql`
   query {
@@ -32,4 +34,26 @@ export const GET_MY_CLINIC = gql`
       status
     }
   }
-`;
+`
+
+export const GET_ALL_EMPLOYEES = gql`
+  query ($getAllEmployeeByClinicIdInput: GetAllEmployeeByClinicIdInput!) {
+    getAllEmployee(
+      getAllEmployeeByClinicIdInput: $getAllEmployeeByClinicIdInput
+    ) {
+      id_clinic
+      id_employee
+      employee_invitation_status
+      created_at
+      updated_at
+      status
+      employee {
+        names
+        surnames
+        image
+        email
+        status
+      }
+    }
+  }
+`

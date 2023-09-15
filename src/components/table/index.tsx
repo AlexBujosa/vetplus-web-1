@@ -7,9 +7,10 @@ import {
   TableRow,
   Paper,
 } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
 
 export type Row = {
-  key: string | number
+  key: string
   values: (string | JSX.Element)[]
 }
 
@@ -51,18 +52,21 @@ function TableHeader({ columns }: { columns: string[] }) {
 function Body(props: { rows: Row[] }) {
   const { rows } = props
 
+  const navigate = useNavigate()
+
+  const handleOnClick = (key: string) => navigate(key)
+
   return (
     <TableBody>
       {rows.map((row) => (
         <TableRow
           key={row.key}
-          className='text-sm text-base-neutral-gray-900'
+          className='text-sm text-base-neutral-gray-900 hover:bg-base-neutral-gray-300 hover:cursor-pointer'
+          onClick={() => handleOnClick(row.key)}
           sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
         >
           {row.values.map((value, index) => (
-            <TableCell className='text-base-neutral-gray-900' key={index}>
-              {value}
-            </TableCell>
+            <TableCell key={index}>{value}</TableCell>
           ))}
         </TableRow>
       ))}

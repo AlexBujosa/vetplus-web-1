@@ -52,7 +52,7 @@ function Profile() {
           'w-[35px] h-[35px] rounded-full cursor-pointer',
           loading && 'animate-pulse'
         )}
-        src={user?.image || 'images/placeholder.png'}
+        src={user?.image || '/images/placeholder.png'}
         onClick={handleClick}
       />
 
@@ -95,7 +95,7 @@ function ProfileWithName() {
     <div className='flex flex-row gap-x-5'>
       <img
         className='w-[60px] h-[60px] rounded-full'
-        src={image || 'images/placeholder.png'}
+        src={image || '/images/placeholder.png'}
       />
 
       <span>

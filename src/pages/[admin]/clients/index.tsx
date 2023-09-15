@@ -80,7 +80,7 @@ function Pets() {
             key={pet}
             className='w-8 h-8'
             alt={pet}
-            src='images/placeholder.png'
+            src='/images/placeholder.png'
           />
         )
       })}

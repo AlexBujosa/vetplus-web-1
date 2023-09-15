@@ -28,8 +28,10 @@ function RouteOptions() {
 
   return (
     <div className='flex flex-col px-[20px]'>
-      {routes.map(({ href, allowedRoles, page, ...rest }) => {
+      {routes.map(({ href, allowedRoles, page, show, ...rest }) => {
         if (!allowedRoles?.includes(role)) return
+
+        if (show === false) return
 
         return <Option key={href} href={href} {...rest} />
       })}

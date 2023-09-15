@@ -13,7 +13,7 @@ export function Badge(props: Props) {
     <div
       className={cn(
         className,
-        'flex flex-row gap-x-[6px] w-fit px-2 py-[2px] rounded-md'
+        'flex flex-row items-center gap-x-[6px] w-fit px-2 py-[2px] rounded-md'
       )}
     >
       {children}

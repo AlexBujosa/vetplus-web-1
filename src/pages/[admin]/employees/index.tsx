@@ -1,17 +1,25 @@
 import Input from '@/components/input'
-import { Title } from '@/components/typography'
+import { Body, Title } from '@/components/typography'
 import { SearchOutlined } from '@mui/icons-material'
-import { InputAdornment } from '@mui/material'
+import { InputAdornment, Skeleton } from '@mui/material'
 import Table, { Row } from '@/components/table'
 import { useClinic } from '@/hooks/use-clinic'
+import StarsReview from '@/components/stars-review'
+import { Profile } from '@/components/profile'
+import StatusBadge from '@/components/status-badge'
+import { useAtom, useSetAtom } from 'jotai'
+import { employeesAtom } from '@/hooks/use-clinic/employeesAtom'
+import { useEffect } from 'react'
+
+const columns = [
+  'Nombre',
+  'Correo electrónico',
+  'Especialidad',
+  'Estado',
+  'Calificación',
+]
 
 export default function EmployeesPage() {
-  const { getAllEmployees } = useClinic()
-
-  const { data } = getAllEmployees()
-
-  console.log(data)
-
   return (
     <>
       <Title.Large text='Empleados' />
@@ -29,44 +37,52 @@ export default function EmployeesPage() {
         }}
       />
 
-      <Table columns={columns} rows={rows} />
+      <EmployeesTable />
     </>
   )
 }
 
-const columns = [
-  'Nombre',
-  'Correo electrónico',
-  'Especialidad',
-  'Estado',
-  'Calificación',
-]
+function EmployeesTable() {
+  const { getMyEmployees } = useClinic()
+  const { data } = getMyEmployees()
 
-const rows: Row[] = [
-  {
-    key: 'laura@gmail.com',
-    values: [],
-  },
-]
+  if (!data) return null
 
-// function ActiveBadge() {
-//   return (
-//     <Badge
-//       className='text-semantic-success-600 bg-semantic-sucess-50'
-//       label='Activo'
-//     >
-//       <div className='w-[5px] h-[5px] bg-base-semantic-success-200' />
-//     </Badge>
-//   );
+  const rows = EmployeesRowsValues(data)
+
+  return <Table columns={columns} rows={rows} />
+}
+
+// function TableLoadingRow(): Row[] {
+//   return [
+//     {
+//       key: '',
+//       values: [
+//         <Skeleton />,
+//         <Skeleton />,
+//         <Skeleton />,
+//         <Skeleton />,
+//         <Skeleton />,
+//       ],
+//     },
+//   ]
 // }
 
-// function InactiveBadge() {
-//   return (
-//     <Badge
-//       className='text-semantic-danger-600 bg-semantic-danger-50'
-//       label='Inactivo'
-//     >
-//       <div className='w-[5px] h-[5px] bg-base-semantic-danger-200' />
-//     </Badge>
-//   );
-// }
+function EmployeesRowsValues(employees: any[]): Row[] {
+  return employees.map((employee: any) => {
+    const { fullName, email, speciality, status, score } = employee
+
+    const values = [
+      <Profile profile={fullName} image={undefined} />,
+      <Body.Medium className='text-base-neutral-gray-900' text={email} />,
+      <Body.Medium className='text-base-neutral-gray-900' text={speciality} />,
+      <StatusBadge status={status} />,
+      <StarsReview review={score} />,
+    ]
+
+    return {
+      key: email,
+      values,
+    }
+  })
+}
