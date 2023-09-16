@@ -1,6 +1,6 @@
-import { atomWithStorage } from 'jotai/utils'
+import { atomWithStorage } from "jotai/utils";
 
 export const employeesAtom = atomWithStorage<any[] | undefined>(
-  'employees',
+  "employees",
   undefined
-)
+);
