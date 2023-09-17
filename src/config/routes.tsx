@@ -1,66 +1,66 @@
-import { Role } from "@/types/role";
-import HomeIcon from "@mui/icons-material/Home";
-import AssignmentIndOutlinedIcon from "@mui/icons-material/AssignmentIndOutlined";
-import EventOutlinedIcon from "@mui/icons-material/EventOutlined";
-import PeopleOutlineOutlinedIcon from "@mui/icons-material/PeopleOutlineOutlined";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
-import DashboardPage from "@/pages/[admin]";
-import ClientsPage from "@/pages/[admin]/clients";
-import EmployeesPage from "@/pages/[admin]/employees";
-import EmployeesDetailPage from "@/pages/[admin]/employees/detail-page";
+import { Role } from '@/types/role'
+import HomeIcon from '@mui/icons-material/Home'
+import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined'
+import EventOutlinedIcon from '@mui/icons-material/EventOutlined'
+import PeopleOutlineOutlinedIcon from '@mui/icons-material/PeopleOutlineOutlined'
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined'
+import DashboardPage from '@/pages/[admin]'
+import ClientsPage from '@/pages/[admin]/clients'
+import EmployeesPage from '@/pages/[admin]/employees'
+import EmployeesDetailPage from '@/pages/[admin]/employees/detail-page'
 
 type Route = {
-  icon?: React.ReactNode;
-  page?: React.ReactNode;
-  name: string;
-  href: string;
-  allowedRoles?: Role[];
-  show?: boolean;
-};
+  icon?: React.ReactNode
+  page?: React.ReactNode
+  name: string
+  href: string
+  allowedRoles?: Role[]
+  show?: boolean
+}
 
-export const allowedRoles = [Role.CLINIC_OWNER, Role.VETERINARIAN];
+export const allowedRoles = [Role.CLINIC_OWNER, Role.VETERINARIAN]
 
 const routes: Route[] = [
   {
-    name: "Dashboard",
-    href: "/admin",
+    name: 'Dashboard',
+    href: '/admin',
     page: <DashboardPage />,
     icon: <HomeIcon />,
     allowedRoles,
   },
   {
-    name: "Clientes",
-    href: "/clients",
+    name: 'Clientes',
+    href: '/clients',
     page: <ClientsPage />,
     icon: <PeopleOutlineOutlinedIcon />,
     allowedRoles,
   },
   {
-    name: "Citas",
-    href: "/appointments",
+    name: 'Citas',
+    href: '/appointments',
     icon: <EventOutlinedIcon />,
     allowedRoles,
   },
   {
-    name: "Empleados",
-    href: "/employees",
+    name: 'Empleados',
+    href: '/employees',
     page: <EmployeesPage />,
     icon: <AssignmentIndOutlinedIcon />,
     allowedRoles: [Role.CLINIC_OWNER],
   },
   {
-    name: "Detalle de empleados",
-    href: "/employees/detail",
+    name: 'Detalle de empleados',
+    href: '/employees/:email',
     page: <EmployeesDetailPage />,
     allowedRoles: [Role.CLINIC_OWNER],
     show: false,
   },
   {
-    name: "Configuración",
-    href: "/configuration",
+    name: 'Configuración',
+    href: '/configuration',
     icon: <SettingsOutlinedIcon />,
     allowedRoles,
   },
-];
+]
 
-export default routes;
+export default routes

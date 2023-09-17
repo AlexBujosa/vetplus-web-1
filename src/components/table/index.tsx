@@ -6,21 +6,21 @@ import {
   TableHead,
   TableRow,
   Paper,
-} from "@mui/material";
-import { useNavigate } from "react-router-dom";
+} from '@mui/material'
+import { useNavigate } from 'react-router-dom'
 
 export type Row = {
-  key: string;
-  values: (string | JSX.Element)[];
-};
+  key: string
+  values: (string | JSX.Element)[]
+}
 
 interface Props {
-  columns: string[];
-  rows: Row[];
+  columns: string[]
+  rows: Row[]
 }
 
 export default function Table(props: Props) {
-  const { columns, rows } = props;
+  const { columns, rows } = props
 
   return (
     <TableContainer component={Paper}>
@@ -30,7 +30,7 @@ export default function Table(props: Props) {
         <Body rows={rows} />
       </MuiTable>
     </TableContainer>
-  );
+  )
 }
 
 function TableHeader({ columns }: { columns: string[] }) {
@@ -39,33 +39,33 @@ function TableHeader({ columns }: { columns: string[] }) {
       <TableRow>
         {columns.map((column, index) => {
           return (
-            <TableCell key={column} align={index !== 0 ? "left" : undefined}>
+            <TableCell key={column} align={index !== 0 ? 'left' : undefined}>
               {column}
             </TableCell>
-          );
+          )
         })}
       </TableRow>
     </TableHead>
-  );
+  )
 }
 
 function Body(props: { rows: Row[] }) {
-  const { rows } = props;
+  const { rows } = props
 
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const handleOnClick = (key: string) => {
-    const url = `/employees/detail?email=${key}`;
-    navigate(url);
-  };
+    navigate(key)
+  }
+
   return (
     <TableBody>
       {rows.map((row) => (
         <TableRow
           key={row.key}
-          className="text-sm text-base-neutral-gray-900 hover:bg-base-neutral-gray-300 hover:cursor-pointer"
+          className='text-sm text-base-neutral-gray-900 hover:bg-base-neutral-gray-300 hover:cursor-pointer'
           onClick={() => handleOnClick(row.key)}
-          sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
         >
           {row.values.map((value, index) => (
             <TableCell key={index}>{value}</TableCell>
@@ -73,5 +73,5 @@ function Body(props: { rows: Row[] }) {
         </TableRow>
       ))}
     </TableBody>
-  );
+  )
 }
