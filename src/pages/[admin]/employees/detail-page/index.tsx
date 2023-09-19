@@ -11,6 +11,7 @@ export default function EmployeesDetailPage() {
 
   const { findEmployeeByEmail } = useClinic();
   const selectedEmployee = findEmployeeByEmail(email!);
+
   if (!selectedEmployee) return null;
 
   const data: Record<string, any> = {
@@ -24,8 +25,8 @@ export default function EmployeesDetailPage() {
       <Body.Medium
         className="font-normal text-base-neutral-gray-800"
         text={
-          selectedEmployee.telephoneNumber
-            ? selectedEmployee.telephoneNumber
+          selectedEmployee.telephone_number
+            ? selectedEmployee.telephone_number
             : "N/A"
         }
       />
