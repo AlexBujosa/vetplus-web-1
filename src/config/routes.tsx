@@ -8,6 +8,9 @@ import DashboardPage from '@/pages/[admin]'
 import ClientsPage from '@/pages/[admin]/clients'
 import EmployeesPage from '@/pages/[admin]/employees'
 import EmployeesDetailPage from '@/pages/[admin]/employees/detail-page'
+import ForgotPassword from '@/pages/[auth]/forgot-password'
+import { Navigate } from 'react-router'
+import Login from '@/pages/[auth]/login'
 
 type Route = {
   icon?: React.ReactNode
@@ -22,45 +25,63 @@ export const allowedRoles = [Role.CLINIC_OWNER, Role.VETERINARIAN]
 
 const routes: Route[] = [
   {
-    name: 'Dashboard',
+    name: 'dashboard',
     href: '/admin',
     page: <DashboardPage />,
     icon: <HomeIcon />,
     allowedRoles,
   },
   {
-    name: 'Clientes',
+    name: 'clients',
     href: '/clients',
     page: <ClientsPage />,
     icon: <PeopleOutlineOutlinedIcon />,
     allowedRoles,
   },
   {
-    name: 'Citas',
+    name: 'appointments',
     href: '/appointments',
     icon: <EventOutlinedIcon />,
     allowedRoles,
   },
   {
-    name: 'Empleados',
+    name: 'employees',
     href: '/employees',
     page: <EmployeesPage />,
     icon: <AssignmentIndOutlinedIcon />,
     allowedRoles: [Role.CLINIC_OWNER],
   },
   {
-    name: 'Detalle de empleados',
+    name: 'employees-detail',
     href: '/employees/:email',
     page: <EmployeesDetailPage />,
     allowedRoles: [Role.CLINIC_OWNER],
     show: false,
   },
   {
-    name: 'Configuración',
+    name: 'configuration',
     href: '/configuration',
     icon: <SettingsOutlinedIcon />,
     allowedRoles,
   },
 ]
 
-export default routes
+const authRoutes: Route[] = [
+  {
+    name: 'index',
+    href: '/',
+    page: <Navigate to='/login' />,
+  },
+  {
+    name: 'login',
+    href: '/login',
+    page: <Login />,
+  },
+  {
+    name: 'forgot password',
+    href: '/forgot-password',
+    page: <ForgotPassword />,
+  },
+]
+
+export { routes, authRoutes }

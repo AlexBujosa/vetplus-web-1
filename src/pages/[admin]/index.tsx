@@ -7,6 +7,7 @@ import {
 } from '@mui/icons-material'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts'
 import cn from '@/utils/cn'
+import { useTranslation } from 'react-i18next'
 
 export default function DashboardPage() {
   return (
@@ -19,29 +20,31 @@ export default function DashboardPage() {
 }
 
 function DashboardCards() {
+  const { t } = useTranslation()
+
   return (
     <div className='grid grid-cols-4 gap-[30px]'>
       <DashboardCard
         icon={<EventOutlined />}
-        label='Citas pendientes'
+        label={t('registered-pets')}
         amount={123}
       />
 
       <DashboardCard
         icon={<PetsOutlined />}
-        label='Citas pendientes'
+        label={t('clients')}
         amount={123}
       />
 
       <DashboardCard
         icon={<AssignmentIndOutlined />}
-        label='Citas pendientes'
+        label={t('active-employees')}
         amount={123}
       />
 
       <DashboardCard
         icon={<AssignmentIndOutlined />}
-        label='Citas pendientes'
+        label={t('pending-appointments')}
         amount={123}
       />
     </div>
@@ -122,26 +125,31 @@ const data = [
 ]
 
 function ChartsSection() {
+  const { t } = useTranslation()
+
   return (
-    <Card className='w-fit'>
-      <BarChart
-        width={600}
-        height={270}
-        data={data}
-        margin={{
-          top: 5,
-          left: 30,
-          right: 20,
-          bottom: 5,
-        }}
-      >
-        <CartesianGrid strokeDasharray='3 3' />
-        <XAxis dataKey='name' />
-        <YAxis />
-        <Tooltip />
-        <Bar dataKey='clients' className='fill-base-primary-500' />
-      </BarChart>
-    </Card>
+    <>
+      <Title.Medium text={t('clients-traffic')} />
+      <Card className='w-fit'>
+        <BarChart
+          width={600}
+          height={270}
+          data={data}
+          margin={{
+            top: 5,
+            left: 30,
+            right: 20,
+            bottom: 5,
+          }}
+        >
+          <CartesianGrid strokeDasharray='3 3' />
+          <XAxis dataKey='name' />
+          <YAxis />
+          <Tooltip />
+          <Bar dataKey='clients' className='fill-base-primary-500' />
+        </BarChart>
+      </Card>
+    </>
   )
 }
 

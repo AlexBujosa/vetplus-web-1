@@ -18,10 +18,13 @@
     "class-variance-authority": "^0.7.0",
     "dayjs": "^1.11.9",
     "formik": "^2.4.3",
+    "i18next": "^23.5.1",
+    "i18next-browser-languagedetector": "^7.1.0",
     "jotai": "^2.3.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.1",
+    "react-i18next": "^13.2.2",
     "react-router-dom": "^6.15.0",
     "recharts": "^2.8.0",
     "yup": "^1.2.0"

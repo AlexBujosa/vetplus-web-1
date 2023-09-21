@@ -4,16 +4,19 @@ import {
   ManageAccountsOutlined,
   NotificationsOutlined,
 } from '@mui/icons-material'
-import { Box, Divider, Popover } from '@mui/material'
+import { Box, Divider, Popover, Stack, Switch } from '@mui/material'
 import { Body, Label, Title } from '../typography'
 import { useAtom } from 'jotai'
 import { userAtom } from '@/hooks/use-user/userAtom'
 import useAuth from '@/hooks/use-auth'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
+import { languages } from '@/i18n'
 
 export default function Header() {
   return (
-    <header className='flex items-center justify-end w-full h-[60px] px-8 border border-base-neutral-gray-500 bg-base-neutral-white text-base-neutral-gray-700'>
+    <header className='flex items-center justify-between w-full h-[60px] px-8 border border-base-neutral-gray-500 bg-base-neutral-white text-base-neutral-gray-700'>
+      <LanguageSwitch />
       <div className='flex flex-row gap-x-[20px]'>
         <HeaderAction icon={<ManageAccountsOutlined />} />
         <HeaderAction icon={<NotificationsOutlined />} />
@@ -23,6 +26,22 @@ export default function Header() {
   )
 }
 
+function LanguageSwitch() {
+  const { t, i18n } = useTranslation()
+
+  const handleLanguageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newLanguage = event.target.checked ? languages[1] : languages[0]
+    i18n.changeLanguage(newLanguage)
+  }
+
+  return (
+    <Stack direction='row' spacing={1} alignItems='center'>
+      <Body.Large text={t(languages[0])} />
+      <Switch defaultChecked onChange={handleLanguageChange} />
+      <Body.Large text={t(languages[1])} />
+    </Stack>
+  )
+}
 function HeaderAction({ icon }: { icon: React.ReactNode }) {
   return <button>{icon}</button>
 }
@@ -44,6 +63,8 @@ function Profile() {
 
   const open = Boolean(anchorEl)
   const id = open ? 'simple-popover' : undefined
+
+  const { t } = useTranslation()
 
   return (
     <>
@@ -69,7 +90,7 @@ function Profile() {
         <Box sx={{ borderRadius: '8px' }}>
           <Box sx={{ p: 1.6 }}>
             <section className='flex flex-col gap-y-5'>
-              <Label.Large text='Centro veterinario' />
+              <Label.Large text={t('veterinary-clinic')} />
 
               <ProfileWithName />
             </section>
@@ -108,12 +129,13 @@ function ProfileWithName() {
 
 function LogoutButton() {
   const { logout } = useAuth()
+  const { t } = useTranslation()
 
   return (
     <button className='p-4' onClick={logout}>
       <Body.Medium
         className='text-base-semantic-warning-600 hover:text-base-semantic-warning-500'
-        text='Cerrar sesión'
+        text={t('logout')}
       />
     </button>
   )
