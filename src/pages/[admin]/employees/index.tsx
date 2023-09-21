@@ -57,12 +57,16 @@ function EmployeesTable() {
 }
 
 function TableLoadingRows(): Row[] {
-  const numberOfSkeletons = 1
+  const numberOfSkeletons = 5
 
   return [
     {
       key: '',
-      values: [...Array(numberOfSkeletons)].map((e, i) => <Skeleton key={i} />),
+      values: [...Array(1)]
+        .map(() =>
+          [...Array(columns.length)].map((e, i) => <Skeleton key={i} />)
+        )
+        .flat(),
     },
   ]
 }
