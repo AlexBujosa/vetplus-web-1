@@ -1,18 +1,21 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
+
 import AuthLayout from '@/layout/auth'
 import Layout from '@/layout/admin'
-import Login from '@/pages/[auth]/login'
-import ForgotPassword from '@/pages/[auth]/forgot-password'
-import routes from '@/config/routes'
+import { routes, authRoutes } from '@/config/routes'
+
 import './index.css'
+import '@/i18n/'
 
 export default function App() {
   return (
     <Routes>
       <Route element={<AuthLayout />}>
-        <Route path='/' element={<Navigate to='/login' />} />
-        <Route path='/login' element={<Login />} />
-        <Route path='/forgot-password' element={<ForgotPassword />} />
+        {authRoutes.map((route) => {
+          return (
+            <Route key={route.href} path={route.href} element={route.page} />
+          )
+        })}
       </Route>
 
       <Route element={<Layout />}>

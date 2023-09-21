@@ -1,9 +1,10 @@
 import { Imagotipo } from '@/components/logo'
 import { NavLink } from 'react-router-dom'
-import routes from '@/config/routes'
+import { routes } from '@/config/routes'
 import cn from '@/utils/cn'
 import KeyboardDoubleArrowLeftOutlinedIcon from '@mui/icons-material/KeyboardDoubleArrowLeftOutlined'
 import useUser from '@/hooks/use-user'
+import { useTranslation } from 'react-i18next'
 
 export default function Sidebar() {
   return (
@@ -44,10 +45,14 @@ function Option({
   name,
   href,
 }: {
-  icon: React.ReactNode
+  icon?: React.ReactNode
   name: string
   href: string
 }) {
+  const { t } = useTranslation()
+
+  const labelName = t(name)
+
   return (
     <NavLink
       className={({ isActive }) =>
@@ -59,7 +64,7 @@ function Option({
       to={href}
     >
       {icon}
-      {name}
+      {labelName}
     </NavLink>
   )
 }
