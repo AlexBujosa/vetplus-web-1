@@ -1,5 +1,8 @@
 {
   "translation": {
+    "name": "Nombre",
+    "names": "Nombres",
+    "employee": "Empleado",
     "dashboard": "Dashboard",
     "clients": "Clients",
     "appointments": "Appointments",
@@ -7,6 +10,7 @@
     "configuration": "Configuration",
     "pending-appointments": "Pending appointments",
     "registered-pets": "Registered pets",
+    "search-employees": "Search employees",
     "active-employees": "Active employees",
     "clients-traffic": "Customer traffic",
     "services": "Services",

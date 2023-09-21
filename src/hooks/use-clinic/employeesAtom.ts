@@ -8,6 +8,7 @@ export type Employee = {
   telephoneNumber: string
   status: boolean
   score: number
+  image: string
 }
 
 export const employeesAtom = atomWithStorage<Employee[] | undefined>(

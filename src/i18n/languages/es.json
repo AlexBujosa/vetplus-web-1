@@ -1,5 +1,8 @@
 {
   "translation": {
+    "name": "Nombre",
+    "names": "Nombres",
+    "employee": "Empleado",
     "dashboard": "Dashboard",
     "clients": "Clientes",
     "appointments": "Citas",
@@ -8,6 +11,7 @@
     "pending-appointments": "Citas pendientes",
     "registered-pets": "Mascotas registradas",
     "active-employees": "Empleados activos",
+    "search-employees": "Buscar empleados",
     "clients-traffic": "Tráfico de clientes",
     "services": "Servicios",
     "pets": "Mascotas",

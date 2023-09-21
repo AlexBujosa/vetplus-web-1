@@ -1,8 +1,12 @@
 import StarsReview from '@/components/stars-review'
 import StatusBadge from '@/components/status-badge'
-import { Body, Title } from '@/components/typography'
+import { Body, Headline, Title } from '@/components/typography'
 import { useClinic } from '@/hooks/use-clinic'
-import { useParams } from 'react-router-dom'
+import { Employee } from '@/hooks/use-clinic/employeesAtom'
+import { KeyboardBackspace, PersonOutlined } from '@mui/icons-material'
+import { IconButton } from '@mui/material'
+import { useTranslation } from 'react-i18next'
+import { useNavigate, useParams } from 'react-router-dom'
 
 export default function EmployeesDetailPage() {
   const params = useParams()
@@ -12,37 +16,75 @@ export default function EmployeesDetailPage() {
 
   if (!selectedEmployee) return null
 
-  const { telephoneNumber, address, specialty, score, status } =
-    selectedEmployee
+  return (
+    <main className='flex flex-col gap-y-[60px]'>
+      <EmployeeHeader employee={selectedEmployee} />
+      <GeneralDescription employee={selectedEmployee} />
+    </main>
+  )
+}
+
+function EmployeeHeader({ employee }: { employee: Employee }) {
+  const navigate = useNavigate()
+  const { t } = useTranslation()
+
+  return (
+    <section className='flex flex-col gap-y-7'>
+      <div className='flex flex-row gap-x-[20px]'>
+        <IconButton
+          onClick={() => navigate('/employees')}
+          children={<KeyboardBackspace className='text-black' />}
+        />
+        <Headline.Medium text={employee.fullName} />
+      </div>
+
+      <div className='flex flex-row items-center gap-x-5'>
+        <img
+          className='w-[100px] h-[100px] rounded-full'
+          src={employee.image || '/images/placeholder.png'}
+        />
+
+        <span className='flex flex-row gap-x-[6px] p-[10px] border border-base-neutral-gray-500 text-base-neutral-gray-800'>
+          <PersonOutlined />
+          <Body.Large text={t('employee')} />
+        </span>
+      </div>
+    </section>
+  )
+}
+
+function GeneralDescription({ employee }: { employee: Employee }) {
+  const { email, telephoneNumber, address, specialty, score, status } = employee
+  const { t } = useTranslation()
 
   const data: Record<string, JSX.Element> = {
-    'Correo electrónico': <Typography text={email} />,
-    Teléfono: <Typography text={telephoneNumber} />,
-    Dirección: <Typography text={address} />,
-    Especialidad: <Typography text={specialty} />,
-    Calificación: <StarsReview review={score} />,
-    Estado: <StatusBadge status={status} />,
+    [t('email')]: <Typography text={email} />,
+    [t('telephone-number')]: <Typography text={telephoneNumber} />,
+    [t('address')]: <Typography text={address} />,
+    [t('speciality')]: <Typography text={specialty} />,
+    [t('review')]: <StarsReview review={score} />,
+    [t('status')]: <StatusBadge status={status} />,
   }
 
   return (
-    <main className='flex flex-col gap-y-[60px]'>
-      <section>{email}</section>
-      <section className='shadow-elevation-1'>
-        <div className='px-[30px] py-[15px] border border-b-base-neutral-gray-500'>
-          <Title.Medium className='font-semibold' text='Descripción general' />
-        </div>
+    <section className='shadow-elevation-1'>
+      <div className='px-[30px] py-[15px] border border-b-base-neutral-gray-500'>
+        <Title.Medium
+          className='font-semibold'
+          text={t('general-description')}
+        />
+      </div>
 
-        <div className='grid grid-cols-2 grid-rows-3 p-[30px]'>
-          {Object.keys(data).map((key) => (
-            <div className='flex flex-row items-center gap-x-[30px]' key={key}>
-              <Body.Large className='text-black' text={key} />
+      <div className='grid grid-cols-2 grid-rows-3 p-[30px]'>
+        {Object.keys(data).map((key) => (
+          <div className='flex flex-row items-center gap-x-[30px]' key={key}>
+            <Body.Large className='text-black' text={key} />
 
-              {data[key]}
-            </div>
-          ))}
-        </div>
-      </section>
-    </main>
+            {data[key]}
+          </div>
+        ))}
+      </div>
+    </section>
   )
 }
 

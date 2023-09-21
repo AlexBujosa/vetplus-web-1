@@ -10,24 +10,19 @@ import StatusBadge from '@/components/status-badge'
 import { useAtom } from 'jotai'
 import { Employee, employeesAtom } from '@/hooks/use-clinic/employeesAtom'
 import { useEffect } from 'react'
-
-const columns = [
-  'Nombre',
-  'Correo electrónico',
-  'Especialidad',
-  'Estado',
-  'Calificación',
-]
+import { useTranslation } from 'react-i18next'
 
 export default function EmployeesPage() {
+  const { t } = useTranslation()
+
   return (
     <>
-      <Title.Large text='Empleados' />
+      <Title.Large text={t('employees')} />
 
       <Input
         className='w-[300px] bg-white text-base-neutral-gray-700 shadow-elevation-1'
         variant='outlined'
-        placeholder='Buscar empleados...'
+        placeholder={t('search-employees')}
         InputProps={{
           startAdornment: (
             <InputAdornment position='start'>
@@ -43,32 +38,34 @@ export default function EmployeesPage() {
 }
 
 function EmployeesTable() {
+  const { t } = useTranslation()
   const { getMyEmployees } = useClinic()
   const { data, loading } = getMyEmployees()
   const [currentEmployees, setCurrentEmployees] = useAtom(employeesAtom)
+  const rows = !data ? TableLoadingRows() : EmployeesRowsValues(data)
+
+  const columns = [
+    t('name'),
+    t('email'),
+    t('speciality'),
+    t('status'),
+    t('review'),
+  ]
+
+  function TableLoadingRows(): Row[] {
+    return [
+      {
+        key: '',
+        values: [...Array(columns.length)].map((e, i) => <Skeleton key={i} />),
+      },
+    ]
+  }
 
   useEffect(() => {
     if (data !== currentEmployees) setCurrentEmployees(data)
   }, [loading])
 
-  const rows = !data ? TableLoadingRows() : EmployeesRowsValues(data)
-
   return <Table columns={columns} rows={rows} />
-}
-
-function TableLoadingRows(): Row[] {
-  const numberOfSkeletons = 5
-
-  return [
-    {
-      key: '',
-      values: [...Array(1)]
-        .map(() =>
-          [...Array(columns.length)].map((e, i) => <Skeleton key={i} />)
-        )
-        .flat(),
-    },
-  ]
 }
 
 function EmployeesRowsValues(employees: Employee[]): Row[] {
