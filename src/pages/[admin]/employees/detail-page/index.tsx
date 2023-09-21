@@ -15,8 +15,6 @@ export default function EmployeesDetailPage() {
   const { telephoneNumber, address, specialty, score, status } =
     selectedEmployee
 
-  console.log(selectedEmployee)
-
   const data: Record<string, JSX.Element> = {
     'Correo electrónico': <Typography text={email} />,
     Teléfono: <Typography text={telephoneNumber} />,
