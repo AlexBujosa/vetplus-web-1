@@ -92,6 +92,7 @@ export default function Login() {
         />
 
         <Button
+          className='w-full'
           type='submit'
           intent='primary'
           label='Continuar'

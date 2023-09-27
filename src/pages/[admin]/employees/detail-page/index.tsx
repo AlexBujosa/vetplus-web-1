@@ -4,12 +4,7 @@ import StatusBadge from '@/components/status-badge'
 import { Body, Headline, Title } from '@/components/typography'
 import { useClinic } from '@/hooks/use-clinic'
 import { Employee } from '@/hooks/use-clinic/employeesAtom'
-import {
-  KeyboardBackspace,
-  PersonOutlined,
-  Edit,
-  CloseOutlined,
-} from '@mui/icons-material'
+import { KeyboardBackspace, PersonOutlined, Edit } from '@mui/icons-material'
 import { Box, IconButton, Modal } from '@mui/material'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'

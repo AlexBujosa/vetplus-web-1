@@ -51,10 +51,10 @@ interface Props
 }
 
 export default function Button(props: Props) {
-  const { intent, size, label, loading, icon, ...rest } = props
+  const { intent, size, label, loading, icon, className, ...rest } = props
 
   return (
-    <button className={cn(button({ intent, size }))} {...rest}>
+    <button className={cn(button({ intent, size, className }))} {...rest}>
       <ButtonContent icon={icon} label={label} loading={loading} />
     </button>
   )

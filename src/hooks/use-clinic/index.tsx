@@ -22,6 +22,7 @@ export function useClinic() {
           VeterinarianSummaryScore,
           VeterinariaSpecialties,
           address,
+          image,
           telephone_number: telephoneNumber,
         } = employee
         const { specialties: specialty } = VeterinariaSpecialties
@@ -35,6 +36,7 @@ export function useClinic() {
         return {
           fullName,
           email,
+          image,
           specialty,
           address,
           telephoneNumber,

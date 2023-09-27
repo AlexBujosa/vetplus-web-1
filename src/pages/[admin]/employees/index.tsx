@@ -56,7 +56,7 @@ function EmployeesTable() {
     return [
       {
         key: '',
-        values: [...Array(columns.length)].map((e, i) => <Skeleton key={i} />),
+        values: [...Array(columns.length)].map(() => <Skeleton />),
       },
     ]
   }
