@@ -1,10 +1,17 @@
+import Button from '@/components/button'
 import StarsReview from '@/components/stars-review'
 import StatusBadge from '@/components/status-badge'
 import { Body, Headline, Title } from '@/components/typography'
 import { useClinic } from '@/hooks/use-clinic'
 import { Employee } from '@/hooks/use-clinic/employeesAtom'
-import { KeyboardBackspace, PersonOutlined } from '@mui/icons-material'
-import { IconButton } from '@mui/material'
+import {
+  KeyboardBackspace,
+  PersonOutlined,
+  Edit,
+  CloseOutlined,
+} from '@mui/icons-material'
+import { Box, IconButton, Modal } from '@mui/material'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -25,6 +32,9 @@ export default function EmployeesDetailPage() {
 }
 
 function EmployeeHeader({ employee }: { employee: Employee }) {
+  const [open, setOpen] = useState(false)
+  const handleOpen = () => setOpen(true)
+  const handleClose = () => setOpen(false)
   const navigate = useNavigate()
   const { t } = useTranslation()
 
@@ -38,18 +48,52 @@ function EmployeeHeader({ employee }: { employee: Employee }) {
         <Headline.Medium text={employee.fullName} />
       </div>
 
-      <div className='flex flex-row items-center gap-x-5'>
-        <img
-          className='w-[100px] h-[100px] rounded-full'
-          src={employee.image || '/images/placeholder.png'}
+      <div className='flex flex-row items-center justify-between gap-x-5'>
+        <ProfileWithRole image={employee.image} />
+
+        <Button
+          onClick={handleOpen}
+          size='small'
+          icon={<Edit />}
+          label={t('edit')}
         />
 
-        <span className='flex flex-row gap-x-[6px] p-[10px] border border-base-neutral-gray-500 text-base-neutral-gray-800'>
-          <PersonOutlined />
-          <Body.Large text={t('employee')} />
-        </span>
+        <Modal open={open} onClose={handleClose}>
+          <Box sx={style}>
+            <EditEmployeeModal />
+          </Box>
+        </Modal>
       </div>
     </section>
+  )
+}
+
+function ProfileWithRole({ image }: { image: string }) {
+  const { t } = useTranslation()
+
+  return (
+    <div className='flex flex-row gap-x-[10px] items-center'>
+      <img
+        className='w-[100px] h-[100px] rounded-full'
+        src={image || '/images/placeholder.png'}
+      />
+
+      <span className='flex flex-row gap-x-[6px] p-[10px] border border-base-neutral-gray-500 text-base-neutral-gray-800'>
+        <PersonOutlined />
+        <Body.Large text={t('employee')} />
+      </span>
+    </div>
+  )
+}
+
+function EditEmployeeModal() {
+  const { t } = useTranslation()
+  return (
+    <article className='bg-white'>
+      <div className='flex flex-row items-center justify-between px-[30px]'>
+        <Title.Small className='text-2xl' text={t('edit-employee')} />
+      </div>
+    </article>
   )
 }
 
@@ -97,4 +141,11 @@ function Typography(props: { text?: string }) {
       text={text || 'N/A'}
     />
   )
+}
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
 }
