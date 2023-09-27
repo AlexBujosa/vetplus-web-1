@@ -1,7 +1,0 @@
-version: '3'
-services:
-  api:
-    restart: always
-    image: chrissst/vetplus-api:alpha-20230910.9
-    ports:
-      - "3000:3000"
