@@ -19,18 +19,22 @@ export default function EmployeesPage() {
     <>
       <Title.Large text={t('employees')} />
 
-      <Input
-        className='w-[300px] bg-white text-base-neutral-gray-700 shadow-elevation-1'
-        variant='outlined'
-        placeholder={t('search-employees')}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position='start'>
-              <SearchOutlined />
-            </InputAdornment>
-          ),
-        }}
-      />
+      <div className='flex flex-row items-center justify-between'>
+        <Input
+          className='w-[300px] bg-white text-base-neutral-gray-700 shadow-elevation-1'
+          variant='outlined'
+          placeholder={t('search-employees')}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position='start'>
+                <SearchOutlined />
+              </InputAdornment>
+            ),
+          }}
+        />
+
+        {/* <Button size='small' icon={<AddOutlined />} label={t('create')} /> */}
+      </div>
 
       <EmployeesTable />
     </>

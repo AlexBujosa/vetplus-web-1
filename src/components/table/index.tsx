@@ -1,3 +1,4 @@
+import React from 'react'
 import {
   Table as MuiTable,
   TableBody,
@@ -6,6 +7,7 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Skeleton,
 } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 
@@ -21,13 +23,25 @@ interface Props {
 
 export default function Table(props: Props) {
   const { columns, rows } = props
+  const navigate = useNavigate()
+
+  // If no rows are provided, load the TableLoadingRows
+  if (!rows || rows.length === 0) {
+    return (
+      <TableContainer component={Paper}>
+        <MuiTable sx={{ minWidth: 650 }}>
+          <TableHeader columns={columns} />
+          <TableLoadingRows columns={columns} />
+        </MuiTable>
+      </TableContainer>
+    )
+  }
 
   return (
     <TableContainer component={Paper}>
       <MuiTable sx={{ minWidth: 650 }}>
         <TableHeader columns={columns} />
-
-        <Body rows={rows} />
+        <Body rows={rows} navigate={navigate} />
       </MuiTable>
     </TableContainer>
   )
@@ -49,10 +63,8 @@ function TableHeader({ columns }: { columns: string[] }) {
   )
 }
 
-function Body(props: { rows: Row[] }) {
-  const { rows } = props
-
-  const navigate = useNavigate()
+function Body(props: { rows: Row[]; navigate: any }) {
+  const { rows, navigate } = props
 
   const handleOnClick = (key: string) => {
     navigate(key)
@@ -74,4 +86,15 @@ function Body(props: { rows: Row[] }) {
       ))}
     </TableBody>
   )
+}
+
+function TableLoadingRows(props: { columns: any[] }): Row[] {
+  const { columns } = props
+
+  return [
+    {
+      key: '',
+      values: [...Array(columns.length)].map(() => <Skeleton />),
+    },
+  ]
 }

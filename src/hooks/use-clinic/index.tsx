@@ -1,4 +1,4 @@
-import { GET_MY_EMPLOYEES } from '@/graphql/clinic'
+import { GET_ALL_CLIENTS, GET_MY_EMPLOYEES } from '@/graphql/clinic'
 import { useQuery } from '@apollo/client'
 import { useAtom } from 'jotai'
 import { Employee, employeesAtom } from './employeesAtom'
@@ -55,7 +55,9 @@ export function useClinic() {
   }
 
   function getMyClients() {
-    let data, loading
+    const { data, loading } = useQuery(GET_ALL_CLIENTS)
+
+    console.log(data)
 
     return {
       data,

@@ -63,3 +63,32 @@ export const GET_ALL_EMPLOYEES = gql`
     }
   }
 `
+
+export const GET_ALL_CLIENTS = gql`
+  query {
+    getAllClients {
+      id_user
+      id_clinic
+      favorite
+      points
+      created_at
+      updated_at
+      status
+      User {
+        id
+        names
+        surnames
+        email
+        provider
+        document
+        address
+        telephone_number
+        image
+        role
+        created_at
+        updated_at
+        status
+      }
+    }
+  }
+`

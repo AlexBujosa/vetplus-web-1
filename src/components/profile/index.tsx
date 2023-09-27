@@ -10,7 +10,7 @@ export function Profile({
 }) {
   return (
     <div className='flex flex-row items-center gap-x-3'>
-      <ProfileImage src={image} loading={!image} />
+      <ProfileImage src={image} loading={image === ''} />
 
       <Body.Medium className='text-base-neutral-gray-900' text={profile} />
     </div>
