@@ -2,7 +2,6 @@ import { Imagotipo } from '@/components/logo'
 import { NavLink } from 'react-router-dom'
 import { routes } from '@/config/routes'
 import cn from '@/utils/cn'
-import KeyboardDoubleArrowLeftOutlinedIcon from '@mui/icons-material/KeyboardDoubleArrowLeftOutlined'
 import useUser from '@/hooks/use-user'
 import { useTranslation } from 'react-i18next'
 
@@ -12,9 +11,9 @@ export default function Sidebar() {
       <div className='flex flex-row justify-between border-b border-b-base-neutral-gray-500 px-[20px] py-[6px] mb-[30px]'>
         <Imagotipo width={108} height={54} />
 
-        <button>
+        {/* <button>
           <KeyboardDoubleArrowLeftOutlinedIcon className='text-base-primary-500' />
-        </button>
+        </button> */}
       </div>
 
       <RouteOptions />

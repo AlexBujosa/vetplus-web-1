@@ -1,8 +1,9 @@
 {
   "translation": {
-    "name": "Nombre",
-    "names": "Nombres",
-    "employee": "Empleado",
+    "name": "Name",
+    "names": "Names",
+    "surnames": "Surnames",
+    "employee": "Employee",
     "dashboard": "Dashboard",
     "clients": "Clients",
     "appointments": "Appointments",
@@ -30,7 +31,7 @@
     "breed": "Race",
     "age": "Age",
     "sex": "Sex",
-    "speciality": "Specialty",
+    "specialty": "Specialty",
     "status": "Status",
     "review": "Rating",
     "no-review": "No rating",

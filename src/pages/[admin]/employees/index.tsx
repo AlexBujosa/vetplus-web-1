@@ -39,11 +39,6 @@ export default function EmployeesPage() {
 
 function EmployeesTable() {
   const { t } = useTranslation()
-  const { getMyEmployees } = useClinic()
-  const { data, loading } = getMyEmployees()
-  const [currentEmployees, setCurrentEmployees] = useAtom(employeesAtom)
-  const rows = !data ? TableLoadingRows() : EmployeesRowsValues(data)
-
   const columns = [
     t('name'),
     t('email'),
@@ -51,6 +46,11 @@ function EmployeesTable() {
     t('status'),
     t('review'),
   ]
+
+  const { getMyEmployees } = useClinic()
+  const { data, loading } = getMyEmployees()
+  const [currentEmployees, setCurrentEmployees] = useAtom(employeesAtom)
+  const rows = !data ? TableLoadingRows() : EmployeesRowsValues(data)
 
   function TableLoadingRows(): Row[] {
     return [

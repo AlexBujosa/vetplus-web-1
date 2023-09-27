@@ -1,11 +1,12 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client'
 
 export const GET_MY_EMPLOYEES = gql`
-  query {
+  query GetMyEmployees {
     getMyEmployees {
-      clinicEmployees {
+      ClinicEmployees {
+        id_employee
         status
-        employee {
+        Employee {
           names
           surnames
           image
@@ -23,7 +24,7 @@ export const GET_MY_EMPLOYEES = gql`
       }
     }
   }
-`;
+`
 
 export const GET_MY_CLINIC = gql`
   query {
@@ -39,7 +40,7 @@ export const GET_MY_CLINIC = gql`
       status
     }
   }
-`;
+`
 
 export const GET_ALL_EMPLOYEES = gql`
   query ($getAllEmployeeByClinicIdInput: GetAllEmployeeByClinicIdInput!) {
@@ -61,4 +62,4 @@ export const GET_ALL_EMPLOYEES = gql`
       }
     }
   }
-`;
+`

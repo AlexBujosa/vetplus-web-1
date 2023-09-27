@@ -12,9 +12,9 @@ export function useClinic() {
   } {
     const { data, loading } = useQuery(GET_MY_EMPLOYEES)
 
-    const employees = data?.getMyEmployees.clinicEmployees.map(
+    const employees = data?.getMyEmployees.ClinicEmployees.map(
       (employeeObject: any): Employee => {
-        const { employee, status } = employeeObject
+        const { Employee, status } = employeeObject
         const {
           names,
           surnames,
@@ -24,7 +24,7 @@ export function useClinic() {
           address,
           image,
           telephone_number: telephoneNumber,
-        } = employee
+        } = Employee
         const { specialties: specialty } = VeterinariaSpecialties
         const reviewScore =
           VeterinarianSummaryScore.total_users > 0
@@ -35,6 +35,8 @@ export function useClinic() {
 
         return {
           fullName,
+          names,
+          surnames,
           email,
           image,
           specialty,

@@ -31,7 +31,7 @@ const button = cva(
         ],
       },
       size: {
-        small: ['text-base', 'py-[15px]', 'px-2', 'h-[50px]'],
+        small: ['text-md', 'py-[10px]', 'px-2', 'h-[50px]'],
         medium: ['text-2xl', 'py-[17px]', 'px-3'],
       },
     },
@@ -44,30 +44,37 @@ const button = cva(
 
 interface Props
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof button> {
+    VariantProps<typeof button>,
+    React.PropsWithChildren {
   label: string
   loading?: boolean
   icon?: React.ReactNode
 }
 
 export default function Button(props: Props) {
-  const { intent, size, label, loading, icon, className, ...rest } = props
+  const { intent, size, label, loading, icon, children, className, ...rest } =
+    props
 
   return (
     <button className={cn(button({ intent, size, className }))} {...rest}>
-      <ButtonContent icon={icon} label={label} loading={loading} />
+      <ButtonContent
+        icon={icon}
+        label={label}
+        loading={loading}
+        children={children}
+      />
     </button>
   )
 }
 
-interface ButtonContentProps {
+interface ButtonContentProps extends React.PropsWithChildren {
   label: string
   loading?: boolean
   icon?: React.ReactNode
 }
 
 function ButtonContent(props: ButtonContentProps) {
-  const { icon, label, loading } = props
+  const { icon, label, loading, children } = props
 
   if (loading) {
     return <CircularProgress size={20} color='inherit' />
@@ -77,6 +84,7 @@ function ButtonContent(props: ButtonContentProps) {
     <>
       {icon}
       {label}
+      {children}
     </>
   )
 }

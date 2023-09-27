@@ -2,6 +2,7 @@
   "translation": {
     "name": "Nombre",
     "names": "Nombres",
+    "surnames": "Apellidos",
     "employee": "Empleado",
     "dashboard": "Dashboard",
     "clients": "Clientes",

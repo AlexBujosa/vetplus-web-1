@@ -2,6 +2,8 @@ import { atomWithStorage } from 'jotai/utils'
 
 export type Employee = {
   fullName: string
+  names: string
+  surnames: string
   email: string
   specialty: string
   address: string

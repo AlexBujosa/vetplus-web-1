@@ -12,6 +12,7 @@ import useAuth from '@/hooks/use-auth'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { languages } from '@/i18n'
+import ProfileImage from '../profile-image'
 
 export default function Header() {
   return (
@@ -114,10 +115,7 @@ function ProfileWithName() {
 
   return (
     <div className='flex flex-row gap-x-5'>
-      <img
-        className='w-[60px] h-[60px] rounded-full'
-        src={image || '/images/placeholder.png'}
-      />
+      <ProfileImage className='w-[60px] h-[60px]' src={image} loading />
 
       <span>
         <Title.Medium text={`${names} ${surnames}`} />

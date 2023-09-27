@@ -1,14 +1,25 @@
+import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useNavigate, useParams } from 'react-router-dom'
+
 import Button from '@/components/button'
+import Input from '@/components/input'
+import ProfileImage from '@/components/profile-image'
+import Select from '@/components/select'
 import StarsReview from '@/components/stars-review'
 import StatusBadge from '@/components/status-badge'
 import { Body, Headline, Title } from '@/components/typography'
 import { useClinic } from '@/hooks/use-clinic'
 import { Employee } from '@/hooks/use-clinic/employeesAtom'
 import { KeyboardBackspace, PersonOutlined, Edit } from '@mui/icons-material'
-import { Box, IconButton, Modal } from '@mui/material'
-import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { useNavigate, useParams } from 'react-router-dom'
+import {
+  Box,
+  IconButton,
+  Modal,
+  SelectChangeEvent,
+  Tab,
+  Tabs,
+} from '@mui/material'
 
 export default function EmployeesDetailPage() {
   const params = useParams()
@@ -55,7 +66,7 @@ function EmployeeHeader({ employee }: { employee: Employee }) {
 
         <Modal open={open} onClose={handleClose}>
           <Box sx={style}>
-            <EditEmployeeModal />
+            <EmployeeModal title={t('edit-employee')} />
           </Box>
         </Modal>
       </div>
@@ -68,9 +79,10 @@ function ProfileWithRole({ image }: { image: string }) {
 
   return (
     <div className='flex flex-row gap-x-[10px] items-center'>
-      <img
-        className='w-[100px] h-[100px] rounded-full'
-        src={image || '/images/placeholder.png'}
+      <ProfileImage
+        className='w-[100px] h-[100px]'
+        src={image}
+        loading={!image}
       />
 
       <span className='flex flex-row gap-x-[6px] p-[10px] border border-base-neutral-gray-500 text-base-neutral-gray-800'>
@@ -81,12 +93,76 @@ function ProfileWithRole({ image }: { image: string }) {
   )
 }
 
-function EditEmployeeModal() {
+function EmployeeModal(props: { title: string }) {
+  const { title } = props
+
   const { t } = useTranslation()
+  const params = useParams()
+  const { email: employeeEmail } = params
+  const { findEmployeeByEmail } = useClinic()
+  const employee = findEmployeeByEmail(employeeEmail!)
+
+  const [value, setValue] = React.useState(0)
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue)
+  }
+
+  if (!employee) return null
+
+  const {
+    names,
+    surnames,
+    email,
+    address,
+    telephoneNumber,
+    specialty,
+    status,
+  } = employee
+
   return (
-    <article className='bg-white'>
-      <div className='flex flex-row items-center justify-between px-[30px]'>
-        <Title.Small className='text-2xl' text={t('edit-employee')} />
+    <article className='bg-white px-[30px] py-[20px]'>
+      <div className='flex flex-row items-center justify-between '>
+        <Title.Small className='text-2xl' text={title} />
+      </div>
+
+      <div className='flex flex-col'>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <Tabs value={value} onChange={handleChange}>
+            <Tab label={t('profile')} />
+            <Tab label={t('professional')} />
+          </Tabs>
+        </Box>
+
+        <CustomTabPanel value={value} index={0}>
+          <Body.Large
+            className='font-normal my-[20px]'
+            text={t('profile-image')}
+          />
+
+          <div className='flex flex-row gap-x-[10px] items-center'>
+            <ProfileImage className='w-[80px] h-[80px]' />
+
+            <input type='file' />
+          </div>
+
+          <div className='grid grid-cols-2 grid-rows-auto mt-[60px] mb-[20px] gap-x-[50px] gap-y-[40px]'>
+            <Input value={names} variant='outlined' label={t('name')} />
+            <Input value={surnames} variant='outlined' label={t('surnames')} />
+            <Input value={email} variant='outlined' label={t('email')} />
+            <Input value={address} variant='outlined' label={t('address')} />
+            <Input
+              value={telephoneNumber}
+              variant='outlined'
+              label={t('telephone-number')}
+            />
+          </div>
+
+          <Button className='self-end px-[30px]' label={t('save')} />
+        </CustomTabPanel>
+
+        <CustomTabPanel value={value} index={1}>
+          <ProfessionalSection specialty={specialty} status={status} />
+        </CustomTabPanel>
       </div>
     </article>
   )
@@ -138,9 +214,72 @@ function Typography(props: { text?: string }) {
   )
 }
 
+interface TabPanelProps extends React.PropsWithChildren {
+  index: number
+  value: number
+}
+
+function CustomTabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props
+
+  return (
+    <div
+      role='tabpanel'
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && children}
+    </div>
+  )
+}
+
 const style = {
   position: 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
+  width: '40%',
+}
+
+function ProfessionalSection(props: { specialty: string; status: boolean }) {
+  const { specialty, status } = props
+  const { t } = useTranslation()
+
+  const [statusValue, setStatusValue] = React.useState<string>(
+    status as unknown as string
+  )
+
+  const [specialtyValue, setSpecialtyValue] = React.useState<string>(
+    specialty as unknown as string
+  )
+
+  const handleStatusChange = (event: SelectChangeEvent) => {
+    setStatusValue(event.target.value as string)
+  }
+
+  const handleSpecialtyChange = (event: SelectChangeEvent) => {
+    setSpecialtyValue(event.target.value as string)
+  }
+
+  return (
+    <div className='grid grid-cols-2 grid-rows-auto mt-[60px] mb-[20px] gap-x-[50px] gap-y-[40px]'>
+      <Select
+        label={t('speciality')}
+        value={specialtyValue}
+        onChange={handleSpecialtyChange}
+        options={[{ label: 'Cirugia', value: 'Cirugia' }]}
+      />
+      <Select
+        label={t('status')}
+        value={statusValue}
+        onChange={handleStatusChange}
+        options={[
+          { label: 'True', value: 'true' },
+          { label: 'False', value: 'false' },
+        ]}
+      />
+    </div>
+  )
 }

@@ -1,4 +1,5 @@
 import { Body } from '@/components/typography'
+import ProfileImage from '@/components/profile-image'
 
 export function Profile({
   image,
@@ -9,10 +10,7 @@ export function Profile({
 }) {
   return (
     <div className='flex flex-row items-center gap-x-3'>
-      <img
-        className='w-10 h-10 rounded-full'
-        src={image || '/images/placeholder.png'}
-      />
+      <ProfileImage src={image} loading={!image} />
 
       <Body.Medium className='text-base-neutral-gray-900' text={profile} />
     </div>
