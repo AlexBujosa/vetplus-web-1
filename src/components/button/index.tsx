@@ -10,7 +10,7 @@ const button = cva(
     'gap-[3px]',
     'font-semibold',
     'rounded-[10px]',
-    'w-full',
+    'w-fit',
   ],
   {
     variants: {
