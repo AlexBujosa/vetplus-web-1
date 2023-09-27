@@ -12,16 +12,6 @@ $ npm install
 npm run dev
 ```
 
-3. Go to the login page http://localhost:5173/login [Login Page](http://localhost:5173/login)
-
-## Run DEV environment
-
-```bash
-$ docker compose -f docker-compose-dev.yml up -d
-```
-
-## Run QA environment
-
-```bash
-$ docker compose -f docker-compose-qa.yml up -d
-```
+1. Go to the login page http://localhost:5173 [Login Page](http://localhost:5173)
+2. Add the env variables inside ".env.development"
+   1. VITE_GRAPHQL_ENDPOINT=""
