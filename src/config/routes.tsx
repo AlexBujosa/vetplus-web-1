@@ -11,6 +11,8 @@ import EmployeesDetailPage from '@/pages/[admin]/employees/detail-page'
 import ForgotPassword from '@/pages/[auth]/forgot-password'
 import { Navigate } from 'react-router'
 import Login from '@/pages/[auth]/login'
+import { StoreOutlined } from '@mui/icons-material'
+import GeneralViewPage from '@/pages/[admin]/clinic/general-view'
 
 type Route = {
   icon?: React.ReactNode
@@ -59,10 +61,11 @@ const routes: Route[] = [
     show: false,
   },
   {
-    name: 'configuration',
-    href: '/configuration',
-    icon: <SettingsOutlinedIcon />,
-    allowedRoles,
+    name: 'general-view',
+    href: '/general-info',
+    icon: <StoreOutlined />,
+    page: <GeneralViewPage />,
+    allowedRoles: [Role.CLINIC_OWNER],
   },
 ]
 

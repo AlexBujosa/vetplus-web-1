@@ -27,7 +27,7 @@ function RouteOptions() {
   const { role } = getUserRole()
 
   return (
-    <div className='flex flex-col px-[20px]'>
+    <div className='flex flex-col px-[20px] h-full'>
       {routes.map(({ href, allowedRoles, page, show, ...rest }) => {
         if (!allowedRoles?.includes(role)) return
 
@@ -43,10 +43,12 @@ function Option({
   icon,
   name,
   href,
+  fixedAtBottom,
 }: {
   icon?: React.ReactNode
   name: string
   href: string
+  fixedAtBottom?: boolean
 }) {
   const { t } = useTranslation()
 
