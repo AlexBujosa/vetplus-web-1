@@ -6,6 +6,7 @@
     "employee": "Employee",
     "dashboard": "Dashboard",
     "clients": "Clients",
+    "appointment": "Appointment",
     "appointments": "Appointments",
     "employees": "Employees",
     "configuration": "Configuration",
@@ -56,6 +57,12 @@
     "save": "Save",
     "en": "EN",
     "es": "ES",
-    "general-view": "General View"
+    "general-view": "General View",
+    "consultation": "Consultation",
+    "surgery": "Surgery",
+    "preventive-medicine": "Preventive Medicine",
+    "delivery": "Delivery",
+    "comments-reviews": "Comments and Reviews",
+    "veterinary": "Veterinary"
   }
 }
