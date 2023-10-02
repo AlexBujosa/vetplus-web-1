@@ -1,6 +1,6 @@
 import { Imagotipo } from '@/components/logo'
 import { NavLink } from 'react-router-dom'
-import { routes } from '@/config/routes'
+import { routes as adminRoutes } from '@/config/routes'
 import cn from '@/utils/cn'
 import useUser from '@/hooks/use-user'
 import { useTranslation } from 'react-i18next'
@@ -8,15 +8,10 @@ import { useTranslation } from 'react-i18next'
 export default function Sidebar() {
   return (
     <aside className='bg-base-neutral-gray-200 border-r border-r-base-neutral-gray-500 w-full max-w-[240px]'>
-      <div className='flex flex-row justify-between border-b border-b-base-neutral-gray-500 px-[20px] py-[6px] mb-[30px]'>
-        <Imagotipo width={108} height={54} />
-
-        {/* <button>
-          <KeyboardDoubleArrowLeftOutlinedIcon className='text-base-primary-500' />
-        </button> */}
+      <div className='flex flex-col px-[20px] py-[6px] mb-[30px] h-full'>
+        <Imagotipo className='mb-3' width={120} height={54} />
+        <RouteOptions />
       </div>
-
-      <RouteOptions />
     </aside>
   )
 }
@@ -26,16 +21,20 @@ function RouteOptions() {
 
   const { role } = getUserRole()
 
+  const routes = Object.entries(adminRoutes.admin.pages)
+
+  const options = routes.filter(([key, value]) => {
+    const { allowedRoles, show } = value
+    return allowedRoles?.includes(role) && show !== false
+  })
+
   return (
-    <div className='flex flex-col px-[20px] h-full'>
-      {routes.map(({ href, allowedRoles, page, show, ...rest }) => {
-        if (!allowedRoles?.includes(role)) return
-
-        if (show === false) return
-
-        return <Option key={href} href={href} {...rest} />
+    <>
+      {options.map(([key, value]) => {
+        const { href, ...rest } = value
+        return <Option key={href} href={href} name={key} {...rest} />
       })}
-    </div>
+    </>
   )
 }
 
@@ -43,12 +42,10 @@ function Option({
   icon,
   name,
   href,
-  fixedAtBottom,
 }: {
   icon?: React.ReactNode
   name: string
   href: string
-  fixedAtBottom?: boolean
 }) {
   const { t } = useTranslation()
 

@@ -1,36 +1,35 @@
-import { Navigate, Route, Routes } from 'react-router-dom'
-
-import AuthLayout from '@/layout/auth'
-import Layout from '@/layout/admin'
-import { routes, authRoutes } from '@/config/routes'
-
+import { Route, Routes } from 'react-router-dom'
+import { routes } from '@/config/routes'
 import './index.css'
 import '@/i18n/'
 import { RolesAuthRoute } from './layout/roles'
 
 export default function App() {
-  const renderAuthRoutes = () => {
-    return authRoutes.map(({ href, page }) => (
-      <Route key={href} path={href} element={page} />
-    ))
-  }
-
-  const renderAppRoutes = () => {
-    return routes.map(({ href, allowedRoles, page }) => (
-      <Route
-        key={href}
-        element={allowedRoles && <RolesAuthRoute allowedRoles={allowedRoles} />}
-      >
-        <Route path={href} element={page} />
-      </Route>
-    ))
-  }
-
   return (
     <Routes>
-      <Route element={<AuthLayout />}>{renderAuthRoutes()}</Route>
-      <Route element={<Layout />}>{renderAppRoutes()}</Route>
-      <Route path='*' element={<Navigate to='/admin' />} />
+      {Object.entries(routes).map(([key, value]) => {
+        const { layout, pages } = value
+        return (
+          <Route key={key} element={layout}>
+            {Object.entries(pages).map(([key, value]) => {
+              const { href, page, allowedRoles } = value
+
+              if (!allowedRoles) {
+                return <Route key={key} path={href} element={page} />
+              }
+
+              return (
+                <Route
+                  key={key}
+                  element={<RolesAuthRoute allowedRoles={allowedRoles} />}
+                >
+                  <Route path={href} element={page} />
+                </Route>
+              )
+            })}
+          </Route>
+        )
+      })}
     </Routes>
   )
 }

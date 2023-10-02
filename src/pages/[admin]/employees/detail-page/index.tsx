@@ -12,6 +12,7 @@ import { Employee } from '@/hooks/use-clinic/employeesAtom'
 import { KeyboardBackspace, PersonOutlined, Edit } from '@mui/icons-material'
 import { Box, IconButton, Modal } from '@mui/material'
 import EmployeeModal from '@/components/molecules/employee-modal'
+import { routes } from '@/config/routes'
 
 export default function EmployeesDetailPage() {
   const params = useParams()
@@ -40,7 +41,7 @@ function EmployeeHeader({ employee }: { employee: Employee }) {
     <section className='flex flex-col gap-y-7'>
       <div className='flex flex-row gap-x-[20px]'>
         <IconButton
-          onClick={() => navigate('/employees')}
+          onClick={() => navigate(routes.admin.pages.employees.href)}
           children={<KeyboardBackspace className='text-black' />}
         />
         <Headline.Medium text={employee.fullName} />

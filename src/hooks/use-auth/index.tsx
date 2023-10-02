@@ -2,7 +2,7 @@ import client from '@/utils/apolloClient'
 import { SIGN_WITH_EMAIL_QUERY } from '@/graphql/auth'
 import { useNavigate } from 'react-router-dom'
 import useUser from '@/hooks/use-user'
-import { allowedRoles } from '@/config/routes'
+import { allowedRoles, routes } from '@/config/routes'
 import { useSetAtom } from 'jotai'
 import { roleAtom } from './roleAtom'
 
@@ -39,12 +39,12 @@ export default function useAuth() {
       throw new Error('Forbidden error')
     }
 
-    navigate('/admin')
+    navigate(routes.admin.pages.dashboard.href)
   }
 
   function logout() {
     localStorage.removeItem('token')
-    navigate('/login')
+    navigate(routes.auth.pages.login.href)
   }
 
   return { loginWithEmail, logout }
