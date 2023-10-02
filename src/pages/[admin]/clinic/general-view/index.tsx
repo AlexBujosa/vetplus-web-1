@@ -170,7 +170,7 @@ function Review(props: {
   return (
     <div className='grid grid-cols-4'>
       <section className='flex flex-row gap-[10px]'>
-        <Image className='w-[55px] h-[55px]' />
+        <Image className='rounded-full w-[55px] h-[55px]' />
         <Title.Small text={name} />
       </section>
 
