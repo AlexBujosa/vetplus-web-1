@@ -15,22 +15,25 @@ import GeneralViewPage from '@/pages/[admin]/clinic/general-view'
 import AuthLayout from '@/layout/auth'
 import Layout from '@/layout/admin'
 
-type Routes = Record<
-  string,
-  {
-    layout?: JSX.Element
-    pages: Record<
-      string,
-      {
-        icon?: React.ReactNode
-        page?: React.ReactNode
-        href: string
-        allowedRoles?: Role[]
-        show?: boolean
-      }
-    >
-  }
->
+type Routes = {
+  auth: Route
+  admin: Route
+  'error-pages': Route
+}
+
+type Route = {
+  layout?: JSX.Element
+  pages: Record<
+    string,
+    {
+      icon?: React.ReactNode
+      page?: React.ReactNode
+      href: string
+      allowedRoles?: Role[]
+      show?: boolean
+    }
+  >
+}
 
 export const allowedRoles = [Role.CLINIC_OWNER, Role.VETERINARIAN]
 
@@ -92,13 +95,12 @@ let routes: Routes = {
       },
     },
   },
-}
-
-routes['error-pages'] = {
-  pages: {
-    'not-found': {
-      href: '*',
-      page: <Navigate to={routes.admin.pages.dashboard.href} />,
+  'error-pages': {
+    pages: {
+      'not-found': {
+        href: '*',
+        page: <Navigate to='/' />,
+      },
     },
   },
 }
