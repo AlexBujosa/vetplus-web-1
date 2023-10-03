@@ -61,13 +61,7 @@ function ClinicHeader() {
 function GeneralDescription() {
   const { t } = useTranslation()
 
-  const labels = [
-    t('email'),
-    t('telephone-number'),
-    t('lic-centro-veterinario'),
-    t('rnc'),
-    t('schedule'),
-  ]
+  const labels = [t('email'), t('telephone-number'), t('schedule')]
 
   return (
     <SectionCard className='col-span-2' title={t('general-description')}>
