@@ -132,11 +132,6 @@ function Typography(props: { text?: string }) {
   )
 }
 
-interface TabPanelProps extends React.PropsWithChildren {
-  index: number
-  value: number
-}
-
 const style = {
   position: 'absolute',
   top: '50%',

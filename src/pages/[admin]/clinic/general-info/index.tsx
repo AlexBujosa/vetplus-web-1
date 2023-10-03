@@ -15,18 +15,37 @@ import Button from '@/components/button'
 import { t } from 'i18next'
 import cn from '@/utils/cn'
 import StarsReview from '@/components/stars-review'
+import { Modal as MuiModal, Box } from '@mui/material'
+import Modal from '@/components/molecules/modal'
 
 export default function GeneralViewPage() {
+  const { t } = useTranslation()
+
+  const [open, setOpen] = React.useState(false)
+  const handleOpen = () => setOpen(true)
+  const handleClose = () => setOpen(false)
+
   return (
     <>
       <ClinicHeader />
+      <Button
+        onClick={handleOpen}
+        className='self-end'
+        icon={<Edit />}
+        label={t('edit')}
+      />
+
+      <MuiModal open={open} onClose={handleClose}>
+        <Box sx={style}>
+          <Modal title={t('edit-clinic')} />
+        </Box>
+      </MuiModal>
 
       <section className='grid grid-cols-3 grid-rows-1 gap-x-8'>
         <GeneralDescription />
 
         <ClinicServices />
       </section>
-
       <CommentsAndReview />
     </>
   )
@@ -37,7 +56,7 @@ function ClinicHeader() {
 
   return (
     <section className='flex flex-row gap-x-[10px]'>
-      <Image className='h-40 rounded-lg w-72' />
+      <Image className='w-1/5 rounded-lg' />
 
       <article className='flex flex-col justify-between'>
         <Headline.Medium className='text-black' text={t('veterinary-clinic')} />
@@ -51,8 +70,6 @@ function ClinicHeader() {
 
           <Label.Large className='col-span-5' text='4.5' />
         </div>
-
-        <Button className='self-end' icon={<Edit />} label={t('edit')} />
       </article>
     </section>
   )
@@ -65,11 +82,11 @@ function GeneralDescription() {
 
   return (
     <SectionCard className='col-span-2' title={t('general-description')}>
-      <div className='grid grid-cols-2 grid-rows-auto'>
+      <div className='grid grid-cols-2 grid-rows-auto gap-y-10 gap-x-32 px-[30px] py-[38px]'>
         {labels.map((value) => {
           return (
             <div className='flex items-center gap-x-[20px]'>
-              <Body.Large className='text-black' text={value} />
+              <Title.Small className='text-black' text={value} />
               <Body.Medium
                 className='text-base-neutral-gray-800'
                 text='dasnsada'
@@ -101,7 +118,7 @@ function ClinicServices() {
 
   return (
     <SectionCard title={t('services')}>
-      <div className='grid grid-cols-2 gap-y-10 grid-rows-auto'>
+      <div className='grid grid-cols-2 gap-y-10 grid-rows-auto px-[30px] py-[38px]'>
         {Object.entries(services).map(([key, value]) => {
           const { label, icon } = value
 
@@ -126,7 +143,6 @@ function CommentsAndReview() {
     {
       name: 'Juan Perez',
       veterinarian: 'Laura Mejia',
-      score: 4.5,
       review:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec velit nec.',
       kind: 'Cita',
@@ -136,14 +152,12 @@ function CommentsAndReview() {
       name: 'Juan Perez',
       veterinarian: 'Laura Mejia',
       score: 4.5,
-      review:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec velit nec.',
       kind: 'Cita',
       date: '12 de agosto, 3:00 PM',
     },
   ]
   return (
-    <SectionCard title={t('comments-reviews')}>
+    <SectionCard className='p-0' title={t('comments-reviews')}>
       {reviews.map((review) => {
         return <Review {...review} />
       })}
@@ -154,31 +168,31 @@ function CommentsAndReview() {
 function Review(props: {
   name: string
   veterinarian: string
-  score: number
+  score?: number
   kind: string
   date: string
-  review: string
+  review?: string
 }) {
   const { name, veterinarian, score, review, date } = props
 
   return (
-    <div className='grid grid-cols-4'>
-      <section className='flex flex-row gap-[10px]'>
+    <div className='grid grid-cols-4 gap-x-28 px-5 py-[15px] border-b border-b-base-neutral-gray-500'>
+      <section className='flex flex-row items-center gap-[10px]'>
         <Image className='rounded-full w-[55px] h-[55px]' />
         <Title.Small text={name} />
       </section>
 
-      <section className='flex flex-col'>
+      <section className='flex flex-col justify-center'>
         <Title.Small text={t('veterinary')} />
         <Body.Small text={veterinarian} />
       </section>
 
-      <section className='flex flex-col'>
-        <StarsReview review={score} />
-        <Body.Small className='text-black' text={review} />
+      <section className='flex flex-col justify-center'>
+        {score && <StarsReview review={score} />}
+        {review && <Body.Small className='text-black' text={review} />}
       </section>
 
-      <section className='flex flex-col'>
+      <section className='flex flex-col justify-center'>
         <Title.Small text={t('appointment')} />
         <Body.Small className='font-normal text-black' text={date} />
       </section>
@@ -237,7 +251,15 @@ function SectionCard(props: CardProps) {
         <Title.Medium className='text-black' text={title} />
       </div>
 
-      <div className='px-[30px] py-[38px]'>{children}</div>
+      {children}
     </article>
   )
+}
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: '40%',
 }

@@ -63,6 +63,8 @@
     "preventive-medicine": "Medicina Preventiva",
     "delivery": "Domicilio",
     "comments-reviews": "Comentarios y Calificaciones",
-    "veterinary": "Veterinario"
+    "veterinary": "Veterinario",
+    "schedule": "Horario",
+    "edit-clinic": "Editar Centro Veterinario"
   }
 }
