@@ -65,6 +65,9 @@
     "comments-reviews": "Comentarios y Calificaciones",
     "veterinary": "Veterinario",
     "schedule": "Horario",
-    "edit-clinic": "Editar Centro Veterinario"
+    "edit-clinic": "Editar Centro Veterinario",
+    "clinic-image": "Imágen del centro veterinario",
+    "days": "Días",
+    "hour": "Hora"
   }
 }
