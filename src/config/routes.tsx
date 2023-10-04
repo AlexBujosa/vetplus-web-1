@@ -14,6 +14,7 @@ import { StoreOutlined } from '@mui/icons-material'
 import GeneralViewPage from '@/pages/[admin]/clinic/general-info'
 import AuthLayout from '@/layout/auth'
 import Layout from '@/layout/admin'
+import NotificationsPage from '@/pages/[admin]/notifications'
 
 type Routes = {
   auth: Route
@@ -92,6 +93,11 @@ let routes: Routes = {
         icon: <StoreOutlined />,
         page: <GeneralViewPage />,
         allowedRoles: [Role.CLINIC_OWNER],
+      },
+      notifications: {
+        href: '/notifications',
+        page: <NotificationsPage />,
+        show: false,
       },
     },
   },

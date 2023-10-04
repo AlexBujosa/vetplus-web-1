@@ -1,18 +1,25 @@
 import { Body } from '@/components/typography'
 import ProfileImage from '@/components/profile-image'
+import cn from '@/utils/cn'
 
-export function Profile({
-  image,
-  profile,
-}: {
+interface Props extends React.HTMLAttributes<HTMLDivElement> {
   image?: string
   profile: string
-}) {
+}
+
+export function Profile(props: Props) {
+  const { image, profile, className } = props
+
   return (
-    <div className='flex flex-row items-center gap-x-3'>
+    <div
+      className={cn(
+        'flex flex-row items-center gap-x-3 text-base-neutral-gray-900',
+        className
+      )}
+    >
       <ProfileImage src={image} loading={image === ''} />
 
-      <Body.Medium className='text-base-neutral-gray-900' text={profile} />
+      <Body.Medium text={profile} />
     </div>
   )
 }

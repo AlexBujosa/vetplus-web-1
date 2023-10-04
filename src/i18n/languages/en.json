@@ -68,6 +68,16 @@
     "edit-clinic": "Edit Clinic",
     "clinic-image": "Clinic Image",
     "days": "Days",
-    "hour": "Hora"
+    "hour": "Hora",
+    "notifications": "Notificaciones",
+    "verified": "Verificadas",
+    "pending": "Pendientes",
+    "accepted": "Accepted",
+    "rejected": "Rejected",
+    "accept": "Accept",
+    "deny": "Deny",
+    "owner": "Owner",
+    "pet": "Pet",
+    "time": "Time"
   }
 }

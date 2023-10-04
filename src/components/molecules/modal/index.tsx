@@ -11,7 +11,7 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
 function Modal(props: Props) {
   const [value, setValue] = React.useState(0)
 
-  const { title, tabs, sections } = props
+  const { title, tabs, sections, children } = props
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
@@ -34,14 +34,15 @@ function Modal(props: Props) {
           )}
         </Box>
 
-        {sections &&
-          sections.map((section, index) => {
-            return (
-              <CustomTabPanel value={value} index={index}>
-                {section}
-              </CustomTabPanel>
-            )
-          })}
+        {sections
+          ? sections.map((section, index) => {
+              return (
+                <CustomTabPanel value={value} index={index}>
+                  {section}
+                </CustomTabPanel>
+              )
+            })
+          : children}
       </div>
     </article>
   )

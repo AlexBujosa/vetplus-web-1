@@ -25,7 +25,6 @@ import {
   TimePicker,
 } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo'
 
 export default function GeneralViewPage() {
   const { t } = useTranslation()

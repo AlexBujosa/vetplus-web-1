@@ -68,6 +68,16 @@
     "edit-clinic": "Editar Centro Veterinario",
     "clinic-image": "Imágen del centro veterinario",
     "days": "Días",
-    "hour": "Hora"
+    "hour": "Hora",
+    "notifications": "Notificaciones",
+    "verified": "Verificadas",
+    "pending": "Pendientes",
+    "accepted": "Aceptada",
+    "rejected": "Rechazada",
+    "accept": "Aceptar",
+    "deny": "Negar",
+    "owner": "Dueño",
+    "pet": "Mascota",
+    "time": "Tiempo"
   }
 }

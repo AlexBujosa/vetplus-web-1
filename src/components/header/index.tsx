@@ -13,14 +13,26 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { languages } from '@/i18n'
 import ProfileImage from '../profile-image'
+import Image from '@/components/image'
+import { NavLink } from 'react-router-dom'
+import { routes } from '@/config/routes'
 
 export default function Header() {
   return (
     <header className='flex items-center justify-between w-full h-[60px] px-8 border border-base-neutral-gray-500 bg-base-neutral-white text-base-neutral-gray-700'>
       <LanguageSwitch />
-      <div className='flex flex-row gap-x-[20px]'>
+      <div className='flex flex-row items-center gap-x-[20px]'>
         <HeaderAction icon={<ManageAccountsOutlined />} />
-        <HeaderAction icon={<NotificationsOutlined />} />
+        <NavLink
+          className={({ isActive }) =>
+            cn(
+              isActive ? 'text-base-primary-500' : 'text-base-neutral-gray-700'
+            )
+          }
+          to={routes.admin.pages.notifications.href}
+        >
+          <NotificationsOutlined />
+        </NavLink>
         <Profile />
       </div>
     </header>
@@ -69,12 +81,12 @@ function Profile() {
 
   return (
     <>
-      <img
+      <Image
         className={cn(
           'w-[35px] h-[35px] rounded-full cursor-pointer',
           loading && 'animate-pulse'
         )}
-        src={user?.image || '/images/placeholder.png'}
+        src={user?.image}
         onClick={handleClick}
       />
 

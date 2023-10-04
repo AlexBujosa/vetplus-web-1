@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 
 export default function Sidebar() {
   return (
-    <aside className='bg-base-neutral-gray-200 border-r border-r-base-neutral-gray-500 w-full max-w-[240px]'>
+    <aside className='bg-white border-r border-r-base-neutral-gray-500 w-full max-w-[240px]'>
       <div className='flex flex-col px-[20px] py-[6px] mb-[30px] h-full'>
         <Imagotipo className='mb-3' width={120} height={54} />
         <RouteOptions />
