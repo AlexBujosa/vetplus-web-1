@@ -15,6 +15,7 @@ import GeneralViewPage from '@/pages/[admin]/clinic/general-info'
 import AuthLayout from '@/layout/auth'
 import Layout from '@/layout/admin'
 import NotificationsPage from '@/pages/[admin]/notifications'
+import ProfilePage from '@/pages/[admin]/profile'
 
 type Routes = {
   auth: Route
@@ -98,6 +99,11 @@ let routes: Routes = {
         href: '/notifications',
         page: <NotificationsPage />,
         show: false,
+      },
+      'user-profile': {
+        show: false,
+        href: '/user-profile',
+        page: <ProfilePage />,
       },
     },
   },

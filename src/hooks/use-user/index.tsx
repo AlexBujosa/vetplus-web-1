@@ -19,7 +19,7 @@ export default function useUser() {
     })
 
     if (data) {
-      setUser(data.getMyProfile)
+      setUser(user)
     }
 
     return { data: data?.getMyProfile, loading }
