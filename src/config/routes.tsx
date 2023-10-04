@@ -11,7 +11,7 @@ import ForgotPassword from '@/pages/[auth]/forgot-password'
 import { Navigate } from 'react-router'
 import Login from '@/pages/[auth]/login'
 import { StoreOutlined } from '@mui/icons-material'
-import GeneralViewPage from '@/pages/[admin]/clinic/general-view'
+import GeneralViewPage from '@/pages/[admin]/clinic/general-info'
 import AuthLayout from '@/layout/auth'
 import Layout from '@/layout/admin'
 
