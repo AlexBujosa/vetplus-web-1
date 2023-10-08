@@ -1,54 +1,45 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate, useParams } from 'react-router-dom'
-
 import Button from '@/components/button'
 import ProfileImage from '@/components/profile-image'
 import StarsReview from '@/components/stars-review'
 import StatusBadge from '@/components/status-badge'
 import { Body, Headline, Title } from '@/components/typography'
-import { useClinic } from '@/hooks/use-clinic'
-import { Employee } from '@/hooks/use-clinic/employeesAtom'
-import { KeyboardBackspace, PersonOutlined, Edit } from '@mui/icons-material'
-import { Box, IconButton, Modal } from '@mui/material'
+import { PersonOutlined, Edit } from '@mui/icons-material'
+import { Box, Modal } from '@mui/material'
 import EmployeeModal from '@/components/molecules/employee-modal'
-import { routes } from '@/config/routes'
+import { useAtom } from 'jotai'
+import { userAtom } from '@/hooks/use-user/userAtom'
+import { roleAtom } from '@/hooks/use-auth/roleAtom'
 
-export default function EmployeesDetailPage() {
-  const params = useParams()
-  const { email } = params
-  const { findEmployeeByEmail } = useClinic()
-  const selectedEmployee = findEmployeeByEmail(email!)
-
-  if (!selectedEmployee) return null
-
+export default function ProfilePage() {
   return (
     <main className='flex flex-col gap-y-[60px]'>
-      <EmployeeHeader employee={selectedEmployee} />
-      <GeneralDescription employee={selectedEmployee} />
+      <Header />
+      <GeneralDescription />
     </main>
   )
 }
 
-function EmployeeHeader({ employee }: { employee: Employee }) {
+function Header() {
+  const [user] = useAtom(userAtom)
+
   const [open, setOpen] = useState(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
-  const navigate = useNavigate()
   const { t } = useTranslation()
+
+  if (!user) return null
+
+  const { names, surnames } = user
+  const fullName = `${names} ${surnames}`
 
   return (
     <section className='flex flex-col gap-y-7'>
-      <div className='flex flex-row gap-x-[20px]'>
-        <IconButton
-          onClick={() => navigate(routes.admin.pages.employees.href)}
-          children={<KeyboardBackspace className='text-black' />}
-        />
-        <Headline.Medium text={employee.fullName} />
-      </div>
+      <Headline.Medium text={fullName} />
 
       <div className='flex flex-row items-center justify-between gap-x-5'>
-        <ProfileWithRole image={employee.image} />
+        <ProfileWithRole image={user.image} />
 
         <Button
           onClick={handleOpen}
@@ -69,6 +60,7 @@ function EmployeeHeader({ employee }: { employee: Employee }) {
 
 function ProfileWithRole({ image }: { image: string }) {
   const { t } = useTranslation()
+  const [role] = useAtom(roleAtom)
 
   return (
     <div className='flex flex-row gap-x-[10px] items-center'>
@@ -80,13 +72,22 @@ function ProfileWithRole({ image }: { image: string }) {
 
       <span className='flex flex-row gap-x-[6px] p-[10px] border border-base-neutral-gray-500 text-base-neutral-gray-800'>
         <PersonOutlined />
-        <Body.Large text={t('employee')} />
+        <Body.Large text={role as string} />
       </span>
     </div>
   )
 }
 
-function GeneralDescription({ employee }: { employee: Employee }) {
+function GeneralDescription() {
+  const employee = {
+    email: 'Lauramejia@gmail.com',
+    telephoneNumber: '402-74387672-12',
+    address: 'Av. Núñez de Cáceres 593, Santo Domingo 10133',
+    specialty: 'Cirugia',
+    score: 4.5,
+    status: true,
+  }
+
   const { email, telephoneNumber, address, specialty, score, status } = employee
   const { t } = useTranslation()
 

@@ -9,13 +9,13 @@ import {
 
 type Option = {
   label: string
-  value: string | undefined
+  value?: string
 }
 
 interface Props {
   label?: string
   options: Option[]
-  value: string | undefined
+  value?: string
   onChange: (event: SelectChangeEvent) => void
 }
 

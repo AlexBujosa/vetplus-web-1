@@ -1,31 +1,35 @@
-import { Navigate, Route, Routes } from 'react-router-dom'
-
-import AuthLayout from '@/layout/auth'
-import Layout from '@/layout/admin'
-import { routes, authRoutes } from '@/config/routes'
-
+import { Route, Routes } from 'react-router-dom'
+import { routes } from '@/config/routes'
 import './index.css'
 import '@/i18n/'
+import { RolesAuthRoute } from './layout/roles'
 
 export default function App() {
   return (
     <Routes>
-      <Route element={<AuthLayout />}>
-        {authRoutes.map((route) => {
-          return (
-            <Route key={route.href} path={route.href} element={route.page} />
-          )
-        })}
-      </Route>
+      {Object.entries(routes).map(([key, value]) => {
+        const { layout, pages } = value
+        return (
+          <Route key={key} element={layout}>
+            {Object.entries(pages).map(([key, value]) => {
+              const { href, page, allowedRoles } = value
 
-      <Route element={<Layout />}>
-        {routes.map((route) => {
-          return (
-            <Route key={route.href} path={route.href} element={route.page} />
-          )
-        })}
-        <Route path='*' element={<Navigate to='/admin' />} />
-      </Route>
+              if (!allowedRoles) {
+                return <Route key={key} path={href} element={page} />
+              }
+
+              return (
+                <Route
+                  key={key}
+                  element={<RolesAuthRoute allowedRoles={allowedRoles} />}
+                >
+                  <Route path={href} element={page} />
+                </Route>
+              )
+            })}
+          </Route>
+        )
+      })}
     </Routes>
   )
 }
