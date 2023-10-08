@@ -16,6 +16,7 @@ import AuthLayout from '@/layout/auth'
 import Layout from '@/layout/admin'
 import NotificationsPage from '@/pages/[admin]/notifications'
 import ProfilePage from '@/pages/[admin]/profile'
+import AppointmentsPage from '@/pages/[admin]/appointments'
 
 type Routes = {
   auth: Route
@@ -74,6 +75,7 @@ let routes: Routes = {
       },
       appointments: {
         href: '/appointments',
+        page: <AppointmentsPage />,
         icon: <EventOutlinedIcon />,
         allowedRoles,
       },
