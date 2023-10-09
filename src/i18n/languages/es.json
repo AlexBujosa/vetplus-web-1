@@ -78,6 +78,7 @@
     "deny": "Negar",
     "owner": "Dueño",
     "pet": "Mascota",
-    "time": "Tiempo"
+    "time": "Tiempo",
+    "today": "Hoy"
   }
 }

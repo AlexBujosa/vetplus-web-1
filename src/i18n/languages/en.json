@@ -78,6 +78,7 @@
     "deny": "Deny",
     "owner": "Owner",
     "pet": "Pet",
-    "time": "Time"
+    "time": "Time",
+    "today": "Today"
   }
 }

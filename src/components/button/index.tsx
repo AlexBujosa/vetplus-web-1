@@ -29,6 +29,7 @@ const button = cva(
           'border',
           'border-base-primary-500',
         ],
+        tertiary: ['bg-none', 'hover:bg-base-neutral-gray-400'],
       },
       size: {
         small: ['text-md', 'py-[10px]', 'px-2', 'h-[50px]'],
@@ -46,7 +47,7 @@ interface Props
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof button>,
     React.PropsWithChildren {
-  label: string
+  label?: string
   loading?: boolean
   icon?: React.ReactNode
 }
@@ -59,7 +60,7 @@ export default function Button(props: Props) {
     <button className={cn(button({ intent, size, className }))} {...rest}>
       <ButtonContent
         icon={icon}
-        label={label}
+        label={label!}
         loading={loading}
         children={children}
       />
