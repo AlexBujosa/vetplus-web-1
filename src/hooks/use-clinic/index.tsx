@@ -6,7 +6,8 @@ import {
 import { useQuery } from '@apollo/client'
 import { useAtom } from 'jotai'
 import { Employee, employeesAtom } from './employeesAtom'
-import request from '@/utils/request'
+import client from '@/utils/apolloClient'
+import { Clinic } from '@/types/clinic'
 
 export function useClinic() {
   const [currentEmployees] = useAtom(employeesAtom)
@@ -59,13 +60,8 @@ export function useClinic() {
     }
   }
 
-  function getMyClients() {
-    const { data, loading } = useQuery(GET_ALL_CLIENTS)
-
-    return {
-      data,
-      loading,
-    }
+  async function getMyClients() {
+    return await client.request<any>(GET_ALL_CLIENTS)
   }
 
   function findEmployeeByEmail(email: string): Employee | undefined {
@@ -81,7 +77,7 @@ export function useClinic() {
   }
 
   async function getMyClinic() {
-    return await request(GET_MY_CLINIC)
+    return await client.request<Clinic>(GET_MY_CLINIC)
   }
 
   return {

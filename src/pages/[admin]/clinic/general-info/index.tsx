@@ -68,12 +68,6 @@ export default function GeneralViewPage() {
 
 function ClinicHeader() {
   const { t } = useTranslation()
-  const { getMyClinic } = useClinic()
-
-  const { data: clinic } = useQuery({
-    queryKey: ['clinic'],
-    queryFn: getMyClinic,
-  })
 
   return (
     <section className='flex flex-row gap-x-[10px]'>

@@ -1,28 +1,23 @@
 import { GET_MY_PROFILE, GET_USER_ROLE } from '@/graphql/user'
 import { useAtom } from 'jotai'
 import { userAtom } from './userAtom'
-import { useQuery } from '@apollo/client'
-import { Role } from '@/types/role'
+import client from '@/utils/apolloClient'
 
 export default function useUser() {
   const [user, setUser] = useAtom(userAtom)
 
-  function getUserRole(): { role: Role; loading: boolean } {
-    const { data, loading } = useQuery(GET_USER_ROLE)
-
-    return { role: data?.getMyProfile.role, loading }
+  async function getUserRole(): Promise<any> {
+    return await client.request(GET_USER_ROLE)
   }
 
-  function getUserProfile() {
-    const { data, loading } = useQuery(GET_MY_PROFILE, {
-      skip: user !== undefined,
-    })
+  async function getUserProfile(): Promise<any> {
+    const data = await client.request(GET_MY_PROFILE)
 
     if (data) {
       setUser(user)
     }
 
-    return { data: data?.getMyProfile, loading }
+    return data
   }
 
   return { getUserRole, getUserProfile }
