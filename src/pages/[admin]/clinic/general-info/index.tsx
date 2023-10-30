@@ -25,6 +25,9 @@ import {
   TimePicker,
 } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { useClinic } from '@/hooks/use-clinic'
+import { useQuery } from '@tanstack/react-query'
+import { Clinic } from '@/types/clinic'
 
 export default function GeneralViewPage() {
   const { t } = useTranslation()
@@ -65,13 +68,22 @@ export default function GeneralViewPage() {
 
 function ClinicHeader() {
   const { t } = useTranslation()
+  const { getMyClinic } = useClinic()
+
+  const { data: clinic } = useQuery({
+    queryKey: ['clinic'],
+    queryFn: getMyClinic,
+  })
 
   return (
     <section className='flex flex-row gap-x-[10px]'>
       <Image className='w-1/5 rounded-lg' />
 
       <article className='flex flex-col justify-between'>
-        <Headline.Medium className='text-black' text={t('veterinary-clinic')} />
+        <Headline.Medium
+          className='text-black'
+          text={clinic?.name ?? t('veterinary-clinic')}
+        />
 
         <div className='grid items-center grid-cols-6 grid-rows-2 text-base-neutral-gray-800'>
           <LocationOnOutlined />
@@ -80,7 +92,7 @@ function ClinicHeader() {
 
           <Star className='text-yellow-500' />
 
-          <Label.Large className='col-span-5' text='4.5' />
+          <Label.Large className='col-span-5' text={'4.5'} />
         </div>
       </article>
     </section>

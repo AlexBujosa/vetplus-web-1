@@ -1,7 +1,12 @@
-import { GET_ALL_CLIENTS, GET_MY_EMPLOYEES } from '@/graphql/clinic'
+import {
+  GET_ALL_CLIENTS,
+  GET_MY_CLINIC,
+  GET_MY_EMPLOYEES,
+} from '@/graphql/clinic'
 import { useQuery } from '@apollo/client'
 import { useAtom } from 'jotai'
 import { Employee, employeesAtom } from './employeesAtom'
+import request from 'graphql-request'
 
 export function useClinic() {
   const [currentEmployees] = useAtom(employeesAtom)
@@ -57,8 +62,6 @@ export function useClinic() {
   function getMyClients() {
     const { data, loading } = useQuery(GET_ALL_CLIENTS)
 
-    console.log(data)
-
     return {
       data,
       loading,
@@ -77,7 +80,18 @@ export function useClinic() {
     return selectedEmployee
   }
 
+  async function getMyClinic() {
+    return await request(
+      import.meta.env.VITE_GRAPHQL_ENDPOINT!,
+      GET_MY_CLINIC,
+      {
+        first: 10,
+      }
+    )
+  }
+
   return {
+    getMyClinic,
     getMyEmployees,
     getMyClients,
     findEmployeeByEmail,

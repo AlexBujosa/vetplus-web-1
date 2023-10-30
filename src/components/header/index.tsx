@@ -16,6 +16,9 @@ import ProfileImage from '../profile-image'
 import Image from '@/components/image'
 import { NavLink } from 'react-router-dom'
 import { routes } from '@/config/routes'
+import dayjs from 'dayjs'
+import('dayjs/locale/es')
+import('dayjs/locale/en')
 
 export default function Header() {
   return (
@@ -54,6 +57,7 @@ function LanguageSwitch() {
   const handleLanguageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newLanguage = event.target.checked ? languages[1] : languages[0]
     i18n.changeLanguage(newLanguage)
+    dayjs.locale(i18n.language)
   }
 
   return (

@@ -7,6 +7,8 @@ import useCalendar from '@/hooks/use-calendar'
 import { ChevronLeft, ChevronRight } from '@mui/icons-material'
 import dayjs, { type Dayjs } from 'dayjs'
 import { getWeekdayInLocale } from '@/utils'
+import { useAtomValue } from 'jotai'
+import { currentMonthAtom, monthAtom } from '@/hooks/use-calendar/monthAtom'
 
 export default function AppointmentsPage() {
   const { t } = useTranslation()
@@ -24,9 +26,64 @@ export default function AppointmentsPage() {
 }
 
 function SideSection() {
+  const currentMonthIdx = useAtomValue(monthAtom)
+  const currentMonth = useAtomValue(currentMonthAtom)
+
+  const { handlePrevMonth, handleNextMonth } = useCalendar()
+
   return (
     <aside className='col-span-2 border-r-2 border-r-base-neutral-gray-600'>
-      <div className='w-full h-full' />
+      <div className='w-full h-full'>
+        <div className='mt-9'>
+          <header className='flex flex-row items-center justify-between'>
+            <p className='font-bold text-gray-500'>
+              {dayjs(new Date(dayjs().year(), currentMonthIdx)).format(
+                'MMMM YYYY'
+              )}
+            </p>
+
+            <aside className='flex flex-row items-center'>
+              <Button
+                className='text-base-primary-500'
+                intent='tertiary'
+                onClick={handlePrevMonth}
+                icon={<ChevronLeft />}
+              />
+              <Button
+                className='text-base-primary-500'
+                intent='tertiary'
+                onClick={handleNextMonth}
+                icon={<ChevronRight />}
+              />
+            </aside>
+          </header>
+          <div className='grid grid-cols-7 grid-rows-6'>
+            {currentMonth[0].map((day, i) => (
+              <span
+                key={i}
+                className='py-1 text-sm text-center select-none text-base-primary-600'
+              >
+                {day.format('dd').charAt(0)}
+              </span>
+            ))}
+            {currentMonth.map((row, i) => (
+              <>
+                {row.map((day, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      null
+                    }}
+                    className='w-full py-1 rounded-full hover:bg-base-neutral-gray-500'
+                  >
+                    <span className='text-sm'>{day.format('D')}</span>
+                  </button>
+                ))}
+              </>
+            ))}
+          </div>
+        </div>
+      </div>
 
       <IncomingAppointments />
     </aside>
@@ -73,20 +130,15 @@ function AppointmentsList(props: { appointments: any }) {
 
   return (
     <>
-      {/* {Object.entries(appointments).map((appointment, index) => {
+      {Object.entries(appointments).map((appointment, index) => {
         return (
           <article key={index} className='flex flex-col gap-y-3'>
             <div className='flex flex-row'>
-              <div
-                className={cn(
-                  'w-[6px] h-[6px]',
-                  randomBackgroundColorClassName
-                )}
-              />
+              <div className={cn('w-[6px] h-[6px]')} />
             </div>
           </article>
         )
-      })} */}
+      })}
     </>
   )
 }
@@ -129,7 +181,7 @@ function CalendarHeader() {
         icon={<ChevronRight />}
       />
 
-      <Label.ExtraLarge text={getDateString()} />
+      <Label.ExtraLarge className='select-none' text={getDateString()} />
     </header>
   )
 }
@@ -142,10 +194,10 @@ function CalendarWeek() {
   return (
     <div className='grid flex-1 grid-cols-7'>
       <aside className='flex flex-col'>
-        <div className='h-[66px]' />
-        {intervals.map((interval) => {
+        <div className='h-[60px]' />
+        {intervals.map((interval, index) => {
           return (
-            <span className='flex items-start justify-end h-[66px]'>
+            <span key={index} className='flex items-start justify-end h-[60px]'>
               <Body.Small
                 className='mx-3 text-base-neutral-gray-800'
                 key={interval}
@@ -176,9 +228,17 @@ function CalendarWeek() {
               </header>
 
               {intervals.map((interval) => {
+                const now = dayjs()
+                const actualHour = now.hour()
+                const intervalHour = dayjs(interval, 'h A').hour()
+
+                const isBetweenInterval = actualHour === intervalHour
+
                 return (
                   <div className='h-[60px] border border-base-neutral-gray-600'>
-                    <TimeBadge time={dayjs()} procedure='Vacuna' />
+                    {isBetweenInterval && (
+                      <TimeBadge time={now} procedure='Vacuna' />
+                    )}
                   </div>
                 )
               })}
@@ -224,28 +284,14 @@ function generateTimeIntervals(startHour: number = 7, endHour: number = 18) {
 
 function TimeBadge(props: { time: Dayjs; procedure: string }) {
   const { time, procedure } = props
-  const timeString = time.format('h:HH A')
-
-  const colors = ['base-primary', 'slate', 'pink']
-
-  const colorsArrayRandomIndex = Math.floor(Math.random() * colors.length)
-  const randomColor = colors[colorsArrayRandomIndex]
-  const randomTextColorClassName = `text-${randomColor}-700`
-  const randomBackgroundColorClassName = `bg-${randomColor}-50`
-  const randomLeftBorderClassName = `bg-${randomColor}-500`
+  const timeString = time.format('h:mm A')
 
   return (
-    <span
-      className={cn(
-        'h-full flex rounded-l-md border-l',
-        randomTextColorClassName,
-        randomBackgroundColorClassName
-      )}
-    >
+    <span className='flex h-full border-l rounded-l-md'>
       <div
         className={cn(
           'w-1 h-full mr-[6px] rounded-l-lg',
-          randomLeftBorderClassName
+          'bg-base-primary-700'
         )}
       />
 

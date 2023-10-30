@@ -34,10 +34,20 @@ export const GET_MY_CLINIC = gql`
       name
       telephone_number
       google_maps_url
+      email
+      image
       address
       created_at
       updated_at
       status
+      services
+      ClinicSummaryScore {
+        total_points
+        total_users
+      }
+      schedule {
+        nonWorkingDays
+      }
     }
   }
 `
