@@ -61,12 +61,6 @@ let routes: Routes = {
   admin: {
     layout: <Layout />,
     pages: {
-      dashboard: {
-        href: '/dashboard',
-        page: <DashboardPage />,
-        icon: <HomeIcon />,
-        allowedRoles,
-      },
       clients: {
         href: '/clients',
         page: <ClientsPage />,

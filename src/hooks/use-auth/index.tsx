@@ -39,7 +39,7 @@ export default function useAuth() {
       throw new Error('Forbidden error')
     }
 
-    navigate(routes.admin.pages.dashboard.href)
+    navigate(routes.admin.pages.clients.href)
   }
 
   function logout() {

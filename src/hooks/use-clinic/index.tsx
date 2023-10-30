@@ -6,7 +6,7 @@ import {
 import { useQuery } from '@apollo/client'
 import { useAtom } from 'jotai'
 import { Employee, employeesAtom } from './employeesAtom'
-import request from 'graphql-request'
+import request from '@/utils/request'
 
 export function useClinic() {
   const [currentEmployees] = useAtom(employeesAtom)
@@ -81,13 +81,7 @@ export function useClinic() {
   }
 
   async function getMyClinic() {
-    return await request(
-      import.meta.env.VITE_GRAPHQL_ENDPOINT!,
-      GET_MY_CLINIC,
-      {
-        first: 10,
-      }
-    )
+    return await request(GET_MY_CLINIC)
   }
 
   return {

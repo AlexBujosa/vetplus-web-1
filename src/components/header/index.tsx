@@ -68,18 +68,15 @@ function LanguageSwitch() {
     </Stack>
   )
 }
-function HeaderAction({ icon }: { icon: React.ReactNode }) {
-  return <button>{icon}</button>
-}
 
 function Profile() {
   const { getUserProfile } = useUser()
 
   const { data: user, loading } = getUserProfile()
 
-  const [anchorEl, setAnchorEl] = React.useState<HTMLImageElement | null>(null)
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
 
-  const handleClick = (event: React.MouseEvent<HTMLImageElement>) => {
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
   }
 
@@ -90,18 +87,17 @@ function Profile() {
   const open = Boolean(anchorEl)
   const id = open ? 'simple-popover' : undefined
 
-  const { t } = useTranslation()
-
   return (
     <>
-      <Image
-        className={cn(
-          'w-[35px] h-[35px] rounded-full cursor-pointer',
-          loading && 'animate-pulse'
-        )}
-        src={user?.image}
-        onClick={handleClick}
-      />
+      <button aria-describedby={id} onClick={handleClick}>
+        <Image
+          className={cn(
+            'w-[35px] h-[35px] rounded-full cursor-pointer',
+            loading && 'animate-pulse'
+          )}
+          src={user?.image}
+        />
+      </button>
 
       <Popover
         id={id}
@@ -116,7 +112,9 @@ function Profile() {
         <Box sx={{ borderRadius: '8px' }}>
           <Box sx={{ p: 1.6 }}>
             <section className='flex flex-col gap-y-5'>
-              <Label.Large text={t('veterinary-clinic')} />
+              <Label.Large
+                text={`${user?.names} ${user?.surnames}` ?? 'User Name'}
+              />
 
               <ProfileWithName />
             </section>

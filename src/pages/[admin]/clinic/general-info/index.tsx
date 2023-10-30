@@ -26,7 +26,7 @@ import {
 } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { useClinic } from '@/hooks/use-clinic'
-import { useQuery } from '@tanstack/react-query'
+import { UseQueryResult, useQuery } from '@tanstack/react-query'
 import { Clinic } from '@/types/clinic'
 
 export default function GeneralViewPage() {
@@ -80,10 +80,7 @@ function ClinicHeader() {
       <Image className='w-1/5 rounded-lg' />
 
       <article className='flex flex-col justify-between'>
-        <Headline.Medium
-          className='text-black'
-          text={clinic?.name ?? t('veterinary-clinic')}
-        />
+        <Headline.Medium className='text-black' text={t('veterinary-clinic')} />
 
         <div className='grid items-center grid-cols-6 grid-rows-2 text-base-neutral-gray-800'>
           <LocationOnOutlined />
