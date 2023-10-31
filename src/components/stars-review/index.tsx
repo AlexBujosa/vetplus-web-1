@@ -17,8 +17,8 @@ export default function StarsReview(props: Props) {
 
   return (
     <div className={cn(className, 'flex flex-row')}>
-      {[...Array(fullStars)].map(() => (
-        <StarIcon className='text-base-orange-500' />
+      {[...Array(fullStars)].map((index) => (
+        <StarIcon key={index} className='text-base-orange-500' />
       ))}
 
       {hasHalfStar && <StarHalfIcon className='text-base-orange-500' />}

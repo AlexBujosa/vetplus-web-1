@@ -11,6 +11,7 @@ import { useAtom } from 'jotai'
 import { Employee, employeesAtom } from '@/hooks/use-clinic/employeesAtom'
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useQuery } from '@tanstack/react-query'
 
 export default function EmployeesPage() {
   const { t } = useTranslation()
@@ -52,9 +53,12 @@ function EmployeesTable() {
   ]
 
   const { getMyEmployees } = useClinic()
-  const { data, loading } = getMyEmployees()
-  const [currentEmployees, setCurrentEmployees] = useAtom(employeesAtom)
-  const rows = !data ? TableLoadingRows() : EmployeesRowsValues(data)
+  const { data, isLoading: loading } = useQuery({
+    queryKey: ['employees'],
+    queryFn: getMyEmployees,
+  })
+
+  const rows = loading ? TableLoadingRows() : EmployeesRowsValues(data ?? [])
 
   function TableLoadingRows(): Row[] {
     return [
@@ -65,19 +69,15 @@ function EmployeesTable() {
     ]
   }
 
-  useEffect(() => {
-    if (data !== currentEmployees) setCurrentEmployees(data)
-  }, [loading])
-
   return <Table columns={columns} rows={rows} />
 }
 
 function EmployeesRowsValues(employees: Employee[]): Row[] {
   return employees.map((employee) => {
-    const { fullName, email, specialty, status, score } = employee
+    const { fullName, email, specialty, status, score, image } = employee
 
     const values = [
-      <Profile profile={fullName} image={undefined} />,
+      <Profile profile={fullName} image={image} />,
       <Body.Medium className='text-base-neutral-gray-900' text={email} />,
       <Body.Medium className='text-base-neutral-gray-900' text={specialty} />,
       <StatusBadge status={status} />,

@@ -1,17 +1,18 @@
 import Input from '@/components/input'
-import { Title } from '@/components/typography'
+import { Body, Title } from '@/components/typography'
 import { SearchOutlined } from '@mui/icons-material'
-import { InputAdornment, Skeleton } from '@mui/material'
+import { Avatar, AvatarGroup, InputAdornment, Skeleton } from '@mui/material'
 import Table, { Row } from '@/components/table'
 import { useTranslation } from 'react-i18next'
 import { useClinic } from '@/hooks/use-clinic'
 import { useQuery } from '@tanstack/react-query'
+import { Profile } from '@/components/profile'
 
 export default function ClientsPage() {
   const { t } = useTranslation()
   const { getMyClients } = useClinic()
 
-  const { data: clients } = useQuery({
+  const { data: clients, isLoading } = useQuery({
     queryKey: ['clients'],
     queryFn: getMyClients,
   })
@@ -24,7 +25,7 @@ export default function ClientsPage() {
     t('last-appointment'),
   ]
 
-  const rows = TableLoadingRows()
+  const rows = isLoading ? TableLoadingRows() : ClientsRowValues(clients)
 
   function TableLoadingRows(): Row[] {
     return [
@@ -35,24 +36,28 @@ export default function ClientsPage() {
     ]
   }
 
-  // function ClientsRowValues(client: any[]): Row[] {
-  //   return client.map((employee) => {
-  //     const { fullName, email, specialty, status, score } = employee
+  function ClientsRowValues(clients: any[]): Row[] {
+    return clients.map((client) => {
+      const { User } = client
+      const { names, surnames, email, image, telephone_number } = User
 
-  //     const values = [
-  //       <Profile profile={fullName} image={undefined} />,
-  //       <Body.Medium className='text-base-neutral-gray-900' text={email} />,
-  //       <Body.Medium className='text-base-neutral-gray-900' text={specialty} />,
-  //       <StatusBadge status={status} />,
-  //       <StarsReview review={score} />,
-  //     ]
+      const values = [
+        <Profile profile={`${names} ${surnames}`} image={image} />,
+        <Body.Medium className='text-base-neutral-gray-900' text={email} />,
+        <Pets />,
+        <Body.Medium
+          className='text-base-neutral-gray-900'
+          text={telephone_number ?? 'N/A'}
+        />,
+        <Body.Medium className='text-base-neutral-gray-900' text={'N/A'} />,
+      ]
 
-  //     return {
-  //       key: email,
-  //       values,
-  //     }
-  //   })
-  // }
+      return {
+        key: email,
+        values,
+      }
+    })
+  }
 
   return (
     <>
@@ -76,21 +81,21 @@ export default function ClientsPage() {
   )
 }
 
-// function Pets() {
-//   const pets = ['Firu', 'Scott', 'Firu2', 'a']
+function Pets() {
+  const pets = ['Firu', 'Scott', 'Firu2', 'a']
 
-//   return (
-//     <AvatarGroup max={4}>
-//       {pets.map((pet) => {
-//         return (
-//           <Avatar
-//             key={pet}
-//             className='w-8 h-8'
-//             alt={pet}
-//             src='/images/placeholder.png'
-//           />
-//         )
-//       })}
-//     </AvatarGroup>
-//   )
-// }
+  return (
+    <AvatarGroup max={4}>
+      {pets.map((pet) => {
+        return (
+          <Avatar
+            key={pet}
+            className='w-8 h-8'
+            alt={pet}
+            src='/images/placeholder.png'
+          />
+        )
+      })}
+    </AvatarGroup>
+  )
+}

@@ -3,7 +3,6 @@ import {
   GET_MY_CLINIC,
   GET_MY_EMPLOYEES,
 } from '@/graphql/clinic'
-import { useQuery } from '@apollo/client'
 import { useAtom } from 'jotai'
 import { Employee, employeesAtom } from './employeesAtom'
 import client from '@/utils/apolloClient'
@@ -12,13 +11,10 @@ import { Clinic } from '@/types/clinic'
 export function useClinic() {
   const [currentEmployees] = useAtom(employeesAtom)
 
-  function getMyEmployees(): {
-    data?: Employee[]
-    loading: boolean
-  } {
-    const { data, loading } = useQuery(GET_MY_EMPLOYEES)
+  async function getMyEmployees(): Promise<Employee[]> {
+    const { getMyEmployees } = await client.request<any>(GET_MY_EMPLOYEES)
 
-    const employees = data?.getMyEmployees.ClinicEmployees.map(
+    const employees = getMyEmployees.ClinicEmployees.map(
       (employeeObject: any): Employee => {
         const { Employee, status } = employeeObject
         const {
@@ -54,14 +50,12 @@ export function useClinic() {
       }
     )
 
-    return {
-      data: employees,
-      loading,
-    }
+    return employees
   }
 
   async function getMyClients() {
-    return await client.request<any>(GET_ALL_CLIENTS)
+    const { getAllClients } = await client.request<any>(GET_ALL_CLIENTS)
+    return getAllClients
   }
 
   function findEmployeeByEmail(email: string): Employee | undefined {
@@ -77,7 +71,9 @@ export function useClinic() {
   }
 
   async function getMyClinic() {
-    return await client.request<Clinic>(GET_MY_CLINIC)
+    const request = await client.request<Clinic>(GET_MY_CLINIC)
+
+    return request
   }
 
   return {

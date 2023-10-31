@@ -17,6 +17,7 @@ import Image from '@/components/image'
 import { NavLink } from 'react-router-dom'
 import { routes } from '@/config/routes'
 import dayjs from 'dayjs'
+import { useQuery } from '@tanstack/react-query'
 import('dayjs/locale/es')
 import('dayjs/locale/en')
 
@@ -72,7 +73,10 @@ function LanguageSwitch() {
 function Profile() {
   const { getUserProfile } = useUser()
 
-  const { data: user, loading } = getUserProfile()
+  const { data: user, isLoading: loading } = useQuery({
+    queryKey: ['profile'],
+    queryFn: getUserProfile,
+  })
 
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
 
@@ -112,10 +116,6 @@ function Profile() {
         <Box sx={{ borderRadius: '8px' }}>
           <Box sx={{ p: 1.6 }}>
             <section className='flex flex-col gap-y-5'>
-              <Label.Large
-                text={`${user?.names} ${user?.surnames}` ?? 'User Name'}
-              />
-
               <ProfileWithName />
             </section>
           </Box>
