@@ -7,7 +7,6 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Skeleton,
 } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 
@@ -25,13 +24,11 @@ export default function Table(props: Props) {
   const { columns, rows } = props
   const navigate = useNavigate()
 
-  // If no rows are provided, load the TableLoadingRows
   if (!rows || rows.length === 0) {
     return (
       <TableContainer component={Paper}>
         <MuiTable sx={{ minWidth: 650 }}>
           <TableHeader columns={columns} />
-          <TableLoadingRows columns={columns} />
         </MuiTable>
       </TableContainer>
     )
@@ -86,15 +83,4 @@ function Body(props: { rows: Row[]; navigate: any }) {
       ))}
     </TableBody>
   )
-}
-
-function TableLoadingRows(props: { columns: any[] }): Row[] {
-  const { columns } = props
-
-  return [
-    {
-      key: '',
-      values: [...Array(columns.length)].map(() => <Skeleton />),
-    },
-  ]
 }

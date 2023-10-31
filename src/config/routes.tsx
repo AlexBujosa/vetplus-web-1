@@ -1,9 +1,7 @@
 import { Role } from '@/types/role'
-import HomeIcon from '@mui/icons-material/Home'
 import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined'
 import EventOutlinedIcon from '@mui/icons-material/EventOutlined'
 import PeopleOutlineOutlinedIcon from '@mui/icons-material/PeopleOutlineOutlined'
-import DashboardPage from '@/pages/[admin]'
 import ClientsPage from '@/pages/[admin]/clients'
 import EmployeesPage from '@/pages/[admin]/employees'
 import EmployeesDetailPage from '@/pages/[admin]/employees/detail-page'
@@ -17,6 +15,7 @@ import Layout from '@/layout/admin'
 import NotificationsPage from '@/pages/[admin]/notifications'
 import ProfilePage from '@/pages/[admin]/profile'
 import AppointmentsPage from '@/pages/[admin]/appointments'
+import ClientsDetailPage from '@/pages/[admin]/clients/detail-page'
 
 type Routes = {
   auth: Route
@@ -65,6 +64,12 @@ let routes: Routes = {
         href: '/clients',
         page: <ClientsPage />,
         icon: <PeopleOutlineOutlinedIcon />,
+        allowedRoles,
+      },
+      'clients-detail': {
+        show: false,
+        href: '/clients/:email',
+        page: <ClientsDetailPage />,
         allowedRoles,
       },
       appointments: {

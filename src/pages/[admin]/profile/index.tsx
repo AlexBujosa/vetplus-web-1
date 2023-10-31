@@ -11,6 +11,7 @@ import EmployeeModal from '@/components/molecules/employee-modal'
 import { useAtom } from 'jotai'
 import { userAtom } from '@/hooks/use-user/userAtom'
 import { roleAtom } from '@/hooks/use-auth/roleAtom'
+import { Role } from '@/types/role'
 
 export default function ProfilePage() {
   return (
@@ -23,6 +24,7 @@ export default function ProfilePage() {
 
 function Header() {
   const [user] = useAtom(userAtom)
+  const [role] = useAtom(roleAtom)
 
   const [open, setOpen] = useState(false)
   const handleOpen = () => setOpen(true)
@@ -30,6 +32,7 @@ function Header() {
   const { t } = useTranslation()
 
   if (!user) return null
+  if (!role) return null
 
   const { names, surnames } = user
   const fullName = `${names} ${surnames}`
@@ -39,7 +42,7 @@ function Header() {
       <Headline.Medium text={fullName} />
 
       <div className='flex flex-row items-center justify-between gap-x-5'>
-        <ProfileWithRole image={user.image} />
+        <ProfileWithRole image={user.image} role={role} />
 
         <Button
           onClick={handleOpen}
@@ -58,9 +61,14 @@ function Header() {
   )
 }
 
-function ProfileWithRole({ image }: { image: string }) {
+export function ProfileWithRole({
+  image,
+  role,
+}: {
+  image: string
+  role: Role
+}) {
   const { t } = useTranslation()
-  const [role] = useAtom(roleAtom)
 
   return (
     <div className='flex flex-row gap-x-[10px] items-center'>
