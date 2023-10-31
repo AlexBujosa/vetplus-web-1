@@ -5,11 +5,16 @@ import { InputAdornment, Skeleton } from '@mui/material'
 import Table, { Row } from '@/components/table'
 import { useTranslation } from 'react-i18next'
 import { useClinic } from '@/hooks/use-clinic'
+import { useQuery } from '@tanstack/react-query'
 
 export default function ClientsPage() {
   const { t } = useTranslation()
-  // const { getMyClients } = useClinic()
-  // const { data, loading } = getMyClients()
+  const { getMyClients } = useClinic()
+
+  const { data: clients } = useQuery({
+    queryKey: ['clients'],
+    queryFn: getMyClients,
+  })
 
   const columns = [
     t('clients'),
