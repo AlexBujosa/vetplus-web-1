@@ -6,7 +6,6 @@ import { allowedRoles, routes } from '@/config/routes'
 import { useSetAtom } from 'jotai'
 import { roleAtom } from './roleAtom'
 import { useQuery } from '@tanstack/react-query'
-import { Role } from '@/types/role'
 
 export type LoginSubmitForm = {
   email: string

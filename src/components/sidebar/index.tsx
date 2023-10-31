@@ -4,6 +4,7 @@ import { routes as adminRoutes } from '@/config/routes'
 import cn from '@/utils/cn'
 import useUser from '@/hooks/use-user'
 import { useTranslation } from 'react-i18next'
+import { useQuery } from '@tanstack/react-query'
 
 export default function Sidebar() {
   return (
@@ -19,13 +20,17 @@ export default function Sidebar() {
 function RouteOptions() {
   const { getUserRole } = useUser()
 
-  const { role } = getUserRole()
+  const { data: role } = useQuery({
+    queryKey: ['role'],
+    queryFn: getUserRole,
+  })
 
   const routes = Object.entries(adminRoutes.admin.pages)
-
+  const { getMyProfile } = role
+  
   const options = routes.filter(([key, value]) => {
     const { allowedRoles, show } = value
-    return allowedRoles?.includes(role) && show !== false
+    return allowedRoles?.includes(getMyProfile.role) && show !== false
   })
 
   return (

@@ -2,6 +2,7 @@ import React from 'react'
 import { Role } from '@/types/role'
 import { useNavigate, Outlet } from 'react-router-dom'
 import useUser from '@/hooks/use-user'
+import { useQuery } from '@tanstack/react-query'
 
 interface IRolesAuthRouteProps {
   allowedRoles: Role | Role[]
@@ -12,9 +13,14 @@ export function RolesAuthRoute(props: IRolesAuthRouteProps) {
   const navigate = useNavigate()
   const { getUserRole } = useUser()
 
-  const { role } = getUserRole()
+  const { data: role } = useQuery({
+    queryKey: ['role'],
+    queryFn: getUserRole,
+  })
 
-  if (!allowedRoles.includes(role)) {
+  const { getMyProfile } = role
+
+  if (!allowedRoles.includes(getMyProfile.role)) {
     navigate(-1)
   }
 
