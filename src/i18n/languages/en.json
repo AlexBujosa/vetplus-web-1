@@ -79,6 +79,9 @@
     "owner": "Owner",
     "pet": "Pet",
     "time": "Time",
-    "today": "Today"
+    "today": "Today",
+    "pet-owner": "Pet Owner",
+    "invite-employee": "Invite Employee",
+    "send-invitation": "Sned Invitation"
   }
 }

@@ -9,6 +9,8 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import CustomTabPanel from '@/components/molecules/custom-tab-panel'
+import { useQueryClient } from '@tanstack/react-query'
+import { Employee } from '@/hooks/use-clinic/employeesAtom'
 
 function EmployeeModal(props: { title: string }) {
   const { title } = props
@@ -16,8 +18,16 @@ function EmployeeModal(props: { title: string }) {
   const { t } = useTranslation()
   const params = useParams()
   const { email: employeeEmail } = params
-  const { findEmployeeByEmail } = useClinic()
-  const employee = findEmployeeByEmail(employeeEmail!)
+
+  const client = useQueryClient()
+
+  const clinicEmployees: any[] | undefined = client.getQueryData(['employees'])
+
+  if (!clinicEmployees) return null
+
+  const employee: Employee = clinicEmployees.find(({ email }) => {
+    return email === employeeEmail
+  })
 
   const [value, setValue] = React.useState(0)
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -34,6 +44,7 @@ function EmployeeModal(props: { title: string }) {
     telephoneNumber,
     specialty,
     status,
+    image,
   } = employee
 
   return (
@@ -57,7 +68,7 @@ function EmployeeModal(props: { title: string }) {
           />
 
           <div className='flex flex-row gap-x-[10px] items-center'>
-            <ProfileImage className='w-[80px] h-[80px]' />
+            <ProfileImage src={image} className='w-[80px] h-[80px]' />
 
             <input type='file' />
           </div>

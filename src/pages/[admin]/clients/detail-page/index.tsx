@@ -1,14 +1,12 @@
 import React, { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useNavigate, useParams } from 'react-router-dom'
-import EmployeeModal from '@/components/molecules/employee-modal'
 import StatusBadge from '@/components/status-badge'
 import { Headline, Body, Title } from '@/components/typography'
 import { routes } from '@/config/routes'
-import { KeyboardBackspace, Edit } from '@mui/icons-material'
-import { IconButton, Modal, Box } from '@mui/material'
+import { KeyboardBackspace } from '@mui/icons-material'
+import { IconButton } from '@mui/material'
 import { useTranslation } from 'react-i18next'
-import Button from '@/components/button'
 import { ProfileWithRole } from '../../profile'
 
 export default function ClientsDetailPage() {
@@ -35,9 +33,10 @@ export default function ClientsDetailPage() {
 
 function ClientHeader({ client }: { client: any }) {
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   return (
-    <section className='flex flex-col gap-y-7'>
+    <section className='flex flex-col mb-6 gap-y-7'>
       <div className='flex flex-row gap-x-[20px]'>
         <IconButton
           onClick={() => navigate(routes.admin.pages.clients.href)}
@@ -47,7 +46,7 @@ function ClientHeader({ client }: { client: any }) {
       </div>
 
       <div className='flex flex-row items-center justify-between gap-x-5'>
-        <ProfileWithRole image={client.image} role={client.role} />
+        <ProfileWithRole image={client.image} role={t('pet-owner')} />
       </div>
     </section>
   )

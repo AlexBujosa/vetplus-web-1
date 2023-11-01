@@ -79,6 +79,9 @@
     "owner": "Dueño",
     "pet": "Mascota",
     "time": "Tiempo",
-    "today": "Hoy"
+    "today": "Hoy",
+    "pet-owner": "Dueño de mascota",
+    "invite-employee": "Invitar Empleado",
+    "send-invitation": "Enviar Invitación"
   }
 }
