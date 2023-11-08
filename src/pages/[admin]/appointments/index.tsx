@@ -1,4 +1,3 @@
-import React from 'react'
 import { Body, Label, Title } from '@/components/typography'
 import { useTranslation } from 'react-i18next'
 import cn from '@/utils/cn'

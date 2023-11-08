@@ -9,7 +9,6 @@ import { useFormik } from 'formik'
 import { Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import useAuth, { LoginSubmitForm } from '@/hooks/use-auth'
-import React from 'react'
 
 const schema = yup.object({
   email: yup.string().email().required(),

@@ -13,6 +13,7 @@ export type Clinic = {
   status: boolean
   telephone_number: string
   updated_at: string
+  ClinicSummaryScore: ClinicScore
 }
 
 export type ClinicScore = {

@@ -1,4 +1,3 @@
-import React from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Employee } from '@/hooks/use-clinic/employeesAtom'

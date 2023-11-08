@@ -25,6 +25,9 @@ import {
   TimePicker,
 } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { useQuery } from '@tanstack/react-query'
+import { useClinic } from '@/hooks/use-clinic'
+import { Clinic } from '@/types/clinic'
 
 export default function GeneralViewPage() {
   const { t } = useTranslation()
@@ -66,21 +69,59 @@ export default function GeneralViewPage() {
 function ClinicHeader() {
   const { t } = useTranslation()
 
+  const { getMyClinic } = useClinic()
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['clinic'],
+    queryFn: getMyClinic,
+  })
+
+  if (isLoading)
+    return (
+      <section className='flex flex-row gap-x-[10px] animate-pulse'>
+        <Image className='w-1/5 rounded-lg' />
+
+        <article className='flex flex-col justify-between'>
+          <Headline.Medium
+            className='text-black'
+            text={t('veterinary-clinic')}
+          />
+
+          <div className='grid items-center grid-cols-6 grid-rows-2 text-base-neutral-gray-800'>
+            <LocationOnOutlined />
+
+            <Title.Small className='col-span-5' text={t('address')} />
+
+            <Star className='text-yellow-500' />
+
+            <Label.Large className='col-span-5' text='1.2' />
+          </div>
+        </article>
+      </section>
+    )
+
+  // @ts-ignore
+  const { name, address, ClinicSummaryScore }: Clinic = data.getMyClinic
+  const { total_points, total_users } = ClinicSummaryScore
+
   return (
     <section className='flex flex-row gap-x-[10px]'>
       <Image className='w-1/5 rounded-lg' />
 
       <article className='flex flex-col justify-between'>
-        <Headline.Medium className='text-black' text={t('veterinary-clinic')} />
+        <Headline.Medium className='text-black' text={name} />
 
         <div className='grid items-center grid-cols-6 grid-rows-2 text-base-neutral-gray-800'>
           <LocationOnOutlined />
 
-          <Title.Small className='col-span-5' text='AV. Lopez de vega' />
+          <Title.Small className='col-span-5' text={address} />
 
           <Star className='text-yellow-500' />
 
-          <Label.Large className='col-span-5' text={'4.5'} />
+          <Label.Large
+            className='col-span-5'
+            text={String(total_points / total_users)}
+          />
         </div>
       </article>
     </section>

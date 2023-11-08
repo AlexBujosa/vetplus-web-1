@@ -3,9 +3,8 @@ import Input from '@/components/input'
 import ProfileImage from '@/components/profile-image'
 import Select from '@/components/select'
 import { Title, Body } from '@/components/typography'
-import { useClinic } from '@/hooks/use-clinic'
 import { Box, SelectChangeEvent, Tab, Tabs } from '@mui/material'
-import React from 'react'
+
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import CustomTabPanel from '@/components/molecules/custom-tab-panel'
@@ -30,7 +29,7 @@ function EmployeeModal(props: { title: string }) {
   })
 
   const [value, setValue] = React.useState(0)
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
   }
 

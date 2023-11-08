@@ -1,4 +1,3 @@
-import React from 'react'
 import { Body, Title } from '@/components/typography'
 import { Box, Modal as MuiModal, Tab, Tabs } from '@mui/material'
 import { useTranslation } from 'react-i18next'

@@ -1,4 +1,3 @@
-import React from 'react'
 import { Role } from '@/types/role'
 import { useNavigate, Outlet } from 'react-router-dom'
 import useUser from '@/hooks/use-user'

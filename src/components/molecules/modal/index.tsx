@@ -13,7 +13,7 @@ function Modal(props: Props) {
 
   const { title, tabs, sections, children } = props
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
   }
 

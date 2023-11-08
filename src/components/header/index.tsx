@@ -5,11 +5,11 @@ import {
   NotificationsOutlined,
 } from '@mui/icons-material'
 import { Box, Divider, Popover, Stack, Switch } from '@mui/material'
-import { Body, Label, Title } from '../typography'
+import { Body, Title } from '../typography'
 import { useAtom } from 'jotai'
 import { userAtom } from '@/hooks/use-user/userAtom'
 import useAuth from '@/hooks/use-auth'
-import React from 'react'
+
 import { useTranslation } from 'react-i18next'
 import { languages } from '@/i18n'
 import ProfileImage from '../profile-image'

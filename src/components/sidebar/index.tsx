@@ -27,8 +27,8 @@ function RouteOptions() {
 
   const routes = Object.entries(adminRoutes.admin.pages)
   const { getMyProfile } = role
-  
-  const options = routes.filter(([key, value]) => {
+
+  const options = routes.filter(([_key, value]) => {
     const { allowedRoles, show } = value
     return allowedRoles?.includes(getMyProfile.role) && show !== false
   })
