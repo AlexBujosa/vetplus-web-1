@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react'
+import { PropsWithChildren, useState, cloneElement } from 'react'
 import Image from '@/components/image'
 import { Body, Headline, Label, Title } from '@/components/typography'
 import {
@@ -32,7 +32,7 @@ import { Clinic } from '@/types/clinic'
 export default function GeneralViewPage() {
   const { t } = useTranslation()
 
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = useState(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
 
@@ -262,7 +262,7 @@ function IconWithBackground(props: IconProps) {
 
   return (
     <div className='flex items-center justify-center rounded-full w-11 h-11 bg-base-neutral-gray-500'>
-      {React.cloneElement(icon, { width: 20, height: 20 })}
+      {cloneElement(icon, { width: 20, height: 20 })}
     </div>
   )
 }
@@ -320,7 +320,7 @@ const style = {
 function ProfileModalSection() {
   const { t } = useTranslation()
 
-  const [select, setSelectValue] = React.useState<string>()
+  const [select, setSelectValue] = useState<string>()
 
   const handleStatusChange = (event: SelectChangeEvent) => {
     setSelectValue(event.target.value as string)
@@ -372,8 +372,8 @@ function ProfileModalSection() {
 
 function ScheduleModalSection() {
   const { t } = useTranslation()
-  const [dayFrom, setDayFrom] = React.useState<string>()
-  const [dayUntil, setDayUntil] = React.useState<string>()
+  const [dayFrom, setDayFrom] = useState<string>()
+  const [dayUntil, setDayUntil] = useState<string>()
 
   const handleDayFromChange = (event: SelectChangeEvent) => {
     setDayFrom(event.target.value as string)

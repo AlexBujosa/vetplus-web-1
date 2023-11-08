@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import  { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Button from '@/components/button'
 import ProfileImage from '@/components/profile-image'
@@ -68,8 +68,6 @@ export function ProfileWithRole({
   image: string
   role: Role
 }) {
-  const { t } = useTranslation()
-
   return (
     <div className='flex flex-row gap-x-[10px] items-center'>
       <ProfileImage

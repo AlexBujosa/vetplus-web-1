@@ -83,6 +83,7 @@
     "pet-owner": "Dueño de mascota",
     "invite-employee": "Invitar Empleado",
     "send-invitation": "Enviar Invitación",
-    "something-wrong": "Ha ocurrido un error"
+    "something-wrong": "Ha ocurrido un error",
+    "no-specialty": "Sin Especialidad"
   }
 }

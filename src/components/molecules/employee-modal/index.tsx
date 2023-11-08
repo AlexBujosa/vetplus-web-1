@@ -4,12 +4,12 @@ import ProfileImage from '@/components/profile-image'
 import Select from '@/components/select'
 import { Title, Body } from '@/components/typography'
 import { Box, SelectChangeEvent, Tab, Tabs } from '@mui/material'
-
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import CustomTabPanel from '@/components/molecules/custom-tab-panel'
 import { useQueryClient } from '@tanstack/react-query'
 import { Employee } from '@/hooks/use-clinic/employeesAtom'
+import { useState } from 'react'
 
 function EmployeeModal(props: { title: string }) {
   const { title } = props
@@ -28,7 +28,7 @@ function EmployeeModal(props: { title: string }) {
     return email === employeeEmail
   })
 
-  const [value, setValue] = React.useState(0)
+  const [value, setValue] = useState(0)
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
   }
@@ -99,11 +99,11 @@ function ProfessionalSection(props: { specialty: string; status: boolean }) {
   const { specialty, status } = props
   const { t } = useTranslation()
 
-  const [statusValue, setStatusValue] = React.useState<string>(
+  const [statusValue, setStatusValue] = useState<string>(
     status as unknown as string
   )
 
-  const [specialtyValue, setSpecialtyValue] = React.useState<string>(
+  const [specialtyValue, setSpecialtyValue] = useState<string>(
     specialty as unknown as string
   )
 

@@ -15,43 +15,7 @@ export function useClinic() {
   async function getMyEmployees(): Promise<Employee[]> {
     const { getMyEmployees } = await client.request<any>(GET_MY_EMPLOYEES)
 
-    const employees = getMyEmployees.ClinicEmployees.map(
-      (employeeObject: any): Employee => {
-        const { Employee, status } = employeeObject
-        const {
-          names,
-          surnames,
-          email,
-          VeterinarianSummaryScore,
-          VeterinariaSpecialties,
-          address,
-          image,
-          telephone_number: telephoneNumber,
-        } = Employee
-        const { specialties: specialty } = VeterinariaSpecialties
-        const reviewScore =
-          VeterinarianSummaryScore.total_users > 0
-            ? VeterinarianSummaryScore.total_points /
-              VeterinarianSummaryScore.total_users
-            : 0
-        const fullName = `${names} ${surnames}`
-
-        return {
-          fullName,
-          names,
-          surnames,
-          email,
-          image,
-          specialty,
-          address,
-          telephoneNumber,
-          status,
-          score: reviewScore,
-        }
-      }
-    )
-
-    return employees
+    return getMyEmployees
   }
 
   async function getMyClients() {

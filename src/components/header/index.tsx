@@ -18,6 +18,7 @@ import { NavLink } from 'react-router-dom'
 import { routes } from '@/config/routes'
 import dayjs from 'dayjs'
 import { useQuery } from '@tanstack/react-query'
+import { useState } from 'react'
 import('dayjs/locale/es')
 import('dayjs/locale/en')
 
@@ -78,7 +79,7 @@ function Profile() {
     queryFn: getUserProfile,
   })
 
-  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)

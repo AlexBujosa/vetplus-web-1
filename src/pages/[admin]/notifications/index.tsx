@@ -9,6 +9,7 @@ import Modal from '@/components/molecules/modal'
 import Button from '@/components/button'
 import Select from '@/components/select'
 import Image from '@/components/image'
+import { useState } from 'react'
 
 export default function NotificationsPage() {
   const { t } = useTranslation()
@@ -25,9 +26,9 @@ export default function NotificationsPage() {
 function Card() {
   const { t } = useTranslation()
 
-  const [value, setValue] = React.useState(0)
+  const [value, setValue] = useState(0)
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
   }
 
@@ -64,9 +65,9 @@ function VerifiedAppointments() {
 }
 
 function PendingAppointments() {
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = useState(false)
   const [selectedNotification, setSelectedNotificaiton] =
-    React.useState<Notification>()
+    useState<Notification>()
 
   const handleOpen = (notification: any) => {
     setOpen(true)
@@ -232,27 +233,27 @@ function NotificationDatetime(props: { datetime: string }) {
   )
 }
 
-function AcceptedBadge() {
-  const { t } = useTranslation()
+// function AcceptedBadge() {
+//   const { t } = useTranslation()
 
-  return (
-    <Badge
-      className='text-white bg-base-semantic-success-300'
-      label={t('accepted')}
-    />
-  )
-}
+//   return (
+//     <Badge
+//       className='text-white bg-base-semantic-success-300'
+//       label={t('accepted')}
+//     />
+//   )
+// }
 
-function RejectedBadge() {
-  const { t } = useTranslation()
+// function RejectedBadge() {
+//   const { t } = useTranslation()
 
-  return (
-    <Badge
-      className='text-white bg-base-semantic-danger-300'
-      label={t('rejected')}
-    />
-  )
-}
+//   return (
+//     <Badge
+//       className='text-white bg-base-semantic-danger-300'
+//       label={t('rejected')}
+//     />
+//   )
+// }
 
 const notifications: Notification[] = [
   {

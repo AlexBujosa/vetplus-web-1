@@ -9,6 +9,7 @@ import { useFormik } from 'formik'
 import { Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import useAuth, { LoginSubmitForm } from '@/hooks/use-auth'
+import { useState } from 'react'
 
 const schema = yup.object({
   email: yup.string().email().required(),
@@ -21,7 +22,7 @@ const initialValues: LoginSubmitForm = {
 }
 
 export default function Login() {
-  const [showPassword, setShowPassword] = React.useState(false)
+  const [showPassword, setShowPassword] = useState(false)
   const { loginWithEmail } = useAuth()
 
   const onSubmit = async (data: LoginSubmitForm) => {

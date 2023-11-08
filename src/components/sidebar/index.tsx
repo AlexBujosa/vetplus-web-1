@@ -5,6 +5,8 @@ import cn from '@/utils/cn'
 import useUser from '@/hooks/use-user'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
+import { useAtomValue } from 'jotai'
+import { roleAtom } from '@/hooks/use-auth/roleAtom'
 
 export default function Sidebar() {
   return (
@@ -18,19 +20,13 @@ export default function Sidebar() {
 }
 
 function RouteOptions() {
-  const { getUserRole } = useUser()
-
-  const { data: role } = useQuery({
-    queryKey: ['role'],
-    queryFn: getUserRole,
-  })
+  const role = useAtomValue(roleAtom)
 
   const routes = Object.entries(adminRoutes.admin.pages)
-  const { getMyProfile } = role
 
   const options = routes.filter(([_key, value]) => {
     const { allowedRoles, show } = value
-    return allowedRoles?.includes(getMyProfile.role) && show !== false
+    return allowedRoles?.includes(role!) && show !== false
   })
 
   return (

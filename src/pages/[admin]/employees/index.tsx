@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import Input from '@/components/input'
 import { Body, Title } from '@/components/typography'
 import { AddOutlined, SearchOutlined } from '@mui/icons-material'
@@ -16,6 +16,8 @@ import Modal from '@/components/molecules/modal'
 import * as yup from 'yup'
 import { useFormik } from 'formik'
 import toast from 'react-hot-toast'
+import calculateStars from '@/utils/calcScore'
+import { Badge } from '@/components/badge'
 
 const schema = yup.object({
   email: yup.string().email().required(),
@@ -109,11 +111,12 @@ export default function EmployeesPage() {
 
 function EmployeesTable() {
   const { t } = useTranslation()
+
   const columns = [
     t('name'),
     t('email'),
-    t('speciality'),
     t('status'),
+    t('speciality'),
     t('review'),
   ]
 
@@ -123,7 +126,17 @@ function EmployeesTable() {
     queryFn: getMyEmployees,
   })
 
-  const rows = loading ? TableLoadingRows() : EmployeesRowsValues(data ?? [])
+  let rows
+  debugger
+
+  if (loading) {
+    rows = TableLoadingRows()
+  }
+
+  if (!data) return null
+
+  // @ts-ignore
+  rows = EmployeesRowsValues(data.ClinicEmployees ?? [])
 
   function TableLoadingRows(): Row[] {
     return [
@@ -139,14 +152,27 @@ function EmployeesTable() {
 
 function EmployeesRowsValues(employees: Employee[]): Row[] {
   return employees.map((employee) => {
-    const { fullName, email, specialty, status, score, image } = employee
+    // @ts-ignore
+    const { Employee, status } = employee
+
+    const {
+      names,
+      surnames,
+      email,
+      VeterinarianSummaryScore,
+      VeterinariaSpecialties,
+      image,
+    } = Employee
 
     const values = [
-      <Profile profile={fullName} image={image} />,
+      <Profile profile={`${names} ${surnames}`} image={image} />,
       <Body.Medium className='text-base-neutral-gray-900' text={email} />,
-      <Body.Medium className='text-base-neutral-gray-900' text={specialty} />,
       <StatusBadge status={status} />,
-      <StarsReview review={score} />,
+      <Badge
+        className='text-base-primary-600 bg-base-primary-50'
+        label={VeterinariaSpecialties?.specialties ?? 'Sin especialidad'}
+      />,
+      <StarsReview review={calculateStars(VeterinarianSummaryScore)} />,
     ]
 
     return {

@@ -1,12 +1,4 @@
-import { gql } from '@apollo/client';
-
-export const GET_USER_ROLE = gql`
-  query {
-    getMyProfile {
-      role
-    }
-  }
-`;
+import { gql } from '@apollo/client'
 
 export const GET_MY_PROFILE = gql`
   query {
@@ -15,6 +7,7 @@ export const GET_MY_PROFILE = gql`
       surnames
       email
       image
+      role
     }
   }
-`;
+`

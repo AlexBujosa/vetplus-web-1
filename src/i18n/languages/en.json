@@ -83,6 +83,7 @@
     "pet-owner": "Pet Owner",
     "invite-employee": "Invite Employee",
     "send-invitation": "Send Invitation",
-    "something-wrong": "Something went wrong"
+    "something-wrong": "Something went wrong",
+    "no-specialty": "No Specialty"
   }
 }

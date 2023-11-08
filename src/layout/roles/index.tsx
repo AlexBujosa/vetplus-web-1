@@ -1,7 +1,7 @@
 import { Role } from '@/types/role'
 import { useNavigate, Outlet } from 'react-router-dom'
-import useUser from '@/hooks/use-user'
-import { useQuery } from '@tanstack/react-query'
+import { useAtomValue } from 'jotai'
+import { roleAtom } from '@/hooks/use-auth/roleAtom'
 
 interface IRolesAuthRouteProps {
   allowedRoles: Role | Role[]
@@ -10,16 +10,9 @@ interface IRolesAuthRouteProps {
 export function RolesAuthRoute(props: IRolesAuthRouteProps) {
   const { allowedRoles } = props
   const navigate = useNavigate()
-  const { getUserRole } = useUser()
+  const role = useAtomValue(roleAtom)
 
-  const { data: role } = useQuery({
-    queryKey: ['role'],
-    queryFn: getUserRole,
-  })
-
-  const { getMyProfile } = role
-
-  if (!allowedRoles.includes(getMyProfile.role)) {
+  if (!allowedRoles.includes(role!)) {
     navigate(-1)
   }
 

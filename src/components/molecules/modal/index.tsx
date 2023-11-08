@@ -1,4 +1,4 @@
-import React, { HTMLAttributes } from 'react'
+import React, { HTMLAttributes, useState } from 'react'
 import { Title } from '@/components/typography'
 import { Box, Tab, Tabs } from '@mui/material'
 
@@ -9,7 +9,7 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
 }
 
 function Modal(props: Props) {
-  const [value, setValue] = React.useState(0)
+  const [value, setValue] = useState(0)
 
   const { title, tabs, sections, children } = props
 
