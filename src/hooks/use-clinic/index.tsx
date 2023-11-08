@@ -2,6 +2,7 @@ import {
   GET_ALL_CLIENTS,
   GET_MY_CLINIC,
   GET_MY_EMPLOYEES,
+  INVITE_TO_CLINIC,
 } from '@/graphql/clinic'
 import { useAtom } from 'jotai'
 import { Employee, employeesAtom } from './employeesAtom'
@@ -76,10 +77,21 @@ export function useClinic() {
     return request
   }
 
+  async function sendInvitationToClinic(email: string) {
+    const request = await client.request(INVITE_TO_CLINIC, {
+      email,
+      // id_employee: 'id_employee',
+      // employee_invitation_status: 'employee_invitation_status',
+    })
+
+    return request
+  }
+
   return {
     getMyClinic,
     getMyEmployees,
     getMyClients,
     findEmployeeByEmail,
+    sendInvitationToClinic,
   }
 }

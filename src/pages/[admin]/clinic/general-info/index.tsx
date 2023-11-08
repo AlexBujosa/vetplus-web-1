@@ -25,9 +25,6 @@ import {
   TimePicker,
 } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { useClinic } from '@/hooks/use-clinic'
-import { UseQueryResult, useQuery } from '@tanstack/react-query'
-import { Clinic } from '@/types/clinic'
 
 export default function GeneralViewPage() {
   const { t } = useTranslation()

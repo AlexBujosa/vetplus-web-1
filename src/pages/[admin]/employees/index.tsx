@@ -23,11 +23,11 @@ const schema = yup.object({
 
 const initialValues = {
   email: '',
-  password: '',
 }
 
 export default function EmployeesPage() {
   const { t } = useTranslation()
+  const { sendInvitationToClinic } = useClinic()
 
   const [open, setOpen] = useState(false)
   const handleOpen = () => setOpen(true)
@@ -35,10 +35,12 @@ export default function EmployeesPage() {
 
   const onSubmit = async (data: { email: string }) => {
     try {
-      // await loginWithEmail(data)
+      await sendInvitationToClinic(data.email)
       toast.success('Invitation was succesfull')
+      handleClose()
     } catch (error: any) {
-      toast.error(error.message)
+      toast.error(t('something-wrong'))
+      console.error(error.message)
     }
   }
 
@@ -67,6 +69,7 @@ export default function EmployeesPage() {
         />
 
         <Button
+          type='submit'
           size='small'
           icon={<AddOutlined />}
           label={t('invite-employee')}
@@ -93,10 +96,8 @@ export default function EmployeesPage() {
                   error={formik.touched.email && Boolean(formik.errors.email)}
                   helperText={formik.touched.email && formik.errors.email}
                 />
-                <Button
-                  label={t('send-invitation')}
-                  loading={formik.isSubmitting}
-                />
+
+                <button type='submit'>{t('send-invitation')}</button>
               </form>
             </article>
           </Modal>

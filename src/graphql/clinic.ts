@@ -102,3 +102,11 @@ export const GET_ALL_CLIENTS = gql`
     }
   }
 `
+
+export const INVITE_TO_CLINIC = gql`
+  mutation ($inviteToClinicInput: InviteToClinicInput!) {
+    inviteToClinic(inviteToClinicInput: $inviteToClinicInput) {
+      result
+    }
+  }
+`

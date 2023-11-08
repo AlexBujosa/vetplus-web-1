@@ -82,6 +82,7 @@
     "today": "Today",
     "pet-owner": "Pet Owner",
     "invite-employee": "Invite Employee",
-    "send-invitation": "Sned Invitation"
+    "send-invitation": "Send Invitation",
+    "something-wrong": "Something went wrong"
   }
 }
