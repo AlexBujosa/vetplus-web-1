@@ -1,7 +1,7 @@
 import { GraphQLClient } from 'graphql-request'
 
 const endpoint = import.meta.env.VITE_GRAPHQL_ENDPOINT!
-const token = localStorage.getItem('token') ?? ''
+const token = localStorage.getItem('token')
 
 const client = new GraphQLClient(endpoint, {
   headers: {

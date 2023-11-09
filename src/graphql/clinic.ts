@@ -46,6 +46,11 @@ export const GET_MY_CLINIC = gql`
         total_users
       }
       schedule {
+        workingDays {
+          day
+          startTime
+          endTime
+        }
         nonWorkingDays
       }
     }
@@ -107,6 +112,25 @@ export const INVITE_TO_CLINIC = gql`
   mutation ($inviteToClinicInput: InviteToClinicInput!) {
     inviteToClinic(inviteToClinicInput: $inviteToClinicInput) {
       result
+    }
+  }
+`
+
+export const GET_MY_COMMENTS = gql`
+  query ($genericByIdInput: GenericByIdInput!) {
+    getMyComments(genericByIdInput: $genericByIdInput) {
+      id
+      id_clinic
+      id_owner
+      comment
+      created_at
+      updated_at
+      status
+      Owner {
+        names
+        surnames
+        image
+      }
     }
   }
 `

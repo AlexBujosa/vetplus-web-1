@@ -41,8 +41,8 @@ export default function EmployeesPage() {
       toast.success('Invitation was succesfull')
       handleClose()
     } catch (error: any) {
-      toast.error(t('something-wrong'))
-      console.error(error.message)
+      toast.error(error.response.errors[0].message ?? t('something-wrong'))
+      console.error(error.response.errors)
     }
   }
 
@@ -99,7 +99,9 @@ export default function EmployeesPage() {
                   helperText={formik.touched.email && formik.errors.email}
                 />
 
-                <button type='submit'>{t('send-invitation')}</button>
+                <Button loading={formik.isSubmitting} type='submit'>
+                  {t('send-invitation')}
+                </Button>
               </form>
             </article>
           </Modal>

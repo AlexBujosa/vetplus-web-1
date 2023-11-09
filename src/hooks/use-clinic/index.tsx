@@ -42,11 +42,18 @@ export function useClinic() {
   }
 
   async function sendInvitationToClinic(email: string) {
-    const request = await client.request(INVITE_TO_CLINIC, {
-      email,
-      // id_employee: 'id_employee',
-      // employee_invitation_status: 'employee_invitation_status',
-    })
+    const clinic = await getMyClinic()
+    // @ts-ignore
+    const clinicId = clinic.getMyClinic.id
+
+    const variables = {
+      inviteToClinicInput: {
+        id: clinicId,
+        email,
+        employee_invitation_status: 'PENDING',
+      },
+    }
+    const request = await client.request(INVITE_TO_CLINIC, variables)
 
     return request
   }

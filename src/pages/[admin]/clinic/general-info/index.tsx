@@ -130,19 +130,34 @@ function ClinicHeader() {
 
 function GeneralDescription() {
   const { t } = useTranslation()
+  const { getMyClinic } = useClinic()
 
-  const labels = [t('email'), t('telephone-number'), t('schedule')]
+  const { data } = useQuery({
+    queryKey: ['clinic'],
+    queryFn: getMyClinic,
+  })
+
+  // @ts-ignore
+  const { email, telephone_number, schedule }: Clinic = data.getMyClinic
+
+  const scheduleString = `
+    Lunes a Viernes: ${schedule.workingDays[0].startTime} - ${schedule.workingDays[0].endTime}\n No laborables: ${schedule.nonWorkingDays}`
+  const values = [
+    { label: t('email'), value: email },
+    { label: t('telephone-number'), value: telephone_number },
+    { label: t('schedule'), value: scheduleString },
+  ]
 
   return (
     <SectionCard className='col-span-2' title={t('general-description')}>
       <div className='grid grid-cols-2 grid-rows-auto gap-y-10 gap-x-32 px-[30px] py-[38px]'>
-        {labels.map((value) => {
+        {values.map(({ label, value }) => {
           return (
             <div className='flex items-center gap-x-[20px]'>
-              <Title.Small className='text-black' text={value} />
+              <Title.Small className='text-black' text={label} />
               <Body.Medium
                 className='text-base-neutral-gray-800'
-                text='dasnsada'
+                text={value ?? 'N/A'}
               />
             </div>
           )
@@ -153,29 +168,45 @@ function GeneralDescription() {
 }
 
 function ClinicServices() {
-  const services = {
-    consultation: {
-      label: t('consultation'),
-      icon: <HomeWorkOutlined />,
-    },
-    surgery: { label: t('surgery'), icon: <MasksOutlined /> },
-    'preventive-medicine': {
-      label: t('preventive-medicine'),
-      icon: <MedicationOutlined />,
-    },
-    delivery: {
-      label: t('delivery'),
-      icon: <LocalShippingOutlined />,
-    },
-  }
+  const { getMyClinic } = useClinic()
+
+  const { data } = useQuery({
+    queryKey: ['clinic'],
+    queryFn: getMyClinic,
+  })
+
+  // @ts-ignore
+  const { services }: Clinic = data.getMyClinic
+
+  // const services = {
+  //   consultation: {
+  //     label: t('consultation'),
+  //     icon: <HomeWorkOutlined />,
+  //   },
+  //   surgery: { label: t('surgery'), icon: <MasksOutlined /> },
+  //   'preventive-medicine': {
+  //     label: t('preventive-medicine'),
+  //     icon: <MedicationOutlined />,
+  //   },
+  //   delivery: {
+  //     label: t('delivery'),
+  //     icon: <LocalShippingOutlined />,
+  //   },
+  // }
+
+  const icons = [
+    <HomeWorkOutlined />,
+    <MedicationOutlined />,
+    <LocalShippingOutlined />,
+  ]
 
   return (
     <SectionCard title={t('services')}>
       <div className='grid grid-cols-2 gap-y-10 grid-rows-auto px-[30px] py-[38px]'>
-        {Object.entries(services).map(([key, value]) => {
-          const { label, icon } = value
-
-          return <Service icon={icon} name={label} />
+        {services.map((value, index) => {
+          return (
+            <Service icon={icons[index] ?? <HomeWorkOutlined />} name={value} />
+          )
         })}
       </div>
     </SectionCard>
