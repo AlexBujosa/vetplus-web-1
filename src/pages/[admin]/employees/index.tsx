@@ -129,16 +129,13 @@ function EmployeesTable() {
   })
 
   let rows
-  debugger
 
   if (loading) {
     rows = TableLoadingRows()
+  } else {
+    // @ts-ignore
+    rows = EmployeesRowsValues(data.ClinicEmployees ?? [])
   }
-
-  if (!data) return null
-
-  // @ts-ignore
-  rows = EmployeesRowsValues(data.ClinicEmployees ?? [])
 
   function TableLoadingRows(): Row[] {
     return [

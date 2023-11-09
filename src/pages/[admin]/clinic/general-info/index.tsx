@@ -131,10 +131,12 @@ function GeneralDescription() {
   const { t } = useTranslation()
   const { getMyClinic } = useClinic()
 
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['clinic'],
     queryFn: getMyClinic,
   })
+
+  if (isLoading) return null
 
   // @ts-ignore
   const { email, telephone_number, schedule }: Clinic = data.getMyClinic
@@ -142,9 +144,9 @@ function GeneralDescription() {
   const scheduleString = `
     Lunes a Viernes: ${schedule.workingDays[0].startTime} - ${schedule.workingDays[0].endTime}\n No laborables: ${schedule.nonWorkingDays}`
   const values = [
-    { label: t('email'), value: email },
-    { label: t('telephone-number'), value: telephone_number },
-    { label: t('schedule'), value: scheduleString },
+    { label: t('email'), value: email ?? 'N/A' },
+    { label: t('telephone-number'), value: telephone_number ?? 'N/A' },
+    { label: t('schedule'), value: scheduleString ?? 'N/A' },
   ]
 
   return (
@@ -152,7 +154,7 @@ function GeneralDescription() {
       <div className='grid grid-cols-2 grid-rows-auto gap-y-10 gap-x-32 px-[30px] py-[38px]'>
         {values.map(({ label, value }) => {
           return (
-            <div className='flex items-center gap-x-[20px]'>
+            <div key={label} className='flex items-center gap-x-[20px]'>
               <Title.Small className='text-black' text={label} />
               <Body.Medium
                 className='text-base-neutral-gray-800'
@@ -169,10 +171,12 @@ function GeneralDescription() {
 function ClinicServices() {
   const { getMyClinic } = useClinic()
 
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['clinic'],
     queryFn: getMyClinic,
   })
+
+  if (isLoading) return null
 
   // @ts-ignore
   const { services }: Clinic = data.getMyClinic
