@@ -100,12 +100,12 @@ export default function Login() {
         />
       </form>
 
-      <Link className='text-center text-base-primary-500' to='/forgot-password'>
+      {/* <Link className='text-center text-base-primary-500' to='/forgot-password'>
         <Body.Medium
           className='font-medium'
           text='¿No puedes iniciar sesión?'
         />
-      </Link>
+      </Link> */}
     </>
   )
 }
