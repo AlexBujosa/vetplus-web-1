@@ -1,4 +1,3 @@
-import React, { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { useNavigate, useParams } from 'react-router-dom'
 import StatusBadge from '@/components/status-badge'
@@ -96,12 +95,4 @@ function Typography(props: { text?: string }) {
       text={text || 'N/A'}
     />
   )
-}
-
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: '40%',
 }

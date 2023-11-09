@@ -65,7 +65,7 @@ function SideSection() {
                 {day.format('dd').charAt(0)}
               </span>
             ))}
-            {currentMonth.map((row, i) => (
+            {currentMonth.map((row) => (
               <>
                 {row.map((day, idx) => (
                   <button
@@ -129,7 +129,7 @@ function AppointmentsList(props: { appointments: any }) {
 
   return (
     <>
-      {Object.entries(appointments).map((appointment, index) => {
+      {Object.entries(appointments).map((_appointment, index) => {
         return (
           <article key={index} className='flex flex-col gap-y-3'>
             <div className='flex flex-row'>

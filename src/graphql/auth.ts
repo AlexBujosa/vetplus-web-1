@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-request'
 
 export const SIGN_WITH_EMAIL_QUERY = gql`
   query ($signInInput: SignInInput!) {
@@ -6,4 +6,4 @@ export const SIGN_WITH_EMAIL_QUERY = gql`
       access_token
     }
   }
-`;
+`

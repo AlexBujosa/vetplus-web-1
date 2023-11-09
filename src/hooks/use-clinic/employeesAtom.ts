@@ -1,3 +1,4 @@
+import { Score } from '@/types/clinic'
 import { atomWithStorage } from 'jotai/utils'
 
 export type Employee = {
@@ -7,10 +8,14 @@ export type Employee = {
   email: string
   specialty: string
   address: string
-  telephoneNumber: string
+  telephone_number: string
   status: boolean
   score: number
   image: string
+  VeterinarianSummaryScore: Score
+  VeterinariaSpecialties: {
+    specialties: string
+  }
 }
 
 export const employeesAtom = atomWithStorage<Employee[] | undefined>(

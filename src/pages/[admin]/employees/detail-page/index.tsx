@@ -9,18 +9,22 @@ import { IconButton } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { KeyboardBackspace, PersonOutlined } from '@mui/icons-material'
 import ProfileImage from '@/components/profile-image'
+import calculateStars from '@/utils/calcScore'
 
 export default function EmployeesDetailPage() {
   const params = useParams()
   const { email: employeeEmail } = params
   const client = useQueryClient()
 
-  const clinicEmployees: any[] | undefined = client.getQueryData(['employees'])
+  // @ts-ignore
+  const clinicEmployees: any[] | undefined = client.getQueryData([
+    'employees',
+  ]).ClinicEmployees
 
   if (!clinicEmployees) return null
 
-  const clinicEmployee: Employee = clinicEmployees.find(({ email }) => {
-    return email === employeeEmail
+  const clinicEmployee = clinicEmployees.find(({ Employee }) => {
+    return Employee.email === employeeEmail
   })
 
   return (
@@ -34,6 +38,11 @@ export default function EmployeesDetailPage() {
 function EmployeeHeader({ employee }: { employee: Employee }) {
   const navigate = useNavigate()
 
+  // @ts-ignore
+  const { names, surnames, image } = employee.Employee
+
+  const fullName = `${names} ${surnames}`
+
   return (
     <section className='flex flex-col gap-y-7'>
       <div className='flex flex-row gap-x-[20px]'>
@@ -41,11 +50,11 @@ function EmployeeHeader({ employee }: { employee: Employee }) {
           onClick={() => navigate(routes.admin.pages.employees.href)}
           children={<KeyboardBackspace className='text-black' />}
         />
-        <Headline.Medium text={employee.fullName} />
+        <Headline.Medium text={fullName} />
       </div>
 
       <div className='flex flex-row items-center justify-between gap-x-5'>
-        <ProfileWithRole image={employee.image} />
+        <ProfileWithRole image={image} />
       </div>
     </section>
   )
@@ -70,17 +79,34 @@ function ProfileWithRole({ image }: { image: string }) {
   )
 }
 
-function GeneralDescription({ employee }: { employee: Employee }) {
-  const { email, telephoneNumber, address, specialty, score, status } = employee
+function GeneralDescription({
+  employee,
+}: {
+  employee: {
+    status: boolean
+    Employee: Employee
+  }
+}) {
+  const {
+    email,
+    telephone_number,
+    address,
+    VeterinarianSummaryScore,
+    VeterinariaSpecialties,
+  } = employee.Employee
   const { t } = useTranslation()
 
   const data: Record<string, JSX.Element> = {
-    [t('email')]: <Typography text={email} />,
-    [t('telephone-number')]: <Typography text={telephoneNumber} />,
-    [t('address')]: <Typography text={address} />,
-    [t('speciality')]: <Typography text={specialty} />,
-    [t('review')]: <StarsReview review={score} />,
-    [t('status')]: <StatusBadge status={status} />,
+    [t('email')]: <Typography text={email ?? 'N/A'} />,
+    [t('telephone-number')]: <Typography text={telephone_number ?? 'N/A'} />,
+    [t('address')]: <Typography text={address ?? 'N/A'} />,
+    [t('speciality')]: (
+      <Typography text={VeterinariaSpecialties?.specialties ?? 'N/A'} />
+    ),
+    [t('review')]: (
+      <StarsReview review={calculateStars(VeterinarianSummaryScore) ?? 'N/A'} />
+    ),
+    [t('status')]: <StatusBadge status={employee.status} />,
   }
 
   return (

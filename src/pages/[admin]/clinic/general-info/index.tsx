@@ -6,7 +6,6 @@ import {
   HomeWorkOutlined,
   LocalShippingOutlined,
   LocationOnOutlined,
-  MasksOutlined,
   MedicationOutlined,
   Star,
 } from '@mui/icons-material'

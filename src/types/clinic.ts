@@ -13,10 +13,10 @@ export type Clinic = {
   status: boolean
   telephone_number: string
   updated_at: string
-  ClinicSummaryScore: ClinicScore
+  ClinicSummaryScore: Score
 }
 
-export type ClinicScore = {
+export type Score = {
   total_points: number
   total_users: number
 }

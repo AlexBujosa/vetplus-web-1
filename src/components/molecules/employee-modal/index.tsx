@@ -40,7 +40,7 @@ function EmployeeModal(props: { title: string }) {
     surnames,
     email,
     address,
-    telephoneNumber,
+    telephone_number,
     specialty,
     status,
     image,
@@ -78,7 +78,7 @@ function EmployeeModal(props: { title: string }) {
             <Input value={email} variant='outlined' label={t('email')} />
             <Input value={address} variant='outlined' label={t('address')} />
             <Input
-              value={telephoneNumber}
+              value={telephone_number}
               variant='outlined'
               label={t('telephone-number')}
             />
