@@ -1,4 +1,4 @@
-import { gql } from 'graphql-request'
+import { gql } from "graphql-request";
 
 export const GET_MY_EMPLOYEES = gql`
   query GetMyEmployees {
@@ -24,7 +24,7 @@ export const GET_MY_EMPLOYEES = gql`
       }
     }
   }
-`
+`;
 
 export const GET_MY_CLINIC = gql`
   query {
@@ -55,7 +55,7 @@ export const GET_MY_CLINIC = gql`
       }
     }
   }
-`
+`;
 
 export const GET_ALL_EMPLOYEES = gql`
   query ($getAllEmployeeByClinicIdInput: GetAllEmployeeByClinicIdInput!) {
@@ -77,7 +77,7 @@ export const GET_ALL_EMPLOYEES = gql`
       }
     }
   }
-`
+`;
 
 export const GET_ALL_CLIENTS = gql`
   query {
@@ -103,10 +103,18 @@ export const GET_ALL_CLIENTS = gql`
         created_at
         updated_at
         status
+        Pet {
+          id
+          image
+          name
+        }
+        AppointmentOwner {
+          start_at
+        }
       }
     }
   }
-`
+`;
 
 export const INVITE_TO_CLINIC = gql`
   mutation ($inviteToClinicInput: InviteToClinicInput!) {
@@ -114,7 +122,7 @@ export const INVITE_TO_CLINIC = gql`
       result
     }
   }
-`
+`;
 
 export const GET_MY_COMMENTS = gql`
   query ($genericByIdInput: GenericByIdInput!) {
@@ -133,4 +141,4 @@ export const GET_MY_COMMENTS = gql`
       }
     }
   }
-`
+`;
