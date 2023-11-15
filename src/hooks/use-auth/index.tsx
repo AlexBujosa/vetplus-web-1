@@ -5,7 +5,6 @@ import useUser from '@/hooks/use-user'
 import { allowedRoles, routes } from '@/config/routes'
 import { useSetAtom } from 'jotai'
 import { roleAtom } from './roleAtom'
-import { tokenAtom } from './tokenAtom'
 
 export type LoginSubmitForm = {
   email: string
@@ -17,7 +16,6 @@ export default function useAuth() {
   const { getUserProfile } = useUser()
 
   const setRole = useSetAtom(roleAtom)
-  const setToken = useSetAtom(tokenAtom)
 
   async function loginWithEmail({ email, password }: LoginSubmitForm) {
     const variables = {
@@ -37,7 +35,7 @@ export default function useAuth() {
 
     const token = signInWithEmail.access_token
 
-    setToken(token)
+    localStorage.setItem('token', token)
 
     const profile = await getUserProfile()
 
