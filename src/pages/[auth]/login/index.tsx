@@ -26,7 +26,6 @@ export default function Login() {
   const onSubmit = async (data: LoginSubmitForm) => {
     try {
       await loginWithEmail(data)
-      toast.success('Login was succesfull')
     } catch (error: any) {
       toast.error(error.message)
     }
