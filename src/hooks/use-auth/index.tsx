@@ -25,9 +25,17 @@ export default function useAuth() {
       },
     }
 
-    const data: any = await client.request(SIGN_WITH_EMAIL_QUERY, variables)
+    const {
+      signInWithEmail,
+    }: {
+      signInWithEmail: {
+        access_token: string
+      }
+    } = await client.request(SIGN_WITH_EMAIL_QUERY, variables)
+
     // const profile = await client.request()
-    const token = data.signInWithEmail.access_token
+    const token = signInWithEmail.access_token
+
     localStorage.setItem('token', token)
 
     const profile = await getUserProfile()
