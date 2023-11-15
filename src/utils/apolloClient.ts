@@ -1,14 +1,13 @@
-import { GraphQLClient } from 'graphql-request'
+import { GraphQLClient } from "graphql-request";
 
-const endpoint = import.meta.env.VITE_GRAPHQL_ENDPOINT!
-const token = localStorage.getItem('token')
+const endpoint = import.meta.env.VITE_GRAPHQL_ENDPOINT!;
 
-console.log({ token })
+const token = localStorage.getItem("token");
 
 const client = new GraphQLClient(endpoint, {
   headers: {
-    authorization: token ? `Bearer ${token}` : '',
+    authorization: token ? `Bearer ${token}` : "",
   },
-})
+});
 
-export default client
+export default client;
