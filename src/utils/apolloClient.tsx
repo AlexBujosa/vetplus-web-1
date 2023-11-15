@@ -4,6 +4,8 @@ const endpoint = import.meta.env.VITE_GRAPHQL_ENDPOINT!
 
 const token = localStorage.getItem('token')
 
+console.log({ token })
+
 const client = new GraphQLClient(endpoint, {
   headers: {
     authorization: token ? `Bearer ${token}` : '',
