@@ -1,64 +1,62 @@
-import { Body } from '@/components/typography'
-import Button from '@/components/button'
-import Input from '@/components/input'
-import { IconButton, InputAdornment } from '@mui/material'
-import Visibility from '@mui/icons-material/Visibility'
-import VisibilityOff from '@mui/icons-material/VisibilityOff'
-import * as yup from 'yup'
-import { useFormik } from 'formik'
-import { Link } from 'react-router-dom'
-import toast from 'react-hot-toast'
-import useAuth, { LoginSubmitForm } from '@/hooks/use-auth'
-import { useState } from 'react'
+import Button from "@/components/button";
+import Input from "@/components/input";
+import { IconButton, InputAdornment } from "@mui/material";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import * as yup from "yup";
+import { useFormik } from "formik";
+import toast from "react-hot-toast";
+import useAuth, { LoginSubmitForm } from "@/hooks/use-auth";
+import { useState } from "react";
 
 const schema = yup.object({
   email: yup.string().email().required(),
   password: yup.string().required(),
-})
+});
 
 const initialValues: LoginSubmitForm = {
-  email: '',
-  password: '',
-}
+  email: "",
+  password: "",
+};
 
 export default function Login() {
-  const [showPassword, setShowPassword] = useState(false)
-  const { loginWithEmail } = useAuth()
+  const [showPassword, setShowPassword] = useState(false);
+  const { loginWithEmail } = useAuth();
 
   const onSubmit = async (data: LoginSubmitForm) => {
     try {
-      await loginWithEmail(data)
-      toast.success('Login was succesfull')
+      await loginWithEmail(data);
+      toast.success("Login was succesfull");
     } catch (error: any) {
-      toast.error(error.message)
+      toast.error(error.message);
     }
-  }
+  };
 
   const formik = useFormik({
     initialValues,
     validationSchema: schema,
     onSubmit,
-  })
+  });
 
-  const handleClickShowPassword = () => setShowPassword((show) => !show)
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleMouseDownPassword = (
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
-    event.preventDefault()
-  }
+    event.preventDefault();
+  };
 
   return (
     <>
       <form
-        className='flex flex-col my-[45px] gap-y-[45px]'
+        className="flex flex-col my-[45px] gap-y-[45px]"
         onSubmit={formik.handleSubmit}
       >
         <Input
-          variant='outlined'
-          label='Correo'
-          className='w-[380px]'
-          name='email'
+          variant="outlined"
+          label="Correo"
+          className="w-[380px]"
+          name="email"
           value={formik.values.email}
           onChange={formik.handleChange}
           error={formik.touched.email && Boolean(formik.errors.email)}
@@ -66,19 +64,19 @@ export default function Login() {
         />
 
         <Input
-          variant='outlined'
-          label='Contraseña'
-          name='password'
-          type={showPassword ? 'text' : 'password'}
-          className='w-[380px]'
+          variant="outlined"
+          label="Contraseña"
+          name="password"
+          type={showPassword ? "text" : "password"}
+          className="w-[380px]"
           InputProps={{
             endAdornment: (
-              <InputAdornment position='end'>
+              <InputAdornment position="end">
                 <IconButton
-                  aria-label='toggle password visibility'
+                  aria-label="toggle password visibility"
                   onClick={handleClickShowPassword}
                   onMouseDown={handleMouseDownPassword}
-                  edge='end'
+                  edge="end"
                 >
                   {showPassword ? <VisibilityOff /> : <Visibility />}
                 </IconButton>
@@ -92,10 +90,10 @@ export default function Login() {
         />
 
         <Button
-          className='w-full'
-          type='submit'
-          intent='primary'
-          label='Continuar'
+          className="w-full"
+          type="submit"
+          intent="primary"
+          label="Continuar"
           loading={formik.isSubmitting}
         />
       </form>
@@ -107,5 +105,5 @@ export default function Login() {
         />
       </Link> */}
     </>
-  )
+  );
 }
