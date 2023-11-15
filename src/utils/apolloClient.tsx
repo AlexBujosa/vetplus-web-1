@@ -1,8 +1,10 @@
+import { tokenAtom } from '@/hooks/use-auth/tokenAtom'
 import { GraphQLClient } from 'graphql-request'
+import { useAtomValue } from 'jotai'
 
 const endpoint = import.meta.env.VITE_GRAPHQL_ENDPOINT!
 
-const token = localStorage.getItem('token')
+const token = useAtomValue(tokenAtom)
 
 const client = new GraphQLClient(endpoint, {
   headers: {
