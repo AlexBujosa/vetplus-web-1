@@ -48,7 +48,7 @@ export default function useAuth() {
       }
 
       navigate(routes.admin.pages.clients.href);
-    }, 80);
+    }, 200);
   }
 
   function logout() {
