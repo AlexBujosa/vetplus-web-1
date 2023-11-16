@@ -17,6 +17,7 @@ import useUser, { EditUserForm } from '@/hooks/use-user'
 import Input from '@/components/input'
 import CustomTabPanel from '@/components/molecules/custom-tab-panel'
 import Select from '@/components/select'
+import toast from 'react-hot-toast'
 
 export default function ProfilePage() {
   return (
@@ -177,12 +178,15 @@ function UpdateUserForm() {
 
   const { updateUser } = useUser()
 
-  const { mutate, isPending: isLoading } = useMutation({
+  const { mutateAsync, isPending: isLoading } = useMutation({
     mutationFn: updateUser,
   })
 
+  const { t } = useTranslation()
+
   const onSubmit = async (data: EditUserForm) => {
-    mutate({ ...data })
+    await mutateAsync({ ...data })
+    toast.success(t('updated-fields'))
   }
 
   const formik = useFormik({
@@ -190,8 +194,6 @@ function UpdateUserForm() {
     onSubmit,
     validationSchema: schema,
   })
-
-  const { t } = useTranslation()
 
   const [value, setValue] = useState(0)
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
