@@ -67,6 +67,7 @@
     "schedule": "Horario",
     "edit-clinic": "Editar Centro Veterinario",
     "clinic-image": "Imágen del centro veterinario",
+    "clinic-owner": "Dueño de Clinica",
     "days": "Días",
     "hour": "Hora",
     "notifications": "Notificaciones",
@@ -84,6 +85,7 @@
     "invite-employee": "Invitar Empleado",
     "send-invitation": "Enviar Invitación",
     "something-wrong": "Ha ocurrido un error",
-    "no-specialty": "Sin Especialidad"
+    "no-specialty": "Sin Especialidad",
+    "admin": "Administrador"
   }
 }

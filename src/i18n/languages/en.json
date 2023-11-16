@@ -67,6 +67,7 @@
     "schedule": "Schedule",
     "edit-clinic": "Edit Clinic",
     "clinic-image": "Clinic Image",
+    "clinic-owner": "Clinic Owner",
     "days": "Days",
     "hour": "Hora",
     "notifications": "Notificaciones",
@@ -84,6 +85,7 @@
     "invite-employee": "Invite Employee",
     "send-invitation": "Send Invitation",
     "something-wrong": "Something went wrong",
-    "no-specialty": "No Specialty"
+    "no-specialty": "No Specialty",
+    "admin": "Administrador"
   }
 }
