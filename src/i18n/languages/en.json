@@ -86,6 +86,7 @@
     "send-invitation": "Send Invitation",
     "something-wrong": "Something went wrong",
     "no-specialty": "No Specialty",
-    "admin": "Administrador"
+    "admin": "Administrador",
+    "updated-fields": "The fields has been updated"
   }
 }

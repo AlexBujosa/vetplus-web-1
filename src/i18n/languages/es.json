@@ -86,6 +86,7 @@
     "send-invitation": "Enviar Invitación",
     "something-wrong": "Ha ocurrido un error",
     "no-specialty": "Sin Especialidad",
-    "admin": "Administrador"
+    "admin": "Administrador",
+    "updated-fields": "Los registros han sido actualizados"
   }
 }

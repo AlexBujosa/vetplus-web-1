@@ -22,7 +22,7 @@ export default function Select(props: Props) {
   const { label = 'Label', value, onChange, options } = props
 
   return (
-    <FormControl sx={{ m: 1, minWidth: 120 }} size='small'>
+    <FormControl sx={{ minWidth: 120 }} size='small'>
       <InputLabel id='demo-simple-select-label'>{label}</InputLabel>
       <MuiSelect label={label} value={value} onChange={onChange}>
         {options.map(({ label, value }) => {

@@ -5,7 +5,7 @@ import ProfileImage from '@/components/profile-image'
 import StatusBadge from '@/components/status-badge'
 import { Body, Headline, Title } from '@/components/typography'
 import { PersonOutlined, Edit } from '@mui/icons-material'
-import { Box, Modal } from '@mui/material'
+import { Box, Modal, Tab, Tabs } from '@mui/material'
 import { userAtom } from '@/hooks/use-user/userAtom'
 import { roleAtom } from '@/hooks/use-auth/roleAtom'
 import { Role } from '@/types/role'
@@ -15,6 +15,8 @@ import { useAtom } from 'jotai'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import useUser, { EditUserForm } from '@/hooks/use-user'
 import Input from '@/components/input'
+import CustomTabPanel from '@/components/molecules/custom-tab-panel'
+import Select from '@/components/select'
 
 export default function ProfilePage() {
   return (
@@ -180,7 +182,7 @@ function UpdateUserForm() {
   })
 
   const onSubmit = async (data: EditUserForm) => {
-    await mutate({ ...data })
+    mutate({ ...data })
   }
 
   const formik = useFormik({
@@ -191,78 +193,110 @@ function UpdateUserForm() {
 
   const { t } = useTranslation()
 
+  const [value, setValue] = useState(0)
+  const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue)
+  }
+
   return (
     <Box sx={style}>
       <article className='bg-white px-[30px] py-[20px]'>
-        <h2>Editar</h2>
+        <div className='flex flex-row items-center justify-between '>
+          <Title.Small className='text-2xl' text={t('edit')} />
+        </div>
 
-        <form
-          className='grid grid-cols-2 gap-x-3 my-[45px] gap-y-[45px]'
-          onSubmit={formik.handleSubmit}
-        >
-          <Input
-            variant='outlined'
-            label='Nombres'
-            name='names'
-            value={formik.values.names}
-            onChange={formik.handleChange}
-            error={formik.touched.names && Boolean(formik.errors.names)}
-            helperText={formik.touched.names && formik.errors.names}
-          />
+        <div className='flex flex-col'>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <Tabs value={value} onChange={handleChange}>
+              <Tab label={t('profile')} />
+              <Tab label={t('professional')} />
+            </Tabs>
+          </Box>
 
-          <Input
-            variant='outlined'
-            label='Apellidos'
-            name='surnames'
-            value={formik.values.surnames}
-            onChange={formik.handleChange}
-            error={formik.touched.surnames && Boolean(formik.errors.surnames)}
-            helperText={formik.touched.surnames && formik.errors.surnames}
-          />
+          <CustomTabPanel value={value} index={0}>
+            <form
+              className='grid grid-cols-2 gap-x-3 my-[45px] gap-y-[45px]'
+              onSubmit={formik.handleSubmit}
+            >
+              <Input
+                variant='outlined'
+                label='Nombres'
+                name='names'
+                value={formik.values.names}
+                onChange={formik.handleChange}
+                error={formik.touched.names && Boolean(formik.errors.names)}
+                helperText={formik.touched.names && formik.errors.names}
+              />
 
-          <Input
-            variant='outlined'
-            label='Documento'
-            name='document'
-            value={formik.values.document}
-            onChange={formik.handleChange}
-            error={formik.touched.document && Boolean(formik.errors.document)}
-            helperText={formik.touched.document && formik.errors.document}
-          />
+              <Input
+                variant='outlined'
+                label='Apellidos'
+                name='surnames'
+                value={formik.values.surnames}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.surnames && Boolean(formik.errors.surnames)
+                }
+                helperText={formik.touched.surnames && formik.errors.surnames}
+              />
 
-          <Input
-            variant='outlined'
-            label='Dirección'
-            name='address'
-            value={formik.values.address}
-            onChange={formik.handleChange}
-            error={formik.touched.address && Boolean(formik.errors.address)}
-            helperText={formik.touched.address && formik.errors.address}
-          />
+              <Input
+                variant='outlined'
+                label='Documento'
+                name='document'
+                value={formik.values.document}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.document && Boolean(formik.errors.document)
+                }
+                helperText={formik.touched.document && formik.errors.document}
+              />
 
-          <Input
-            variant='outlined'
-            className='col-span-2'
-            label='Número telefónico'
-            name='telephone_number'
-            value={formik.values.telephone_number}
-            onChange={formik.handleChange}
-            error={
-              formik.touched.telephone_number &&
-              Boolean(formik.errors.telephone_number)
-            }
-            helperText={
-              formik.touched.telephone_number && formik.errors.telephone_number
-            }
-          />
+              <Input
+                variant='outlined'
+                label='Dirección'
+                name='address'
+                value={formik.values.address}
+                onChange={formik.handleChange}
+                error={formik.touched.address && Boolean(formik.errors.address)}
+                helperText={formik.touched.address && formik.errors.address}
+              />
 
-          <Button
-            type='submit'
-            className='w-full col-span-2'
-            label={t('edit')}
-            loading={isLoading}
-          />
-        </form>
+              <Input
+                variant='outlined'
+                className='col-span-2'
+                label='Número telefónico'
+                name='telephone_number'
+                value={formik.values.telephone_number}
+                onChange={formik.handleChange}
+                error={
+                  formik.touched.telephone_number &&
+                  Boolean(formik.errors.telephone_number)
+                }
+                helperText={
+                  formik.touched.telephone_number &&
+                  formik.errors.telephone_number
+                }
+              />
+
+              <Button
+                type='submit'
+                className='w-full col-span-2'
+                label={t('edit')}
+                loading={isLoading}
+              />
+            </form>
+          </CustomTabPanel>
+
+          <CustomTabPanel value={value} index={1}>
+            <Select
+              label={t('speciality')}
+              value={'Cirugia'}
+              onChange={() => {}}
+              options={[{ label: 'Cirugia', value: 'Cirugia' }]}
+            />
+          </CustomTabPanel>
+        </div>
       </article>
     </Box>
   )

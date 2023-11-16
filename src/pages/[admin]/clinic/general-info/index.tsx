@@ -24,9 +24,12 @@ import {
   TimePicker,
 } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
-import { useQuery } from '@tanstack/react-query'
-import { useClinic } from '@/hooks/use-clinic'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { UpdateClinicForm, useClinic } from '@/hooks/use-clinic'
 import { Clinic } from '@/types/clinic'
+import * as yup from 'yup'
+import { useFormik } from 'formik'
+import toast from 'react-hot-toast'
 
 export default function GeneralViewPage() {
   const { t } = useTranslation()
@@ -100,7 +103,7 @@ function ClinicHeader() {
     )
 
   // @ts-ignore
-  const { name, address, ClinicSummaryScore }: Clinic = data.getMyClinic
+  const { name, address, ClinicSummaryScore }: Clinic = data
   const { total_points, total_users } = ClinicSummaryScore
 
   return (
@@ -119,7 +122,7 @@ function ClinicHeader() {
 
           <Label.Large
             className='col-span-5'
-            text={String(total_points / total_users)}
+            text={String(total_points / total_users) ?? '0'}
           />
         </div>
       </article>
@@ -139,7 +142,7 @@ function GeneralDescription() {
   if (isLoading) return null
 
   // @ts-ignore
-  const { email, telephone_number, schedule }: Clinic = data.getMyClinic
+  const { email, telephone_number, schedule }: Clinic = data
 
   const scheduleString = `
     Lunes a Viernes: ${schedule.workingDays[0].startTime} - ${schedule.workingDays[0].endTime}\n No laborables: ${schedule.nonWorkingDays}`
@@ -176,26 +179,9 @@ function ClinicServices() {
     queryFn: getMyClinic,
   })
 
-  if (isLoading) return null
+  if (isLoading || !data) return null
 
-  // @ts-ignore
-  const { services }: Clinic = data.getMyClinic
-
-  // const services = {
-  //   consultation: {
-  //     label: t('consultation'),
-  //     icon: <HomeWorkOutlined />,
-  //   },
-  //   surgery: { label: t('surgery'), icon: <MasksOutlined /> },
-  //   'preventive-medicine': {
-  //     label: t('preventive-medicine'),
-  //     icon: <MedicationOutlined />,
-  //   },
-  //   delivery: {
-  //     label: t('delivery'),
-  //     icon: <LocalShippingOutlined />,
-  //   },
-  // }
+  const { services }: Clinic = data
 
   const icons = [
     <HomeWorkOutlined />,
@@ -206,11 +192,16 @@ function ClinicServices() {
   return (
     <SectionCard title={t('services')}>
       <div className='grid grid-cols-2 gap-y-10 grid-rows-auto px-[30px] py-[38px]'>
-        {services.map((value, index) => {
-          return (
-            <Service icon={icons[index] ?? <HomeWorkOutlined />} name={value} />
-          )
-        })}
+        {services
+          ? services.map((value, index) => {
+              return (
+                <Service
+                  icon={icons[index] ?? <HomeWorkOutlined />}
+                  name={value}
+                />
+              )
+            })
+          : 'No hay servicios en clinica'}
       </div>
     </SectionCard>
   )
@@ -351,14 +342,51 @@ const style = {
   width: '40%',
 }
 
+const schema = yup.object({
+  name: yup.string().required(),
+  email: yup.string().email(),
+  telephone_number: yup.string().required(),
+  address: yup.string().required(),
+})
+
 function ProfileModalSection() {
   const { t } = useTranslation()
 
-  const [select, setSelectValue] = useState<string>()
+  const { getMyClinic, updateClinic } = useClinic()
 
-  const handleStatusChange = (event: SelectChangeEvent) => {
-    setSelectValue(event.target.value as string)
+  const { data } = useQuery({
+    queryKey: ['clinic'],
+    queryFn: getMyClinic,
+  })
+
+  if (!data) return
+
+  const { name, email, telephone_number, address } = data
+
+  const initialValues: UpdateClinicForm = {
+    name,
+    email,
+    telephone_number,
+    address,
   }
+
+  const { mutateAsync, isPending: isLoading } = useMutation({
+    mutationFn: updateClinic,
+  })
+
+  const queryClient = useQueryClient()
+
+  const onSubmit = async (data: UpdateClinicForm) => {
+    await mutateAsync({ ...data })
+    queryClient.invalidateQueries({ queryKey: ['clinic'] })
+    toast.success(t('updated-fields'))
+  }
+
+  const formik = useFormik({
+    initialValues,
+    validationSchema: schema,
+    onSubmit,
+  })
 
   return (
     <article className='py-5'>
@@ -367,37 +395,60 @@ function ProfileModalSection() {
         <input type='file' name='' id='' />
       </div>
 
-      <form className='grid grid-cols-3 py-12 gap-x-12 gap-y-10'>
-        <Input variant='outlined' name={t('name')} label={t('name')} />
-        <Input variant='outlined' name={t('email')} label={t('email')} />
-        {/* <Input variant='outlined' name={t('name')} /> */}
+      <form
+        className='grid grid-cols-2 py-12 gap-x-12 gap-y-10'
+        onSubmit={formik.handleSubmit}
+      >
         <Input
           variant='outlined'
-          name={t('telephone-number')}
-          label={t('telephone-number')}
-        />
-        {/* <Input variant='outlined' name={t('rnc')} /> */}
-        {/* <Input variant='outlined' name={t('name')} /> */}
-        <Input variant='outlined' name={t('address')} label={t('address')} />
-        <Input
-          className='col-span-2'
-          variant='outlined'
-          name={t('services')}
-          label={t('services')}
+          name='name'
+          label={t('name')}
+          value={formik.values.name}
+          onChange={formik.handleChange}
+          error={formik.touched.name && Boolean(formik.errors.name)}
+          helperText={formik.touched.name && formik.errors.name}
         />
 
-        <Select
-          value={select}
-          onChange={handleStatusChange}
-          options={[{ label: 'Manual', value: 'Manual' }]}
+        <Input
+          variant='outlined'
+          name='email'
+          label={t('email')}
+          value={formik.values.email}
+          onChange={formik.handleChange}
+          error={formik.touched.email && Boolean(formik.errors.email)}
+          helperText={formik.touched.email && formik.errors.email}
+        />
+
+        <Input
+          variant='outlined'
+          name='telephone-number'
+          label={t('telephone-number')}
+          value={formik.values.telephone_number}
+          onChange={formik.handleChange}
+          error={
+            formik.touched.telephone_number &&
+            Boolean(formik.errors.telephone_number)
+          }
+          helperText={
+            formik.touched.telephone_number && formik.errors.telephone_number
+          }
+        />
+
+        <Input
+          variant='outlined'
+          name='address'
+          label={t('address')}
+          value={formik.values.address}
+          onChange={formik.handleChange}
+          error={formik.touched.address && Boolean(formik.errors.address)}
+          helperText={formik.touched.address && formik.errors.address}
         />
 
         <Button
-          onClick={() => {
-            return
-          }}
-          size='small'
-          label={t('save')}
+          type='submit'
+          className='w-full col-span-2'
+          label={t('edit')}
+          loading={isLoading}
         />
       </form>
     </article>

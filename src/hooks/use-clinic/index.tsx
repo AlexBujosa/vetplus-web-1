@@ -3,6 +3,7 @@ import {
   GET_MY_CLINIC,
   GET_MY_EMPLOYEES,
   INVITE_TO_CLINIC,
+  UPDATE_CLINIC,
 } from '@/graphql/clinic'
 import { useAtom } from 'jotai'
 import { Employee, employeesAtom } from './employeesAtom'
@@ -36,9 +37,11 @@ export function useClinic() {
   }
 
   async function getMyClinic() {
-    const request = await client.request<Clinic>(GET_MY_CLINIC)
+    const { getMyClinic } = await client.request<{ getMyClinic: Clinic }>(
+      GET_MY_CLINIC
+    )
 
-    return request
+    return getMyClinic
   }
 
   async function sendInvitationToClinic(email: string) {
@@ -58,11 +61,29 @@ export function useClinic() {
     return request
   }
 
+  async function updateClinic(payload: UpdateClinicForm) {
+    const { updateClinic } = await client.request<{
+      updateClinic: { result: string }
+    }>(UPDATE_CLINIC, {
+      updateClinicInput: { ...payload },
+    })
+
+    return updateClinic
+  }
+
   return {
     getMyClinic,
     getMyEmployees,
     getMyClients,
     findEmployeeByEmail,
     sendInvitationToClinic,
+    updateClinic,
   }
+}
+
+export type UpdateClinicForm = {
+  name: string
+  email: string
+  telephone_number: string
+  address: string
 }
