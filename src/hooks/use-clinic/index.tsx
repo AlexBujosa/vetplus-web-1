@@ -1,5 +1,6 @@
 import {
   GET_ALL_CLIENTS,
+  GET_APPOINTMENTS,
   GET_MY_CLINIC,
   GET_MY_EMPLOYEES,
   INVITE_TO_CLINIC,
@@ -8,7 +9,15 @@ import {
 import { useAtom } from 'jotai'
 import { Employee, employeesAtom } from './employeesAtom'
 import client from '@/utils/apolloClient'
-import { Clinic } from '@/types/clinic'
+import {
+  Appointment,
+  AppointmentState,
+  AppointmentStatus,
+  Clinic,
+  Veterinarian,
+} from '@/types/clinic'
+import { Pet } from '@/types/pet'
+import { User } from '@/types/user'
 
 export function useClinic() {
   const [currentEmployees] = useAtom(employeesAtom)
@@ -72,12 +81,16 @@ export function useClinic() {
   }
 
   async function getAppointments() {
-    // const { updateClinic } = await client.request<{
-    //   updateClinic: { result: string }
-    // }>(UPDATE_CLINIC, {
-    //   updateClinicInput: { ...payload },
-    // })
-    // return updateClinic
+    const { getAppointmentDetailClinicOwner } = await client.request<{
+      getAppointmentDetailClinicOwner: Appointment[]
+    }>(GET_APPOINTMENTS, {
+      filterAppointmentBySSInput: {
+        state: null,
+        appointment_status: null,
+      },
+    })
+
+    return getAppointmentDetailClinicOwner
   }
 
   return {

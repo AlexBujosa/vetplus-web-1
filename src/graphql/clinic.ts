@@ -150,3 +150,84 @@ export const UPDATE_CLINIC = gql`
     }
   }
 `
+
+export const GET_APPOINTMENTS = gql`
+  query ($filterAppointmentBySSInput: FilterAppointmentBySSInput!) {
+    getAppointmentDetailClinicOwner(
+      filterAppointmentBySSInput: $filterAppointmentBySSInput
+    ) {
+      start_at
+      end_at
+      id
+      id_owner
+      id_veterinarian
+      id_pet
+      services
+      id_clinic
+      observations
+      appointment_status
+      state
+      created_at
+      updated_at
+      status
+      Clinic {
+        id
+        id_owner
+        name
+        telephone_number
+        google_maps_url
+        email
+        image
+        address
+        created_at
+        updated_at
+        status
+      }
+      Pet {
+        id
+        id_owner
+        id_specie
+        id_breed
+        name
+        image
+        gender
+        castrated
+        dob
+        observations
+        created_at
+        updated_at
+        status
+      }
+      Veterinarian {
+        id
+        names
+        surnames
+        email
+        provider
+        document
+        address
+        telephone_number
+        image
+        role
+        created_at
+        updated_at
+        status
+      }
+      Owner {
+        id
+        names
+        surnames
+        email
+        provider
+        document
+        address
+        telephone_number
+        image
+        role
+        created_at
+        updated_at
+        status
+      }
+    }
+  }
+`

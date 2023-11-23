@@ -33,7 +33,7 @@ function useCalendar() {
     setWeek(nextWeek)
 
     if (nextWeek.month() !== dayjs(week).month()) {
-      handlePrevMonth()
+      handleNextMonth()
     }
   }
 
