@@ -71,10 +71,20 @@ export function useClinic() {
     return updateClinic
   }
 
+  async function getAppointments() {
+    // const { updateClinic } = await client.request<{
+    //   updateClinic: { result: string }
+    // }>(UPDATE_CLINIC, {
+    //   updateClinicInput: { ...payload },
+    // })
+    // return updateClinic
+  }
+
   return {
     getMyClinic,
     getMyEmployees,
     getMyClients,
+    getAppointments,
     findEmployeeByEmail,
     sendInvitationToClinic,
     updateClinic,

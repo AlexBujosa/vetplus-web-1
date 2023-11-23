@@ -1,22 +1,46 @@
 import { useAtom } from 'jotai'
-import { monthAtom } from './monthAtom'
-import { currentMonthIndex } from '@/utils'
+import { currentMonthAtom, monthAtom, weekAtom } from './monthAtom'
+import { currentMonthIndex, getMonth } from '@/utils'
 import dayjs from 'dayjs'
 
 function useCalendar() {
   const [monthIndex, setMonthIndex] = useAtom(monthAtom)
+  const [currentMonth, setCurrentMonth] = useAtom(currentMonthAtom)
+  const [week, setWeek] = useAtom(weekAtom)
 
   function handlePrevMonth() {
     setMonthIndex(monthIndex - 1)
+    setCurrentMonth(getMonth(monthIndex - 1))
   }
 
   function handleNextMonth() {
     setMonthIndex(monthIndex + 1)
+    setCurrentMonth(getMonth(monthIndex + 1))
+  }
+
+  function handlePrevWeek() {
+    const previousWeek = dayjs(week).subtract(7, 'days')
+    setWeek(previousWeek)
+
+    // Check if the previous week is in a different month
+    if (previousWeek.month() !== dayjs(week).month()) {
+      handlePrevMonth()
+    }
+  }
+
+  function handleNextWeek() {
+    const nextWeek = dayjs(week).add(7, 'days')
+    setWeek(nextWeek)
+
+    if (nextWeek.month() !== dayjs(week).month()) {
+      handlePrevMonth()
+    }
   }
 
   function handleReset() {
     const currentMonth = currentMonthIndex()
     setMonthIndex(currentMonth)
+    setWeek(dayjs())
   }
 
   function getDateString(): string {
@@ -30,6 +54,8 @@ function useCalendar() {
   return {
     handlePrevMonth,
     handleNextMonth,
+    handlePrevWeek,
+    handleNextWeek,
     handleReset,
     getDateString,
   }

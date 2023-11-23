@@ -7,7 +7,13 @@ import { ChevronLeft, ChevronRight } from '@mui/icons-material'
 import dayjs, { type Dayjs } from 'dayjs'
 import { getWeekdayInLocale } from '@/utils'
 import { useAtomValue } from 'jotai'
-import { currentMonthAtom, monthAtom } from '@/hooks/use-calendar/monthAtom'
+import {
+  currentMonthAtom,
+  monthAtom,
+  weekAtom,
+} from '@/hooks/use-calendar/monthAtom'
+import { useQuery } from '@tanstack/react-query'
+import { useClinic } from '@/hooks/use-clinic'
 
 export default function AppointmentsPage() {
   const { t } = useTranslation()
@@ -67,17 +73,25 @@ function SideSection() {
             ))}
             {currentMonth.map((row) => (
               <>
-                {row.map((day, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => {
-                      null
-                    }}
-                    className='w-full py-1 rounded-full hover:bg-base-neutral-gray-500'
-                  >
-                    <span className='text-sm'>{day.format('D')}</span>
-                  </button>
-                ))}
+                {row.map((day, idx) => {
+                  // Check if the current date in the loop is today
+                  const isToday = day.isSame(dayjs(), 'day')
+
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => {
+                        // Do something when the button is clicked
+                        null
+                      }}
+                      className={`w-full rounded-full hover:bg-base-neutral-gray-500 ${
+                        isToday && 'bg-blue-500 hover:bg-blue-600 text-white'
+                      }`}
+                    >
+                      <span className='text-sm'>{day.format('D')}</span>
+                    </button>
+                  )
+                })}
               </>
             ))}
           </div>
@@ -90,6 +104,13 @@ function SideSection() {
 }
 
 function IncomingAppointments() {
+  const { getAppointments } = useClinic()
+
+  const { data } = useQuery({
+    queryKey: ['appointments'],
+    queryFn: getAppointments,
+  })
+
   const appointments = {
     today: [
       {
@@ -154,7 +175,7 @@ function CalendarSection() {
 function CalendarHeader() {
   const { t } = useTranslation()
 
-  const { handleReset, handleNextMonth, handlePrevMonth, getDateString } =
+  const { handleReset, handleNextWeek, handlePrevWeek, getDateString } =
     useCalendar()
 
   return (
@@ -169,14 +190,14 @@ function CalendarHeader() {
       <Button
         className='text-base-primary-500'
         intent='tertiary'
-        onClick={handlePrevMonth}
+        onClick={handlePrevWeek}
         icon={<ChevronLeft />}
       />
 
       <Button
         className='text-base-primary-500'
         intent='tertiary'
-        onClick={handleNextMonth}
+        onClick={handleNextWeek}
         icon={<ChevronRight />}
       />
 
@@ -186,7 +207,8 @@ function CalendarHeader() {
 }
 
 function CalendarWeek() {
-  const startOfWeek = dayjs(getMonday())
+  const week = useAtomValue(weekAtom)
+  const startOfWeek = dayjs(getMonday(week))
   const arr = getWeekDays(startOfWeek)
   const intervals = generateTimeIntervals()
 
@@ -210,7 +232,7 @@ function CalendarWeek() {
       {arr.map((day, index) => {
         {
           const weekday = getWeekdayInLocale(day)
-          const dayNumber = (day.day() + 1).toString()
+          const dayNumber = (day.get('D') + 1).toString()
 
           return (
             <article key={index} className='flex flex-col'>
@@ -249,11 +271,13 @@ function CalendarWeek() {
   )
 }
 
-function getMonday() {
-  const d = new Date()
-  var day = d.getDay(),
-    diff = d.getDate() - day + (day == 0 ? -6 : 1)
-  return new Date(d.setDate(diff))
+function getMonday(date: Dayjs) {
+  const d = dayjs(date)
+  const diffToMonday = d.day() - 1
+  // Subtract the difference to get the Monday date
+  const mondayDate = d.subtract(diffToMonday, 'day')
+
+  return mondayDate
 }
 
 function getWeekDays(start: Dayjs) {
