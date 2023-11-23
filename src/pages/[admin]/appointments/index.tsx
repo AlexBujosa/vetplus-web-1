@@ -14,6 +14,11 @@ import {
 } from '@/hooks/use-calendar/monthAtom'
 import { useQuery } from '@tanstack/react-query'
 import { useClinic } from '@/hooks/use-clinic'
+import { Appointment } from '@/types/clinic'
+import { PropsWithChildren } from 'react'
+import isBetween from 'dayjs/plugin/isBetween'
+
+dayjs.extend(isBetween)
 
 export default function AppointmentsPage() {
   const { t } = useTranslation()
@@ -207,6 +212,13 @@ function CalendarHeader() {
 }
 
 function CalendarWeek() {
+  const { getAppointments } = useClinic()
+
+  const { data: allAppointments } = useQuery({
+    queryKey: ['appointments'],
+    queryFn: getAppointments,
+  })
+
   const week = useAtomValue(weekAtom)
   const startOfWeek = dayjs(getMonday(week))
   const arr = getWeekDays(startOfWeek)
@@ -305,9 +317,8 @@ function generateTimeIntervals(startHour: number = 7, endHour: number = 18) {
   return intervals
 }
 
-function TimeBadge(props: { time: Dayjs; procedure: string }) {
-  const { time, procedure } = props
-  const timeString = time.format('h:mm A')
+function TimeBadge(props: PropsWithChildren) {
+  const { children } = props
 
   return (
     <span className='flex h-full border-l rounded-l-md'>
@@ -318,10 +329,7 @@ function TimeBadge(props: { time: Dayjs; procedure: string }) {
         )}
       />
 
-      <span className='flex flex-col'>
-        <Label.Small className='font-medium' text={timeString} />
-        <Body.Small className='font-normal' text={procedure} />
-      </span>
+      <span className='flex flex-col'>{children}</span>
     </span>
   )
 }
