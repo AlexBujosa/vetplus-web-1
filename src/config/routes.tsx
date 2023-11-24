@@ -16,6 +16,8 @@ import NotificationsPage from '@/pages/[admin]/notifications'
 import ProfilePage from '@/pages/[admin]/profile'
 import AppointmentsPage from '@/pages/[admin]/appointments'
 import ClientsDetailPage from '@/pages/[admin]/clients/detail-page'
+import AppointmentDetail from '@/pages/[admin]/appointments/appointment-detail'
+import AppointmentForm from '@/pages/[admin]/appointments/appointment-form'
 
 type Routes = {
   auth: Route
@@ -100,11 +102,25 @@ let routes: Routes = {
         href: '/notifications',
         page: <NotificationsPage />,
         show: false,
+        allowedRoles,
       },
       'user-profile': {
         show: false,
         href: '/user-profile',
         page: <ProfilePage />,
+        allowedRoles,
+      },
+      'appointment-detail': {
+        show: false,
+        href: '/appointment-detail',
+        page: <AppointmentDetail />,
+        allowedRoles,
+      },
+      'appointment-detail/:appointmentId': {
+        show: false,
+        href: '/appointment-detail/:appointmentId',
+        page: <AppointmentForm />,
+        allowedRoles,
       },
     },
   },

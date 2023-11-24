@@ -87,6 +87,7 @@
     "something-wrong": "Ha ocurrido un error",
     "no-specialty": "Sin Especialidad",
     "admin": "Administrador",
-    "updated-fields": "Los registros han sido actualizados"
+    "updated-fields": "Los registros han sido actualizados",
+    "go-back": "Volver atrás"
   }
 }

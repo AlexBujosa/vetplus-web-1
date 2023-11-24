@@ -23,6 +23,8 @@ export default function NotificationsPage() {
   )
 }
 
+// TODO: Change appointment state
+
 function Card() {
   const { t } = useTranslation()
 

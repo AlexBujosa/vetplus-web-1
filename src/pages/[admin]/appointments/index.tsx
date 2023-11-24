@@ -1,3 +1,4 @@
+import { type PropsWithChildren, useState } from 'react'
 import { Body, Label, Title } from '@/components/typography'
 import { useTranslation } from 'react-i18next'
 import cn from '@/utils/cn'
@@ -6,7 +7,7 @@ import useCalendar from '@/hooks/use-calendar'
 import { ChevronLeft, ChevronRight } from '@mui/icons-material'
 import dayjs, { type Dayjs } from 'dayjs'
 import { getWeekdayInLocale } from '@/utils'
-import { useAtomValue } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import {
   currentMonthAtom,
   monthAtom,
@@ -14,11 +15,8 @@ import {
 } from '@/hooks/use-calendar/monthAtom'
 import { useQuery } from '@tanstack/react-query'
 import { useClinic } from '@/hooks/use-clinic'
-import { Appointment } from '@/types/clinic'
-import { PropsWithChildren } from 'react'
-import isBetween from 'dayjs/plugin/isBetween'
-
-dayjs.extend(isBetween)
+import { useNavigate } from 'react-router-dom'
+import { appointmentsAtom } from '@/hooks/use-clinic/appointmentsAtom'
 
 export default function AppointmentsPage() {
   const { t } = useTranslation()
@@ -73,14 +71,14 @@ function SideSection() {
                 key={i}
                 className='py-1 text-sm text-center select-none text-base-primary-600'
               >
-                {day.format('dd').charAt(0)}
+                {dayjs(day).format('dd').charAt(0)}
               </span>
             ))}
             {currentMonth.map((row) => (
               <>
                 {row.map((day, idx) => {
                   // Check if the current date in the loop is today
-                  const isToday = day.isSame(dayjs(), 'day')
+                  const isToday = dayjs(day).isSame(dayjs(), 'day')
 
                   return (
                     <button
@@ -93,7 +91,7 @@ function SideSection() {
                         isToday && 'bg-blue-500 hover:bg-blue-600 text-white'
                       }`}
                     >
-                      <span className='text-sm'>{day.format('D')}</span>
+                      <span className='text-sm'>{dayjs(day).format('D')}</span>
                     </button>
                   )
                 })}
@@ -223,18 +221,20 @@ function CalendarWeek() {
   const startOfWeek = dayjs(getMonday(week))
   const arr = getWeekDays(startOfWeek)
   const intervals = generateTimeIntervals()
+  const { t } = useTranslation()
+  const navigate = useNavigate()
+  const [appointments, setAppointmets] = useAtom(appointmentsAtom)
 
   return (
     <div className='grid flex-1 grid-cols-7'>
       <aside className='flex flex-col'>
         <div className='h-[60px]' />
-        {intervals.map((interval, index) => {
+        {intervals.map(({ time }, index) => {
           return (
             <span key={index} className='flex items-start justify-end h-[60px]'>
               <Body.Small
                 className='mx-3 text-base-neutral-gray-800'
-                key={interval}
-                text={interval}
+                text={time}
               />
             </span>
           )
@@ -243,8 +243,14 @@ function CalendarWeek() {
 
       {arr.map((day, index) => {
         {
+          const workingDay = arr[index]
+
+          const dayAppointments = allAppointments?.filter(({ start_at }) => {
+            return dayjs(workingDay).isSame(start_at, 'day')
+          })
+
           const weekday = getWeekdayInLocale(day)
-          const dayNumber = (day.get('D') + 1).toString()
+          const dayNumber = day.get('D').toString()
 
           return (
             <article key={index} className='flex flex-col'>
@@ -260,18 +266,52 @@ function CalendarWeek() {
                 <Label.ExtraLarge text={dayNumber} />
               </header>
 
-              {intervals.map((interval) => {
-                const now = dayjs()
-                const actualHour = now.hour()
-                const intervalHour = dayjs(interval, 'h A').hour()
+              {intervals.map(({ time }) => {
+                const intervalHour = dayjs(time, 'h A').hour()
 
-                const isBetweenInterval = actualHour === intervalHour
+                const appointmentsInInterval = dayAppointments?.filter(
+                  (date) => {
+                    const startingHour = dayjs(date.start_at).hour() + 4
+
+                    return (
+                      startingHour >= intervalHour &&
+                      startingHour + 1 <= intervalHour + 1
+                    )
+                  }
+                )
+
+                if (!appointmentsInInterval) return null
+
+                const appointmentsCount = appointmentsInInterval.length
+
+                if (appointmentsInInterval.length === 0)
+                  return (
+                    <div className='h-[60px] border border-base-neutral-gray-600' />
+                  )
 
                 return (
-                  <div className='h-[60px] border border-base-neutral-gray-600'>
-                    {isBetweenInterval && (
-                      <TimeBadge time={now} procedure='Vacuna' />
-                    )}
+                  <div
+                    className='cursor-pointer h-[60px] border border-base-neutral-gray-600'
+                    onClick={() => {
+                      setAppointmets(appointmentsInInterval)
+                      navigate('/appointment-detail')
+                    }}
+                  >
+                    <TimeBadge className='bg-base-primary-50'>
+                      <Label.Medium
+                        className='text-base-primary-700'
+                        text={time}
+                      />
+
+                      <Body.Small
+                        className='text-base-primary-700'
+                        text={
+                          appointmentsCount > 1
+                            ? `${appointmentsCount} ${t('appointments')}`
+                            : appointmentsInInterval[0].services.join()
+                        }
+                      />
+                    </TimeBadge>
                   </div>
                 )
               })}
@@ -303,33 +343,37 @@ function getWeekDays(start: Dayjs) {
   return range
 }
 
-function generateTimeIntervals(startHour: number = 7, endHour: number = 18) {
+function generateTimeIntervals(
+  startHour: number = 7,
+  endHour: number = 18
+): { time: string }[] {
   const intervals = []
   const startTime = dayjs().set('hour', startHour).startOf('hour')
   const endTime = dayjs().set('hour', endHour).startOf('hour')
 
   let currentHour = startTime
   while (!currentHour.isAfter(endTime)) {
-    intervals.push(currentHour.format('h A'))
+    intervals.push({ time: currentHour.format('h A') })
     currentHour = currentHour.add(1, 'hour')
   }
 
   return intervals
 }
 
-function TimeBadge(props: PropsWithChildren) {
-  const { children } = props
+interface TimeBadgeProps extends PropsWithChildren {
+  className: string
+}
+
+function TimeBadge(props: TimeBadgeProps) {
+  const { children, className } = props
 
   return (
     <span className='flex h-full border-l rounded-l-md'>
-      <div
-        className={cn(
-          'w-1 h-full mr-[6px] rounded-l-lg',
-          'bg-base-primary-700'
-        )}
-      />
+      <div className={cn('w-1 h-full rounded-l-lg', 'bg-base-primary-700')} />
 
-      <span className='flex flex-col'>{children}</span>
+      <span className={cn('flex flex-col w-full pl-[6px]', className)}>
+        {children}
+      </span>
     </span>
   )
 }

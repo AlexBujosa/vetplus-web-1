@@ -87,6 +87,7 @@
     "something-wrong": "Something went wrong",
     "no-specialty": "No Specialty",
     "admin": "Administrador",
-    "updated-fields": "The fields has been updated"
+    "updated-fields": "The fields has been updated",
+    "go-back": "Go back"
   }
 }
