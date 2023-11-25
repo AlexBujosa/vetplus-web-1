@@ -27,6 +27,8 @@ const initialValues = {
   email: '',
 }
 
+// TODO: Create employee in my clinic
+
 export default function EmployeesPage() {
   const { t } = useTranslation()
   const { sendInvitationToClinic } = useClinic()

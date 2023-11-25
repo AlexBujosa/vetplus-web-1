@@ -31,6 +31,9 @@ import * as yup from 'yup'
 import { useFormik } from 'formik'
 import toast from 'react-hot-toast'
 
+// TODO: Get comments and valoration from clinic
+// TODO: edit info from clinic
+
 export default function GeneralViewPage() {
   const { t } = useTranslation()
 

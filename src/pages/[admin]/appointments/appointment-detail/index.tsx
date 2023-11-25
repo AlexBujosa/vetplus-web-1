@@ -23,6 +23,8 @@ export default function AppointmentDetail() {
 
   const appointments = useAtomValue(appointmentsAtom)
 
+  // TODO: As an admin, I could switch the veterinary related to that appointment
+
   if (!appointments) return null
 
   return (

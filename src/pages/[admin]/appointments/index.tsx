@@ -217,6 +217,8 @@ function CalendarWeek() {
     queryFn: getAppointments,
   })
 
+  // TODO: As a veterinary, Filter results of appointments related to that veterinary.
+
   const week = useAtomValue(weekAtom)
   const startOfWeek = dayjs(getMonday(week))
   const arr = getWeekDays(startOfWeek)
