@@ -1,7 +1,9 @@
 import { Score } from '@/types/clinic'
+import { Role } from '@/types/role'
 import { atomWithStorage } from 'jotai/utils'
 
 export type Employee = {
+  id: string
   fullName: string
   names: string
   surnames: string
@@ -12,6 +14,7 @@ export type Employee = {
   status: boolean
   score: number
   image: string
+  role: Role
   VeterinarianSummaryScore: Score
   VeterinariaSpecialties: {
     specialties: string

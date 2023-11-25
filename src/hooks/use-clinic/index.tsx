@@ -9,15 +9,7 @@ import {
 import { useAtom } from 'jotai'
 import { Employee, employeesAtom } from './employeesAtom'
 import client from '@/utils/apolloClient'
-import {
-  Appointment,
-  AppointmentState,
-  AppointmentStatus,
-  Clinic,
-  Veterinarian,
-} from '@/types/clinic'
-import { Pet } from '@/types/pet'
-import { User } from '@/types/user'
+import { Appointment, Clinic } from '@/types/clinic'
 
 export function useClinic() {
   const [currentEmployees] = useAtom(employeesAtom)
