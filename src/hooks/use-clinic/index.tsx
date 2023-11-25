@@ -14,10 +14,16 @@ import { Appointment, Clinic } from '@/types/clinic'
 export function useClinic() {
   const [currentEmployees] = useAtom(employeesAtom)
 
-  async function getMyEmployees(): Promise<Employee[]> {
+  async function getMyEmployees(): Promise<
+    {
+      id_employee: string
+      status: boolean
+      Employee: Employee
+    }[]
+  > {
     const { getMyEmployees } = await client.request<any>(GET_MY_EMPLOYEES)
 
-    return getMyEmployees
+    return getMyEmployees.ClinicEmployees
   }
 
   async function getMyClients() {

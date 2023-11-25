@@ -71,17 +71,16 @@ function Body() {
 
   if (!appointments || !employees) return null
 
-  const employeesList = employees.filter((employee) => {
-    return employee.role === Role.VETERINARIAN
-  })
-
   // TODO: As an admin, I could switch the veterinary related to that appointment
 
   return (
     <TableBody>
       {appointments.map(({ id, Pet, start_at, Veterinarian, services }) => {
-        const options = employeesList.map(({ id, fullName }) => {
-          return { value: id, label: fullName }
+        const options = employees.map(({ id_employee, Employee }) => {
+          return {
+            value: id_employee,
+            label: `${Employee.names} ${Employee.surnames}`,
+          }
         })
 
         return (

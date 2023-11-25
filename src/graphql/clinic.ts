@@ -7,10 +7,8 @@ export const GET_MY_EMPLOYEES = gql`
         id_employee
         status
         Employee {
-          id
           names
           surnames
-          role
           image
           email
           address

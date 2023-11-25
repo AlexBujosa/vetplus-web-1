@@ -136,7 +136,7 @@ function EmployeesTable() {
     rows = TableLoadingRows()
   } else {
     // @ts-ignore
-    rows = EmployeesRowsValues(data.ClinicEmployees ?? [])
+    rows = EmployeesRowsValues(data ?? [])
   }
 
   function TableLoadingRows(): Row[] {
