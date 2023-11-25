@@ -3,7 +3,7 @@ import FormControl from '@mui/material/FormControl'
 import {
   InputLabel,
   Select as MuiSelect,
-  SelectChangeEvent,
+  SelectProps,
 } from '@mui/material'
 
 type Option = {
@@ -11,20 +11,19 @@ type Option = {
   value?: string
 }
 
-interface Props {
+interface Props extends SelectProps {
   label?: string
   options: Option[]
   value?: string
-  onChange: (event: SelectChangeEvent) => void
 }
 
 export default function Select(props: Props) {
-  const { label = 'Label', value, onChange, options } = props
+  const { label = 'Label', value, onChange, options, ...rest } = props
 
   return (
     <FormControl sx={{ minWidth: 120 }} size='small'>
       <InputLabel id='demo-simple-select-label'>{label}</InputLabel>
-      <MuiSelect label={label} value={value} onChange={onChange}>
+      <MuiSelect label={label} value={value} onChange={onChange} {...rest}>
         {options.map(({ label, value }) => {
           return <MenuItem value={value}>{label}</MenuItem>
         })}

@@ -1,4 +1,3 @@
-import React from 'react'
 import Button from '@/components/button'
 import { routes } from '@/config/routes'
 import { useNavigate } from 'react-router'
@@ -16,16 +15,16 @@ import {
 import dayjs from 'dayjs'
 import Image from '@/components/image'
 import { ReceiptLong } from '@mui/icons-material'
+import Select from '@/components/select'
+import { useQuery } from '@tanstack/react-query'
+import { useClinic } from '@/hooks/use-clinic'
+import { Role } from '@/types/role'
+
+const headers = ['pet', 'veterinary', 'services', 'appointment', 'attend']
 
 export default function AppointmentDetail() {
   const navigate = useNavigate()
   const { t } = useTranslation()
-
-  const appointments = useAtomValue(appointmentsAtom)
-
-  // TODO: As an admin, I could switch the veterinary related to that appointment
-
-  if (!appointments) return null
 
   return (
     <>
@@ -33,71 +32,99 @@ export default function AppointmentDetail() {
         {t('go-back')}
       </Button>
 
-      {/* <div>{JSON.stringify(appointments)}</div> */}
-
       <TableContainer>
         <Table sx={{ minWidth: 650 }} aria-label='simple table'>
-          <TableHead>
-            <TableRow>
-              <TableCell>Mascota</TableCell>
-              <TableCell>Veterinario</TableCell>
-              <TableCell>Servicio</TableCell>
-              <TableCell>Cita</TableCell>
-              <TableCell>Atender</TableCell>
+          <Header />
 
-              {/* <TableCell align='right'>Fat&nbsp;(g)</TableCell>
-              <TableCell align='right'>Carbs&nbsp;(g)</TableCell>
-              <TableCell align='right'>Protein&nbsp;(g)</TableCell> */}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {appointments.map(
-              ({ id, Pet, start_at, end_at, Veterinarian, services }) => {
-                // const appointmentTime = `${} - ${dayjs(end_at).format('hh mm')}`
-
-                return (
-                  <TableRow
-                    key={id}
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                  >
-                    <TableCell align='right'>
-                      <div className='flex flex-row items-center gap-x-3'>
-                        <Image
-                          className='w-10 h-10 rounded-full'
-                          src={Pet.image}
-                        />
-                        {Pet.name}
-                      </div>
-                    </TableCell>
-
-                    <TableCell component='th' scope='row'>
-                      {`${Veterinarian.names} ${Veterinarian.surnames}`}
-                    </TableCell>
-
-                    <TableCell component='th' scope='row'>
-                      {services.join(',')}
-                    </TableCell>
-
-                    <TableCell component='th' scope='row'>
-                      {dayjs(start_at).add(4, 'hour').format('hh:mm A')}
-                    </TableCell>
-
-                    <TableCell component='th' scope='row'>
-                      <Button onClick={() => navigate(id)}>
-                        <ReceiptLong />
-                      </Button>
-                    </TableCell>
-                    {/* <TableCell align='right'>{row.fat}</TableCell>
-                <TableCell align='right'>{row.carbs}</TableCell>
-              <TableCell align='right'>{row.protein}</TableCell> */}
-                  </TableRow>
-                )
-              }
-            )}
-          </TableBody>
+          <Body />
         </Table>
       </TableContainer>
     </>
+  )
+}
+
+function Header() {
+  const { t } = useTranslation()
+
+  return (
+    <TableHead>
+      <TableRow>
+        {headers.map((header) => {
+          return <TableCell key={header}>{t(header)}</TableCell>
+        })}
+      </TableRow>
+    </TableHead>
+  )
+}
+
+function Body() {
+  const appointments = useAtomValue(appointmentsAtom)
+  const { t } = useTranslation()
+  const navigate = useNavigate()
+
+  const { getMyEmployees } = useClinic()
+
+  const { data: employees } = useQuery({
+    queryKey: ['employees'],
+    queryFn: getMyEmployees,
+  })
+
+  if (!appointments || !employees) return null
+
+  const employeesList = employees.filter((employee) => {
+    return employee.role === Role.VETERINARIAN
+  })
+
+  // TODO: As an admin, I could switch the veterinary related to that appointment
+
+  return (
+    <TableBody>
+      {appointments.map(({ id, Pet, start_at, Veterinarian, services }) => {
+        const options = employeesList.map(({ id, fullName }) => {
+          return { value: id, label: fullName }
+        })
+
+        return (
+          <TableRow
+            key={id}
+            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+          >
+            <TableCell align='right'>
+              <div className='flex flex-row items-center gap-x-3'>
+                <Image className='w-10 h-10 rounded-full' src={Pet.image} />
+                {Pet.name}
+              </div>
+            </TableCell>
+
+            <TableCell component='th' scope='row'>
+              <Select
+                label={t('veterinary')}
+                options={options}
+                defaultValue={Veterinarian.id}
+              />
+            </TableCell>
+
+            <TableCell component='th' scope='row'>
+              <ul>
+                {services.map((service) => {
+                  return <li key={service}>{service}</li>
+                })}
+              </ul>
+            </TableCell>
+
+            <TableCell component='th' scope='row'>
+              {dayjs(start_at).add(4, 'hour').format('hh:mm A')}
+            </TableCell>
+
+            <TableCell component='th' scope='row'>
+              <Button onClick={() => navigate(id)}>
+                <ReceiptLong />
+              </Button>
+            </TableCell>
+          </TableRow>
+        )
+      })}
+    </TableBody>
   )
 }
 

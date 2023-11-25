@@ -1,5 +1,6 @@
 {
   "translation": {
+    "attend": "Attend",
     "name": "Name",
     "names": "Names",
     "surnames": "Surnames",
@@ -15,6 +16,7 @@
     "search-employees": "Search employees",
     "active-employees": "Active employees",
     "clients-traffic": "Customer traffic",
+    "service": "Service",
     "services": "Services",
     "pets": "Pets",
     "init-date": "Start date",
