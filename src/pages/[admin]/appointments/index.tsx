@@ -210,11 +210,11 @@ function CalendarHeader() {
 }
 
 function CalendarWeek() {
-  const { getAppointments } = useClinic()
+  const { getVerifiedAppointments } = useClinic()
 
   const { data: allAppointments } = useQuery({
     queryKey: ['appointments'],
-    queryFn: getAppointments,
+    queryFn: getVerifiedAppointments,
   })
 
   // TODO: As a veterinary, Filter results of appointments related to that veterinary.

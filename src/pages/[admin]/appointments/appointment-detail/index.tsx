@@ -62,12 +62,9 @@ function Body() {
   const { t } = useTranslation()
   const navigate = useNavigate()
 
-  const { getMyEmployees } = useClinic()
+  const { getMyEmployeesForSelect } = useClinic()
 
-  const { data: employees } = useQuery({
-    queryKey: ['employees'],
-    queryFn: getMyEmployees,
-  })
+  const employees = getMyEmployeesForSelect()
 
   if (!appointments || !employees) return null
 
@@ -76,13 +73,6 @@ function Body() {
   return (
     <TableBody>
       {appointments.map(({ id, Pet, start_at, Veterinarian, services }) => {
-        const options = employees.map(({ id_employee, Employee }) => {
-          return {
-            value: id_employee,
-            label: `${Employee.names} ${Employee.surnames}`,
-          }
-        })
-
         return (
           <TableRow
             key={id}
@@ -98,7 +88,7 @@ function Body() {
             <TableCell component='th' scope='row'>
               <Select
                 label={t('veterinary')}
-                options={options}
+                options={employees}
                 defaultValue={Veterinarian.id}
               />
             </TableCell>

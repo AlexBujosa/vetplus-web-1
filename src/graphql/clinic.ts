@@ -231,3 +231,11 @@ export const GET_APPOINTMENTS = gql`
     }
   }
 `
+
+export const RESPOND_APPOINTMENT = gql`
+  mutation ($updateAppointmentInput: UpdateAppointmentInput!) {
+    respondToAppointment(updateAppointmentInput: $updateAppointmentInput) {
+      result
+    }
+  }
+`

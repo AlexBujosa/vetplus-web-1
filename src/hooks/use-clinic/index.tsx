@@ -4,12 +4,18 @@ import {
   GET_MY_CLINIC,
   GET_MY_EMPLOYEES,
   INVITE_TO_CLINIC,
+  RESPOND_APPOINTMENT,
   UPDATE_CLINIC,
 } from '@/graphql/clinic'
 import { useAtom } from 'jotai'
 import { Employee, employeesAtom } from './employeesAtom'
 import client from '@/utils/apolloClient'
-import { Appointment, Clinic } from '@/types/clinic'
+import {
+  Appointment,
+  AppointmentState,
+  AppointmentStatus,
+  Clinic,
+} from '@/types/clinic'
 import { useQuery } from '@tanstack/react-query'
 
 export function useClinic() {
@@ -18,6 +24,16 @@ export function useClinic() {
   const { data: clinic } = useQuery({
     queryKey: ['clinic'],
     queryFn: getMyClinic,
+  })
+
+  const { data: employees } = useQuery({
+    queryKey: ['employees'],
+    queryFn: getMyEmployees,
+  })
+
+  const { data: allAppointments } = useQuery({
+    queryKey: ['appointments'],
+    queryFn: getAppointments,
   })
 
   async function getMyEmployees(): Promise<
@@ -96,14 +112,68 @@ export function useClinic() {
     return getAppointmentDetailClinicOwner
   }
 
+  function getPendingAppointments(): Appointment[] | null {
+    if (!allAppointments) return null
+
+    return allAppointments.filter(({ state, appointment_status }) => {
+      return (
+        state === AppointmentState.PENDING &&
+        appointment_status !== AppointmentStatus.ACCEPTED
+      )
+    })
+  }
+
+  function getVerifiedAppointments(): Appointment[] | null {
+    if (!allAppointments) return null
+
+    return allAppointments.filter(({ appointment_status }) => {
+      return appointment_status === AppointmentStatus.ACCEPTED
+    })
+  }
+
+  function getMyEmployeesForSelect():
+    | { value: string; label: string }[]
+    | null {
+    if (!employees) return null
+
+    return employees.map(({ id_employee, Employee }) => {
+      return {
+        value: id_employee,
+        label: `${Employee.names} ${Employee.surnames}`,
+      }
+    })
+  }
+
+  async function respondToAppointment(
+    appointmentId: string,
+    status: AppointmentStatus
+  ) {
+    const { respondToAppointment } = await client.request<any>(
+      RESPOND_APPOINTMENT,
+      {
+        updateAppointmentInput: {
+          id: appointmentId,
+          appointment_status: status,
+          // end_at: '2022-03-06T08:23:45.000Z',
+        },
+      }
+    )
+
+    return respondToAppointment
+  }
+
   return {
     getMyClinic,
     getMyEmployees,
     getMyClients,
     getAppointments,
+    getPendingAppointments,
+    getMyEmployeesForSelect,
+    getVerifiedAppointments,
     findEmployeeByEmail,
     sendInvitationToClinic,
     updateClinic,
+    respondToAppointment,
   }
 }
 
