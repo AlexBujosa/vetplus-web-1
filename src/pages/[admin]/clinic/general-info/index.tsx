@@ -502,10 +502,10 @@ function ScheduleModalSection() {
     <article className='grid grid-cols-2'>
       <div className='grid grid-cols-2'>
         <Body.Large text={t('days')} className='col-span-2' />
-        <Select value={dayFrom} onChange={handleDayFromChange} options={days} />
+        {/* <Select value={dayFrom} onChange={handleDayFromChange} options={days} /> */}
         <Select
           value={dayUntil}
-          onChange={handleDayUntilChange}
+          // onChange={handleDayUntilChange}
           options={days}
         />
 

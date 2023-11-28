@@ -27,8 +27,6 @@ const initialValues = {
   email: '',
 }
 
-// TODO: Create employee in my clinic
-
 export default function EmployeesPage() {
   const { t } = useTranslation()
   const { sendInvitationToClinic } = useClinic()
@@ -40,10 +38,14 @@ export default function EmployeesPage() {
   const onSubmit = async (data: { email: string }) => {
     try {
       await sendInvitationToClinic(data.email)
-      toast.success('Invitation was succesfull')
+      toast.success(t('invite-employee-succesfull'))
       handleClose()
     } catch (error: any) {
-      toast.error(error.response.errors[0].message ?? t('something-wrong'))
+      toast.error(
+        error.response.errors[0].message === 'EMAIL_NOT_FOUND'
+          ? t('email-not-found')
+          : t('something-wrong')
+      )
       console.error(error.response.errors)
     }
   }

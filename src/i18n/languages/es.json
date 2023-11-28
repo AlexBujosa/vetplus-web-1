@@ -90,6 +90,8 @@
     "no-specialty": "Sin Especialidad",
     "admin": "Administrador",
     "updated-fields": "Los registros han sido actualizados",
-    "go-back": "Volver atrás"
+    "go-back": "Volver atrás",
+    "email-not-found": "El usuario no existe",
+    "invite-employee-succesfull": "Se ha enviado la invitación"
   }
 }

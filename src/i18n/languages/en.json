@@ -90,6 +90,8 @@
     "no-specialty": "No Specialty",
     "admin": "Administrador",
     "updated-fields": "The fields has been updated",
-    "go-back": "Go back"
+    "go-back": "Go back",
+    "email-not-found": "Email address was not found",
+    "invite-employee-succesfull": "Invitation was succesfull"
   }
 }

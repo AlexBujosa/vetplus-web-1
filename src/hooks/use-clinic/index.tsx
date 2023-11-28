@@ -10,9 +10,15 @@ import { useAtom } from 'jotai'
 import { Employee, employeesAtom } from './employeesAtom'
 import client from '@/utils/apolloClient'
 import { Appointment, Clinic } from '@/types/clinic'
+import { useQuery } from '@tanstack/react-query'
 
 export function useClinic() {
   const [currentEmployees] = useAtom(employeesAtom)
+
+  const { data: clinic } = useQuery({
+    queryKey: ['clinic'],
+    queryFn: getMyClinic,
+  })
 
   async function getMyEmployees(): Promise<
     {
@@ -52,9 +58,8 @@ export function useClinic() {
   }
 
   async function sendInvitationToClinic(email: string) {
-    const clinic = await getMyClinic()
     // @ts-ignore
-    const clinicId = clinic.getMyClinic.id
+    const { id: clinicId } = clinic
 
     const variables = {
       inviteToClinicInput: {
