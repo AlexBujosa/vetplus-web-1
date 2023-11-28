@@ -1,4 +1,4 @@
-import { type PropsWithChildren, useState } from 'react'
+import { type PropsWithChildren } from 'react'
 import { Body, Label, Title } from '@/components/typography'
 import { useTranslation } from 'react-i18next'
 import cn from '@/utils/cn'
@@ -107,12 +107,12 @@ function SideSection() {
 }
 
 function IncomingAppointments() {
-  const { getAppointments } = useClinic()
+  // const { getAppointments } = useClinic()
 
-  const { data } = useQuery({
-    queryKey: ['appointments'],
-    queryFn: getAppointments,
-  })
+  // const { data } = useQuery({
+  //   queryKey: ['appointments'],
+  //   queryFn: getAppointments,
+  // })
 
   const appointments = {
     today: [
@@ -225,7 +225,7 @@ function CalendarWeek() {
   const intervals = generateTimeIntervals()
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const [appointments, setAppointmets] = useAtom(appointmentsAtom)
+  const [, setAppointmets] = useAtom(appointmentsAtom)
 
   return (
     <div className='grid flex-1 grid-cols-7'>

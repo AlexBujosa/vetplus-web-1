@@ -5,7 +5,7 @@ import dayjs from 'dayjs'
 
 function useCalendar() {
   const [monthIndex, setMonthIndex] = useAtom(monthAtom)
-  const [currentMonth, setCurrentMonth] = useAtom(currentMonthAtom)
+  const [, setCurrentMonth] = useAtom(currentMonthAtom)
   const [week, setWeek] = useAtom(weekAtom)
 
   function handlePrevMonth() {

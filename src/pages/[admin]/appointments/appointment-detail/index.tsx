@@ -16,9 +16,7 @@ import dayjs from 'dayjs'
 import Image from '@/components/image'
 import { ReceiptLong } from '@mui/icons-material'
 import Select from '@/components/select'
-import { useQuery } from '@tanstack/react-query'
 import { useClinic } from '@/hooks/use-clinic'
-import { Role } from '@/types/role'
 
 const headers = ['pet', 'veterinary', 'services', 'appointment', 'attend']
 

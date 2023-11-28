@@ -14,10 +14,9 @@ import Button from '@/components/button'
 import { t } from 'i18next'
 import cn from '@/utils/cn'
 import StarsReview from '@/components/stars-review'
-import { Modal as MuiModal, Box, SelectChangeEvent } from '@mui/material'
+import { Modal as MuiModal, Box } from '@mui/material'
 import Modal from '@/components/molecules/modal'
 import Input from '@/components/input'
-import Select from '@/components/select'
 import {
   LocalizationProvider,
   DateCalendar,
@@ -460,54 +459,54 @@ function ProfileModalSection() {
 
 function ScheduleModalSection() {
   const { t } = useTranslation()
-  const [dayFrom, setDayFrom] = useState<string>()
-  const [dayUntil, setDayUntil] = useState<string>()
+  // const [, setDayFrom] = useState<string>()
+  // const [dayUntil, setDayUntil] = useState<string>()
 
-  const handleDayFromChange = (event: SelectChangeEvent) => {
-    setDayFrom(event.target.value as string)
-  }
+  // const handleDayFromChange = (event: SelectChangeEvent) => {
+  //   setDayFrom(event.target.value as string)
+  // }
 
-  const handleDayUntilChange = (event: SelectChangeEvent) => {
-    setDayUntil(event.target.value as string)
-  }
+  // const handleDayUntilChange = (event: SelectChangeEvent) => {
+  //   setDayUntil(event.target.value as string)
+  // }
 
-  const days = [
-    {
-      label: t('monday'),
-    },
-    {
-      label: t('tuesday'),
-    },
-    {
-      label: t('wednesday'),
-    },
-    {
-      label: t('thursday'),
-    },
-    {
-      label: t('friday'),
-    },
-    {
-      label: t('friday'),
-    },
-    {
-      label: t('saturday'),
-    },
-    {
-      label: t('sunday'),
-    },
-  ]
+  // const days = [
+  //   {
+  //     label: t('monday'),
+  //   },
+  //   {
+  //     label: t('tuesday'),
+  //   },
+  //   {
+  //     label: t('wednesday'),
+  //   },
+  //   {
+  //     label: t('thursday'),
+  //   },
+  //   {
+  //     label: t('friday'),
+  //   },
+  //   {
+  //     label: t('friday'),
+  //   },
+  //   {
+  //     label: t('saturday'),
+  //   },
+  //   {
+  //     label: t('sunday'),
+  //   },
+  // ]
 
   return (
     <article className='grid grid-cols-2'>
       <div className='grid grid-cols-2'>
         <Body.Large text={t('days')} className='col-span-2' />
         {/* <Select value={dayFrom} onChange={handleDayFromChange} options={days} /> */}
-        <Select
+        {/* <Select
           value={dayUntil}
           // onChange={handleDayUntilChange}
           options={days}
-        />
+        /> */}
 
         <Body.Large text={t('hour')} className='col-span-2' />
 

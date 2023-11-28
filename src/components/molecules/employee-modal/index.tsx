@@ -3,7 +3,7 @@ import Input from '@/components/input'
 import ProfileImage from '@/components/profile-image'
 import Select from '@/components/select'
 import { Title, Body } from '@/components/typography'
-import { Box, SelectChangeEvent, Tab, Tabs } from '@mui/material'
+import { Box, Tab, Tabs } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import CustomTabPanel from '@/components/molecules/custom-tab-panel'
@@ -99,34 +99,34 @@ function ProfessionalSection(props: { specialty: string; status: boolean }) {
   const { specialty, status } = props
   const { t } = useTranslation()
 
-  const [statusValue, setStatusValue] = useState<string>(
-    status as unknown as string
-  )
+  // const [statusValue, setStatusValue] = useState<string>(
+  //   status as unknown as string
+  // )
 
-  const [specialtyValue, setSpecialtyValue] = useState<string>(
-    specialty as unknown as string
-  )
+  // const [specialtyValue, setSpecialtyValue] = useState<string>(
+  //   specialty as unknown as string
+  // )
 
-  const handleStatusChange = (event: SelectChangeEvent) => {
-    setStatusValue(event.target.value as string)
-  }
+  // const handleStatusChange = (event: SelectChangeEvent) => {
+  //   setStatusValue(event.target.value as string)
+  // }
 
-  const handleSpecialtyChange = (event: SelectChangeEvent) => {
-    setSpecialtyValue(event.target.value as string)
-  }
+  // const handleSpecialtyChange = (event: SelectChangeEvent) => {
+  //   setSpecialtyValue(event.target.value as string)
+  // }
 
   return (
     <div className='grid grid-cols-2 grid-rows-auto mt-[60px] mb-[20px] gap-x-[50px] gap-y-[40px]'>
       <Select
         label={t('speciality')}
-        value={specialtyValue}
-        onChange={handleSpecialtyChange}
+        value={specialty}
+        // onChange={handleSpecialtyChange}
         options={[{ label: 'Cirugia', value: 'Cirugia' }]}
       />
       <Select
         label={t('status')}
-        value={statusValue}
-        onChange={handleStatusChange}
+        value={status.toString()}
+        // onChange={handleStatusChange}
         options={[
           { label: 'True', value: 'true' },
           { label: 'False', value: 'false' },
