@@ -41,6 +41,11 @@ type Route = {
 
 export const allowedRoles = [Role.CLINIC_OWNER, Role.VETERINARIAN]
 
+export const defaultRoute: Record<string, string> = {
+  VETERINARIAN: '/appointments',
+  CLINIC_OWNER: '/clients',
+}
+
 let routes: Routes = {
   auth: {
     layout: <AuthLayout />,

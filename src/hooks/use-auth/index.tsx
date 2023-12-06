@@ -2,11 +2,15 @@ import client from '@/utils/apolloClient'
 import { SIGN_IN_WITH_GOOGLE, SIGN_WITH_EMAIL_QUERY } from '@/graphql/auth'
 import { useNavigate } from 'react-router-dom'
 import useUser from '@/hooks/use-user'
-import { allowedRoles, routes } from '@/config/routes'
+import { allowedRoles, defaultRoute, routes } from '@/config/routes'
 import { useSetAtom } from 'jotai'
 import { roleAtom } from './roleAtom'
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
 import { auth, provider } from '../use-google'
+import { GraphQLClient } from 'graphql-request'
+import { userAtom } from '../use-user/userAtom'
+import { GET_MY_PROFILE } from '@/graphql/user'
+import { Role } from '@/types/role'
 
 export type LoginSubmitForm = {
   email: string
@@ -18,6 +22,7 @@ export default function useAuth() {
   const { getUserProfile } = useUser()
 
   const setRole = useSetAtom(roleAtom)
+  const setUser = useSetAtom(userAtom)
 
   async function loginWithEmail({ email, password }: LoginSubmitForm) {
     const variables = {
@@ -62,9 +67,13 @@ export default function useAuth() {
 
     const credential = GoogleAuthProvider.credentialFromResult(result)!
 
-    const token = credential.idToken
+    localStorage.setItem('token', credential.idToken!)
 
-    localStorage.setItem('token', token!)
+    let client = new GraphQLClient(import.meta.env.VITE_GRAPHQL_ENDPOINT!, {
+      headers: {
+        authorization: `Bearer ${credential.idToken!}`,
+      },
+    })
 
     const {
       googleLogin,
@@ -76,11 +85,19 @@ export default function useAuth() {
 
     localStorage.setItem('token', googleLogin.access_token!)
 
-    const profile = await getUserProfile()
+    client = new GraphQLClient(import.meta.env.VITE_GRAPHQL_ENDPOINT!, {
+      headers: {
+        authorization: `Bearer ${googleLogin.access_token!}`,
+      },
+    })
 
-    console.log({ profile })
+    const { getMyProfile } = await client.request<any>(GET_MY_PROFILE)
+    setUser(getMyProfile)
 
-    return googleLogin
+    const { role }: { role: Role } = getMyProfile
+
+    setRole(role)
+    navigate(defaultRoute[role])
   }
 
   return { loginWithEmail, loginWithGoogle, logout }
