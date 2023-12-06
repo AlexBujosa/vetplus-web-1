@@ -106,6 +106,9 @@ function SideSection() {
   )
 }
 
+// TODO: Filter verified appointments
+// TODO: Filter to veterinarians appointments
+
 function IncomingAppointments() {
   // const { getAppointments } = useClinic()
 

@@ -105,12 +105,13 @@ function ClinicHeader() {
     )
 
   // @ts-ignore
-  const { name, address, ClinicSummaryScore }: Clinic = data
+  const { image, name, address, ClinicSummaryScore }: Clinic = data
   const { total_points, total_users } = ClinicSummaryScore
 
+  console.log({ data })
   return (
     <section className='flex flex-row gap-x-[10px]'>
-      <Image className='w-1/5 rounded-lg' />
+      <Image src={image} className='w-1/5 rounded-lg' />
 
       <article className='flex flex-col justify-between'>
         <Headline.Medium className='text-black' text={name} />

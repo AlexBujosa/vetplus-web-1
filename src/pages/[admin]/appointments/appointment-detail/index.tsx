@@ -67,6 +67,7 @@ function Body() {
   if (!appointments || !employees) return null
 
   // TODO: As an admin, I could switch the veterinary related to that appointment
+  // TODO: As a veterinarian, I could not switch
 
   return (
     <TableBody>

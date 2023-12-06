@@ -29,6 +29,8 @@ export default function NotificationsPage() {
   )
 }
 
+// TODO: If the formulary have not been filled, the user is alerted that have to fill out the form to end the appointment.
+
 function Card() {
   const { t } = useTranslation()
 

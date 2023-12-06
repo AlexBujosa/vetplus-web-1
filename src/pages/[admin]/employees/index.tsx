@@ -115,6 +115,8 @@ export default function EmployeesPage() {
   )
 }
 
+// TODO: Switch role to Veterinarian after Invite
+
 function EmployeesTable() {
   const { t } = useTranslation()
 
