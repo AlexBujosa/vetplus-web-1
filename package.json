@@ -14,10 +14,12 @@
     "@mui/icons-material": "^5.14.3",
     "@mui/material": "^5.14.5",
     "@mui/x-date-pickers": "^6.13.0",
+    "@react-oauth/google": "^0.12.1",
     "@tanstack/react-query": "^5.4.3",
     "@tanstack/react-query-devtools": "^5.4.3",
     "class-variance-authority": "^0.7.0",
     "dayjs": "^1.11.10",
+    "firebase": "^10.7.1",
     "formik": "^2.4.3",
     "graphql-request": "^6.1.0",
     "i18next": "^23.5.1",
@@ -31,6 +33,7 @@
     "yup": "^1.2.0"
   },
   "devDependencies": {
+    "@types/firebase": "^3.2.1",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react": "^4.0.3",

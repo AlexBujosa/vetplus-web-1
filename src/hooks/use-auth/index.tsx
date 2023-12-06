@@ -1,10 +1,12 @@
 import client from '@/utils/apolloClient'
-import { SIGN_WITH_EMAIL_QUERY } from '@/graphql/auth'
+import { SIGN_IN_WITH_GOOGLE, SIGN_WITH_EMAIL_QUERY } from '@/graphql/auth'
 import { useNavigate } from 'react-router-dom'
 import useUser from '@/hooks/use-user'
 import { allowedRoles, routes } from '@/config/routes'
 import { useSetAtom } from 'jotai'
 import { roleAtom } from './roleAtom'
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
+import { auth, provider } from '../use-google'
 
 export type LoginSubmitForm = {
   email: string
@@ -55,5 +57,31 @@ export default function useAuth() {
     navigate(routes.auth.pages.login.href)
   }
 
-  return { loginWithEmail, logout }
+  async function loginWithGoogle() {
+    const result = await signInWithPopup(auth, provider)
+
+    const credential = GoogleAuthProvider.credentialFromResult(result)!
+
+    const token = credential.idToken
+
+    localStorage.setItem('token', token!)
+
+    const {
+      googleLogin,
+    }: {
+      googleLogin: {
+        access_token: string
+      }
+    } = await client.request(SIGN_IN_WITH_GOOGLE)
+
+    localStorage.setItem('token', googleLogin.access_token!)
+
+    const profile = await getUserProfile()
+
+    console.log({ profile })
+
+    return googleLogin
+  }
+
+  return { loginWithEmail, loginWithGoogle, logout }
 }

@@ -22,7 +22,7 @@ const initialValues: LoginSubmitForm = {
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false)
-  const { loginWithEmail } = useAuth()
+  const { loginWithEmail, loginWithGoogle } = useAuth()
 
   const onSubmit = async (data: LoginSubmitForm) => {
     try {
@@ -104,9 +104,7 @@ export default function Login() {
         className='w-full'
         intent='outline'
         label={t('login-with-google')}
-        onClick={() => {
-          alert(t('login-with-google'))
-        }}
+        onClick={loginWithGoogle}
       />
 
       {/* <Link className='text-center text-base-primary-500' to='/forgot-password'>

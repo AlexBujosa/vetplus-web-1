@@ -7,3 +7,11 @@ export const SIGN_WITH_EMAIL_QUERY = gql`
     }
   }
 `
+
+export const SIGN_IN_WITH_GOOGLE = gql`
+  query {
+    googleLogin {
+      access_token
+    }
+  }
+`
