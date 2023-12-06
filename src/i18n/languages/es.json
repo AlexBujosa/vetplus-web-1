@@ -92,6 +92,7 @@
     "updated-fields": "Los registros han sido actualizados",
     "go-back": "Volver atrás",
     "email-not-found": "El usuario no existe",
-    "invite-employee-succesfull": "Se ha enviado la invitación"
+    "invite-employee-succesfull": "Se ha enviado la invitación",
+    "login-with-google": "Iniciar sesión con Google"
   }
 }

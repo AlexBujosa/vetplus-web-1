@@ -8,6 +8,7 @@ import { useFormik } from 'formik'
 import toast from 'react-hot-toast'
 import useAuth, { LoginSubmitForm } from '@/hooks/use-auth'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 const schema = yup.object({
   email: yup.string().email().required(),
@@ -44,6 +45,8 @@ export default function Login() {
   ) => {
     event.preventDefault()
   }
+
+  const { t } = useTranslation()
 
   return (
     <>
@@ -96,6 +99,15 @@ export default function Login() {
           loading={formik.isSubmitting}
         />
       </form>
+
+      <Button
+        className='w-full'
+        intent='outline'
+        label={t('login-with-google')}
+        onClick={() => {
+          alert(t('login-with-google'))
+        }}
+      />
 
       {/* <Link className='text-center text-base-primary-500' to='/forgot-password'>
         <Body.Medium
