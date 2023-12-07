@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { useAtomValue } from 'jotai'
 import { appointmentsAtom } from '@/hooks/use-clinic/appointmentsAtom'
 import {
+  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -14,21 +15,42 @@ import {
 } from '@mui/material'
 import dayjs from 'dayjs'
 import Image from '@/components/image'
-import { ReceiptLong } from '@mui/icons-material'
+import {
+  FileOpenOutlined,
+  KeyboardBackspace,
+  ReceiptLong,
+} from '@mui/icons-material'
 import Select from '@/components/select'
 import { useClinic } from '@/hooks/use-clinic'
+import { Headline } from '@/components/typography'
+import { userAtom } from '@/hooks/use-user/userAtom'
+import { Profile } from '@/components/profile'
 
 const headers = ['pet', 'veterinary', 'services', 'appointment', 'attend']
 
 export default function AppointmentDetail() {
+  const appointments = useAtomValue(appointmentsAtom)
   const navigate = useNavigate()
   const { t } = useTranslation()
 
   return (
     <>
-      <Button onClick={() => navigate(routes.admin.pages.appointments.href)}>
-        {t('go-back')}
-      </Button>
+      <div className='flex flex-row items-center gap-x-8'>
+        <IconButton
+          className='w-fit'
+          onClick={() => navigate(routes.admin.pages.appointments.href)}
+        >
+          <KeyboardBackspace />
+        </IconButton>
+
+        <Headline.Medium text={t('appointments')} />
+
+        {appointments && (
+          <article className='px-5 py-2 border rounded-md border-base-neutral-gray-600'>
+            {dayjs(appointments[0].start_at).add(4, 'hour').format('LLLL')}
+          </article>
+        )}
+      </div>
 
       <TableContainer>
         <Table sx={{ minWidth: 650 }} aria-label='simple table'>
@@ -57,6 +79,8 @@ function Header() {
 
 function Body() {
   const appointments = useAtomValue(appointmentsAtom)
+  const user = useAtomValue(userAtom)
+
   const { t } = useTranslation()
   const navigate = useNavigate()
 
@@ -67,7 +91,6 @@ function Body() {
   if (!appointments || !employees) return null
 
   // TODO: As an admin, I could switch the veterinary related to that appointment
-  // TODO: As a veterinarian, I could not switch
 
   return (
     <TableBody>
@@ -85,11 +108,22 @@ function Body() {
             </TableCell>
 
             <TableCell component='th' scope='row'>
-              <Select
-                label={t('veterinary')}
-                options={employees}
-                defaultValue={Veterinarian.id}
-              />
+              {user?.role === 'CLINIC_OWNER' ? (
+                <Select
+                  label={t('veterinary')}
+                  options={employees}
+                  defaultValue={Veterinarian.id}
+                />
+              ) : (
+                <Profile
+                  profile={`${Veterinarian?.names} ${Veterinarian?.surnames}`}
+                  image={Veterinarian.image}
+                />
+              )}
+            </TableCell>
+
+            <TableCell component='th' scope='row'>
+              {dayjs(start_at).add(4, 'hour').format('h:mm A')}
             </TableCell>
 
             <TableCell component='th' scope='row'>
@@ -101,13 +135,9 @@ function Body() {
             </TableCell>
 
             <TableCell component='th' scope='row'>
-              {dayjs(start_at).add(4, 'hour').format('hh:mm A')}
-            </TableCell>
-
-            <TableCell component='th' scope='row'>
-              <Button onClick={() => navigate(id)}>
-                <ReceiptLong />
-              </Button>
+              <IconButton onClick={() => navigate(id)}>
+                <FileOpenOutlined />
+              </IconButton>
             </TableCell>
           </TableRow>
         )

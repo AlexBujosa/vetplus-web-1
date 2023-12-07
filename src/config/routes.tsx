@@ -71,7 +71,7 @@ let routes: Routes = {
         href: '/clients',
         page: <ClientsPage />,
         icon: <PeopleOutlineOutlinedIcon />,
-        allowedRoles,
+        allowedRoles: [Role.CLINIC_OWNER],
       },
       'clients-detail': {
         show: false,

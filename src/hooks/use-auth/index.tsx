@@ -5,7 +5,7 @@ import useUser from '@/hooks/use-user'
 import { allowedRoles, defaultRoute, routes } from '@/config/routes'
 import { useSetAtom } from 'jotai'
 import { roleAtom } from './roleAtom'
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
+import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth'
 import { auth, provider } from '../use-google'
 import { GraphQLClient } from 'graphql-request'
 import { userAtom } from '../use-user/userAtom'
@@ -57,8 +57,9 @@ export default function useAuth() {
     navigate(routes.admin.pages.clients.href)
   }
 
-  function logout() {
-    localStorage.removeItem('token')
+  async function logout() {
+    localStorage.clear()
+    await signOut(auth)
     navigate(routes.auth.pages.login.href)
   }
 

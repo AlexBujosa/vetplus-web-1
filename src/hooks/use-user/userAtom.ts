@@ -1,3 +1,4 @@
+import { Role } from '@/types/role'
 import { atomWithStorage } from 'jotai/utils'
 
 type User = {
@@ -6,6 +7,7 @@ type User = {
   fullName: string
   email: string
   image: string
+  role: Role
 }
 
 export const userAtom = atomWithStorage<User | undefined>('user', undefined)

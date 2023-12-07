@@ -135,14 +135,16 @@ function ProfileWithName() {
 
   if (!user) return null
 
-  const { image, names, surnames, email } = user
+  const { image, names, surnames, email, role } = user
+  const fullName = surnames ? names.concat(' ', surnames) : names
 
   return (
     <div className='flex flex-row gap-x-5'>
       <ProfileImage className='w-[60px] h-[60px]' src={image} loading />
 
       <span>
-        <Title.Medium text={`${names} ${surnames}`} />
+        <Title.Medium text={fullName} />
+        <Body.Medium className='text-base-neutral-gray-700' text={role} />
         <Body.Medium className='text-base-neutral-gray-700' text={email} />
       </span>
     </div>
