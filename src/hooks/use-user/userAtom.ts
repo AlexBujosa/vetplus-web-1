@@ -2,6 +2,7 @@ import { Role } from '@/types/role'
 import { atomWithStorage } from 'jotai/utils'
 
 type User = {
+  id: string
   names: string
   surnames: string
   fullName: string

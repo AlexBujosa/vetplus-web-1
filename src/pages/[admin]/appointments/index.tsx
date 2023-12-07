@@ -17,6 +17,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useClinic } from '@/hooks/use-clinic'
 import { useNavigate } from 'react-router-dom'
 import { appointmentsAtom } from '@/hooks/use-clinic/appointmentsAtom'
+import { userAtom } from '@/hooks/use-user/userAtom'
 
 export default function AppointmentsPage() {
   const { t } = useTranslation()
@@ -105,9 +106,6 @@ function SideSection() {
     </aside>
   )
 }
-
-// TODO: Filter verified appointments
-// TODO: Filter to veterinarians appointments
 
 function IncomingAppointments() {
   // const { getAppointments } = useClinic()
@@ -231,8 +229,6 @@ function CalendarWeek() {
     queryKey: ['verified-appointments'],
     queryFn: getVerifiedAppointments,
   })
-
-  // TODO: As a veterinary, Filter results of appointments related to that veterinary.
 
   const week = useAtomValue(weekAtom)
   const startOfWeek = dayjs(getMonday(week))

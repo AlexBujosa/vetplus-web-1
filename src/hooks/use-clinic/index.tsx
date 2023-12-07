@@ -1,6 +1,7 @@
 import {
   GET_ALL_CLIENTS,
   GET_APPOINTMENTS,
+  GET_CLINIC_COMMENTS,
   GET_MY_CLINIC,
   GET_MY_EMPLOYEES,
   INVITE_TO_CLINIC,
@@ -8,7 +9,7 @@ import {
   RESPOND_APPOINTMENT,
   UPDATE_CLINIC,
 } from '@/graphql/clinic'
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { Employee, employeesAtom } from './employeesAtom'
 import client from '@/utils/apolloClient'
 import {
@@ -18,9 +19,12 @@ import {
   Clinic,
 } from '@/types/clinic'
 import { useQuery } from '@tanstack/react-query'
+import { userAtom } from '../use-user/userAtom'
+import { Role } from '@/types/role'
 
 export function useClinic() {
   const [currentEmployees] = useAtom(employeesAtom)
+  const user = useAtomValue(userAtom)
 
   const { data: clinic } = useQuery({
     queryKey: ['clinic'],
@@ -125,7 +129,18 @@ export function useClinic() {
   }
 
   function getVerifiedAppointments(): Appointment[] | null {
-    if (!allAppointments) return null
+    if (!allAppointments || !user) return null
+
+    const { role, id: userId } = user
+
+    if (role === Role.VETERINARIAN) {
+      return allAppointments.filter(({ appointment_status, Veterinarian }) => {
+        return (
+          appointment_status === AppointmentStatus.ACCEPTED &&
+          Veterinarian.id === userId
+        )
+      })
+    }
 
     return allAppointments.filter(({ appointment_status }) => {
       return appointment_status === AppointmentStatus.ACCEPTED
@@ -180,10 +195,17 @@ export function useClinic() {
     return respondToAppointment
   }
 
+  async function getMyClinicComments() {
+    const { getMyComments } = await client.request<any>(GET_CLINIC_COMMENTS)
+
+    return getMyComments
+  }
+
   return {
     getMyClinic,
     getMyEmployees,
     getMyClients,
+    getMyClinicComments,
     getAppointments,
     getPendingAppointments,
     getMyEmployeesForSelect,

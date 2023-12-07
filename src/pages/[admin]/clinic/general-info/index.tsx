@@ -29,6 +29,7 @@ import { Clinic } from '@/types/clinic'
 import * as yup from 'yup'
 import { useFormik } from 'formik'
 import toast from 'react-hot-toast'
+import dayjs from 'dayjs'
 
 // TODO: Get comments and valoration from clinic
 // TODO: edit info from clinic
@@ -211,71 +212,45 @@ function ClinicServices() {
 }
 
 function CommentsAndReview() {
-  const reviews = [
-    {
-      name: 'Juan Perez',
-      veterinarian: 'Laura Mejia',
-      score: 4.5,
-      review:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec velit nec.',
-      kind: 'Cita',
-      date: '12 de agosto, 3:00 PM',
-    },
-    {
-      name: 'Juan Perez',
-      veterinarian: 'Laura Mejia',
-      review:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nec velit nec.',
-      kind: 'Cita',
-      date: '12 de agosto, 3:00 PM',
-    },
-    {
-      name: 'Juan Perez',
-      veterinarian: 'Laura Mejia',
-      score: 4.5,
-      kind: 'Cita',
-      date: '12 de agosto, 3:00 PM',
-    },
-  ]
+  const { getMyClinicComments } = useClinic()
+
+  const { data: comments } = useQuery({
+    queryKey: ['comments'],
+    queryFn: getMyClinicComments,
+  })
+
   return (
-    <SectionCard className='p-0' title={t('comments-reviews')}>
-      {reviews.map((review) => {
-        return <Review {...review} />
+    <SectionCard
+      className='p-0 max-h-[300px] overflow-y-scroll'
+      title={t('comments-reviews')}
+    >
+      {comments.map((comment: GetMyComment) => {
+        return <Review {...comment} />
       })}
     </SectionCard>
   )
 }
 
-function Review(props: {
-  name: string
-  veterinarian: string
-  score?: number
-  kind: string
-  date: string
-  review?: string
-}) {
-  const { name, veterinarian, score, review, date } = props
+function Review(props: GetMyComment) {
+  const { Owner, comment, created_at } = props
 
   return (
-    <div className='grid grid-cols-4 gap-x-28 px-5 py-[15px] border-b border-b-base-neutral-gray-500'>
+    <div className='grid grid-cols-3 gap-x-28 px-5 py-[15px] border-b border-b-base-neutral-gray-500'>
       <section className='flex flex-row items-center gap-[10px]'>
-        <Image className='rounded-full w-[55px] h-[55px]' />
-        <Title.Small text={name} />
+        <Image src={Owner.image} className='rounded-full w-[55px] h-[55px]' />
+        <Title.Small text={`${Owner.names} ${Owner.surnames ?? ''}`} />
       </section>
 
       <section className='flex flex-col justify-center'>
-        <Title.Small text={t('veterinary')} />
-        <Body.Small text={veterinarian} />
+        {/* {score && <StarsReview review={score} />} */}
+        <Body.Small className='text-black' text={comment} />
       </section>
 
       <section className='flex flex-col justify-center'>
-        {score && <StarsReview review={score} />}
-        {review && <Body.Small className='text-black' text={review} />}
-      </section>
-
-      <section className='flex flex-col justify-center'>
-        <Title.Small text={t('appointment')} />
-        <Body.Small className='font-normal text-black' text={date} />
+        <Body.Small
+          className='font-normal text-black'
+          text={dayjs(created_at).format('LLL')}
+        />
       </section>
     </div>
   )
@@ -525,4 +500,21 @@ function ScheduleModalSection() {
       </LocalizationProvider>
     </article>
   )
+}
+
+interface GetMyComment {
+  id: string
+  id_clinic: string
+  id_owner: string
+  comment: string
+  created_at: Date
+  updated_at: Date
+  status: boolean
+  Owner: Owner
+}
+
+interface Owner {
+  names: string
+  surnames: string
+  image: string
 }

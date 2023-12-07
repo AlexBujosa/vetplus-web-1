@@ -95,8 +95,6 @@ function Body() {
 
   if (!appointments || !employees || !user) return null
 
-  // TODO: As an admin, I could switch the veterinary related to that appointment
-
   return (
     <TableBody>
       {appointments.map(({ id, Pet, start_at, Veterinarian, services }) => {

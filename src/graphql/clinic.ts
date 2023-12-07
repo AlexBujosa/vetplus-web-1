@@ -251,3 +251,22 @@ export const REASSIGN_APPOINTMENT = gql`
     }
   }
 `
+
+export const GET_CLINIC_COMMENTS = gql`
+  query {
+    getMyComments {
+      id
+      id_clinic
+      id_owner
+      comment
+      created_at
+      updated_at
+      status
+      Owner {
+        names
+        surnames
+        image
+      }
+    }
+  }
+`
