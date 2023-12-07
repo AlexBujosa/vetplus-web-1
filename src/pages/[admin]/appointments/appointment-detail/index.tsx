@@ -6,7 +6,6 @@ import { appointmentsAtom } from '@/hooks/use-clinic/appointmentsAtom'
 import {
   CircularProgress,
   IconButton,
-  SelectChangeEvent,
   Table,
   TableBody,
   TableCell,

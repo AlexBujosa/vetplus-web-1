@@ -13,7 +13,6 @@ import { useTranslation } from 'react-i18next'
 import Button from '@/components/button'
 import { t } from 'i18next'
 import cn from '@/utils/cn'
-import StarsReview from '@/components/stars-review'
 import { Modal as MuiModal, Box } from '@mui/material'
 import Modal from '@/components/molecules/modal'
 import Input from '@/components/input'
@@ -30,9 +29,6 @@ import * as yup from 'yup'
 import { useFormik } from 'formik'
 import toast from 'react-hot-toast'
 import dayjs from 'dayjs'
-
-// TODO: Get comments and valoration from clinic
-// TODO: edit info from clinic
 
 export default function GeneralViewPage() {
   const { t } = useTranslation()

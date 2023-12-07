@@ -8,7 +8,7 @@ import EmployeesDetailPage from '@/pages/[admin]/employees/detail-page'
 import ForgotPassword from '@/pages/[auth]/forgot-password'
 import { Navigate } from 'react-router'
 import Login from '@/pages/[auth]/login'
-import { StoreOutlined } from '@mui/icons-material'
+import { ChecklistOutlined, StoreOutlined } from '@mui/icons-material'
 import GeneralViewPage from '@/pages/[admin]/clinic/general-info'
 import AuthLayout from '@/layout/auth'
 import Layout from '@/layout/admin'
@@ -18,6 +18,7 @@ import AppointmentsPage from '@/pages/[admin]/appointments'
 import ClientsDetailPage from '@/pages/[admin]/clients/detail-page'
 import AppointmentDetail from '@/pages/[admin]/appointments/appointment-detail'
 import AppointmentForm from '@/pages/[admin]/appointments/appointment-form'
+import QueuePage from '@/pages/[admin]/queue'
 
 type Routes = {
   auth: Route
@@ -72,6 +73,13 @@ let routes: Routes = {
         page: <ClientsPage />,
         icon: <PeopleOutlineOutlinedIcon />,
         allowedRoles: [Role.CLINIC_OWNER],
+      },
+      queue: {
+        href: '/queue',
+        page: <QueuePage />,
+        icon: <ChecklistOutlined />,
+        allowedRoles: [Role.CLINIC_OWNER],
+        show: false,
       },
       'clients-detail': {
         show: false,

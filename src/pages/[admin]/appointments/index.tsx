@@ -17,7 +17,6 @@ import { useQuery } from '@tanstack/react-query'
 import { useClinic } from '@/hooks/use-clinic'
 import { useNavigate } from 'react-router-dom'
 import { appointmentsAtom } from '@/hooks/use-clinic/appointmentsAtom'
-import { userAtom } from '@/hooks/use-user/userAtom'
 
 export default function AppointmentsPage() {
   const { t } = useTranslation()

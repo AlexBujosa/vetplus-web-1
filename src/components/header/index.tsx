@@ -1,6 +1,7 @@
 import useUser from '@/hooks/use-user'
 import cn from '@/utils/cn'
 import {
+  ChecklistOutlined,
   ManageAccountsOutlined,
   NotificationsOutlined,
 } from '@mui/icons-material'
@@ -36,6 +37,16 @@ export default function Header() {
           to={routes.admin.pages['user-profile'].href}
         >
           <ManageAccountsOutlined />
+        </NavLink>
+        <NavLink
+          className={({ isActive }) =>
+            cn(
+              isActive ? 'text-base-primary-500' : 'text-base-neutral-gray-700'
+            )
+          }
+          to={routes.admin.pages.queue.href}
+        >
+          <ChecklistOutlined />
         </NavLink>
         <NavLink
           className={({ isActive }) =>
