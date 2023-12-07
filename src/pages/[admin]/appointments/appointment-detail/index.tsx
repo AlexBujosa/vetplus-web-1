@@ -1,11 +1,12 @@
-import Button from '@/components/button'
 import { routes } from '@/config/routes'
 import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { useAtomValue } from 'jotai'
 import { appointmentsAtom } from '@/hooks/use-clinic/appointmentsAtom'
 import {
+  CircularProgress,
   IconButton,
+  SelectChangeEvent,
   Table,
   TableBody,
   TableCell,
@@ -18,13 +19,18 @@ import Image from '@/components/image'
 import {
   FileOpenOutlined,
   KeyboardBackspace,
-  ReceiptLong,
+  SyncAltOutlined,
 } from '@mui/icons-material'
 import Select from '@/components/select'
 import { useClinic } from '@/hooks/use-clinic'
 import { Headline } from '@/components/typography'
 import { userAtom } from '@/hooks/use-user/userAtom'
 import { Profile } from '@/components/profile'
+import { Role } from '@/types/role'
+import { Veterinarian } from '@/types/clinic'
+import { useMutation } from '@tanstack/react-query'
+import toast from 'react-hot-toast'
+import { useState } from 'react'
 
 const headers = ['pet', 'veterinary', 'services', 'appointment', 'attend']
 
@@ -81,14 +87,13 @@ function Body() {
   const appointments = useAtomValue(appointmentsAtom)
   const user = useAtomValue(userAtom)
 
-  const { t } = useTranslation()
   const navigate = useNavigate()
 
   const { getMyEmployeesForSelect } = useClinic()
 
   const employees = getMyEmployeesForSelect()
 
-  if (!appointments || !employees) return null
+  if (!appointments || !employees || !user) return null
 
   // TODO: As an admin, I could switch the veterinary related to that appointment
 
@@ -107,20 +112,11 @@ function Body() {
               </div>
             </TableCell>
 
-            <TableCell component='th' scope='row'>
-              {user?.role === 'CLINIC_OWNER' ? (
-                <Select
-                  label={t('veterinary')}
-                  options={employees}
-                  defaultValue={Veterinarian.id}
-                />
-              ) : (
-                <Profile
-                  profile={`${Veterinarian?.names} ${Veterinarian?.surnames}`}
-                  image={Veterinarian.image}
-                />
-              )}
-            </TableCell>
+            <VeterinaryCell
+              role={user.role}
+              veterinarian={Veterinarian}
+              appointmentId={id}
+            />
 
             <TableCell component='th' scope='row'>
               {dayjs(start_at).add(4, 'hour').format('h:mm A')}
@@ -143,6 +139,79 @@ function Body() {
         )
       })}
     </TableBody>
+  )
+}
+
+function VeterinaryCell(props: {
+  role: Role
+  veterinarian: Veterinarian
+  appointmentId: string
+}) {
+  const { role, veterinarian, appointmentId } = props
+
+  const { getMyEmployeesForSelect } = useClinic()
+  const { t } = useTranslation()
+
+  const employees = getMyEmployeesForSelect()
+  const { reassignAppointment } = useClinic()
+
+  const [veterinarianId, setVeterinarianId] = useState<string>(veterinarian.id)
+
+  const {
+    mutate,
+    isPending: isLoading,
+    data,
+  } = useMutation({
+    mutationFn: ({
+      appointmentId,
+      veterinarianId,
+    }: {
+      appointmentId: string
+      veterinarianId: string
+    }) => reassignAppointment(appointmentId, veterinarianId),
+  })
+
+  if (!employees) return
+
+  return (
+    <TableCell component='th' scope='row'>
+      {role === 'CLINIC_OWNER' ? (
+        <div className='flex flex-row items-center gap-x-2'>
+          <Select
+            label={t('veterinary')}
+            options={employees}
+            value={veterinarianId}
+            onChange={(event: any) => {
+              setVeterinarianId(event.target.value as string)
+            }}
+            defaultValue={veterinarianId}
+          />
+
+          {isLoading ? (
+            <CircularProgress />
+          ) : (
+            <IconButton
+              disabled={veterinarianId === veterinarian.id}
+              onClick={() => {
+                mutate({
+                  appointmentId,
+                  veterinarianId,
+                })
+
+                if (data) toast.success(data.result)
+              }}
+            >
+              <SyncAltOutlined />
+            </IconButton>
+          )}
+        </div>
+      ) : (
+        <Profile
+          profile={`${veterinarian?.names} ${veterinarian?.surnames}`}
+          image={veterinarian.image}
+        />
+      )}
+    </TableCell>
   )
 }
 

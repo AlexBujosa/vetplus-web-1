@@ -239,3 +239,15 @@ export const RESPOND_APPOINTMENT = gql`
     }
   }
 `
+
+export const REASSIGN_APPOINTMENT = gql`
+  mutation (
+    $reassignAppointmentToVeterinarianInput: ReassignAppointmentToVeterinarianInput!
+  ) {
+    reassignAppoinment(
+      reassignAppointmentToVeterinarianInput: $reassignAppointmentToVeterinarianInput
+    ) {
+      result
+    }
+  }
+`

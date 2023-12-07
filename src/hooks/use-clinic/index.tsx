@@ -4,6 +4,7 @@ import {
   GET_MY_CLINIC,
   GET_MY_EMPLOYEES,
   INVITE_TO_CLINIC,
+  REASSIGN_APPOINTMENT,
   RESPOND_APPOINTMENT,
   UPDATE_CLINIC,
 } from '@/graphql/clinic'
@@ -131,6 +132,23 @@ export function useClinic() {
     })
   }
 
+  async function reassignAppointment(
+    appointmentId: string,
+    veterinarianId: string
+  ) {
+    const { reassignAppoinment } = await client.request<any>(
+      REASSIGN_APPOINTMENT,
+      {
+        reassignAppointmentToVeterinarianInput: {
+          id: appointmentId,
+          id_veterinarian: veterinarianId,
+        },
+      }
+    )
+
+    return reassignAppoinment
+  }
+
   function getMyEmployeesForSelect():
     | { value: string; label: string }[]
     | null {
@@ -174,6 +192,7 @@ export function useClinic() {
     sendInvitationToClinic,
     updateClinic,
     respondToAppointment,
+    reassignAppointment,
   }
 }
 
