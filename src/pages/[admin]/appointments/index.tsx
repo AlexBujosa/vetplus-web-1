@@ -184,6 +184,13 @@ function CalendarHeader() {
   const { handleReset, handleNextWeek, handlePrevWeek, getDateString } =
     useCalendar()
 
+  const { getVerifiedAppointments } = useClinic()
+
+  const { data: allAppointments } = useQuery({
+    queryKey: ['verified-appointments'],
+    queryFn: getVerifiedAppointments,
+  })
+
   return (
     <header className='flex flex-row items-center w-full px-4 py-2 mb-6 gap-x-2'>
       <Button
@@ -208,6 +215,11 @@ function CalendarHeader() {
       />
 
       <Label.ExtraLarge className='select-none' text={getDateString()} />
+
+      <Label.ExtraLarge
+        className='ml-auto font-bold text-base-primary-600'
+        text={`${allAppointments?.length} ${t('appointments')}`}
+      />
     </header>
   )
 }
@@ -216,7 +228,7 @@ function CalendarWeek() {
   const { getVerifiedAppointments } = useClinic()
 
   const { data: allAppointments } = useQuery({
-    queryKey: ['appointments'],
+    queryKey: ['verified-appointments'],
     queryFn: getVerifiedAppointments,
   })
 
