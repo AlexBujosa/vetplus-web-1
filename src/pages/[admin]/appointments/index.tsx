@@ -357,7 +357,7 @@ function getWeekDays(start: Dayjs) {
 
 function generateTimeIntervals(
   startHour: number = 7,
-  endHour: number = 18
+  endHour: number = 23
 ): { time: string }[] {
   const intervals = []
   const startTime = dayjs().set('hour', startHour).startOf('hour')
