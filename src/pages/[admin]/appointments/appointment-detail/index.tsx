@@ -1,7 +1,7 @@
 import { routes } from '@/config/routes'
 import { useNavigate } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { useAtomValue } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { appointmentsAtom } from '@/hooks/use-clinic/appointmentsAtom'
 import {
   CircularProgress,
@@ -27,7 +27,7 @@ import { userAtom } from '@/hooks/use-user/userAtom'
 import { Profile } from '@/components/profile'
 import { Role } from '@/types/role'
 import { Veterinarian } from '@/types/clinic'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 import { useState } from 'react'
 
@@ -151,14 +151,10 @@ function VeterinaryCell(props: {
 
   const employees = getMyEmployeesForSelect()
   const { reassignAppointment } = useClinic()
-
+  const queryClient = useQueryClient()
   const [veterinarianId, setVeterinarianId] = useState<string>(veterinarian.id)
 
-  const {
-    mutate,
-    isPending: isLoading,
-    data,
-  } = useMutation({
+  const { mutateAsync, isPending: isLoading } = useMutation({
     mutationFn: ({
       appointmentId,
       veterinarianId,
@@ -178,10 +174,10 @@ function VeterinaryCell(props: {
             label={t('veterinary')}
             options={employees}
             value={veterinarianId}
+            defaultValue={veterinarianId}
             onChange={(event: any) => {
               setVeterinarianId(event.target.value as string)
             }}
-            defaultValue={veterinarianId}
           />
 
           {isLoading ? (
@@ -189,13 +185,19 @@ function VeterinaryCell(props: {
           ) : (
             <IconButton
               disabled={veterinarianId === veterinarian.id}
-              onClick={() => {
-                mutate({
+              onClick={async () => {
+                const response = await mutateAsync({
                   appointmentId,
                   veterinarianId,
                 })
 
-                if (data) toast.success(data.result)
+                setVeterinarianId(veterinarianId)
+
+                toast.success(response.result)
+
+                queryClient.invalidateQueries({
+                  queryKey: ['verified-appointments'],
+                })
               }}
             >
               <SyncAltOutlined />
