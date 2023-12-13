@@ -59,7 +59,6 @@ export default function ClientsPage() {
 
   function ClientsRowValues(clients: GetAllClient[]): Row[] {
     return clients.map((client) => {
-      console.log({ client })
       const { User } = client
       const {
         names,

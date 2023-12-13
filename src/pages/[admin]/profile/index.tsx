@@ -73,13 +73,6 @@ export function ProfileWithRole({
 }) {
   const { t } = useTranslation()
 
-  const roleString: Record<Role, string> = {
-    ADMIN: t('admin'),
-    CLINIC_OWNER: t('clinic-owner'),
-    PET_OWNER: t('pet-owner'),
-    VETERINARIAN: t('veterinary'),
-  }
-
   return (
     <div className='flex flex-row gap-x-[10px] items-center'>
       <ProfileImage
@@ -90,7 +83,7 @@ export function ProfileWithRole({
 
       <span className='flex flex-row gap-x-[6px] p-[10px] border border-base-neutral-gray-500 text-base-neutral-gray-800'>
         <PersonOutlined />
-        <Body.Large text={roleString[role]} />
+        <Body.Large text={role} />
       </span>
     </div>
   )
