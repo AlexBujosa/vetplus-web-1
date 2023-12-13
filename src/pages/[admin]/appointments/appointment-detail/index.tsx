@@ -153,6 +153,7 @@ function VeterinaryCell(props: {
   const { reassignAppointment } = useClinic()
   const queryClient = useQueryClient()
   const [veterinarianId, setVeterinarianId] = useState<string>(veterinarian.id)
+  const setAppointments = useSetAtom(appointmentsAtom)
 
   const { mutateAsync, isPending: isLoading } = useMutation({
     mutationFn: ({
@@ -192,6 +193,23 @@ function VeterinaryCell(props: {
                 })
 
                 setVeterinarianId(veterinarianId)
+
+                setAppointments((prevAppointments) =>
+                  prevAppointments?.map((appointment) => {
+                    if (appointment.id === appointmentId) {
+                      const updatedVeterinarian = {
+                        ...appointment.Veterinarian,
+                        id: veterinarianId,
+                      }
+                      return {
+                        ...appointment,
+                        Veterinarian: updatedVeterinarian,
+                      }
+                    }
+
+                    return appointment
+                  })
+                )
 
                 toast.success(response.result)
 

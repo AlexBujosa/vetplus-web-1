@@ -171,8 +171,10 @@ export function useClinic() {
     appointmentId: string,
     veterinarianId: string
   ) {
-    const { data: reassignAppoinment } = await client.query<any>({
-      query: REASSIGN_APPOINTMENT,
+    const {
+      data: { reassignAppoinment },
+    } = await client.mutate({
+      mutation: REASSIGN_APPOINTMENT,
       variables: {
         reassignAppointmentToVeterinarianInput: {
           id: appointmentId,

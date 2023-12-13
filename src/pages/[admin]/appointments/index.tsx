@@ -7,7 +7,7 @@ import useCalendar from '@/hooks/use-calendar'
 import { ChevronLeft, ChevronRight } from '@mui/icons-material'
 import dayjs, { type Dayjs } from 'dayjs'
 import { getWeekdayInLocale } from '@/utils'
-import { useAtom, useAtomValue } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import {
   currentMonthAtom,
   monthAtom,
@@ -251,7 +251,7 @@ function CalendarWeek() {
   const intervals = generateTimeIntervals()
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const [, setAppointmets] = useAtom(appointmentsAtom)
+  const setAppointments = useSetAtom(appointmentsAtom)
 
   return (
     <div className='grid flex-1 grid-cols-7'>
@@ -294,7 +294,7 @@ function CalendarWeek() {
                 <Label.ExtraLarge text={dayNumber} />
               </header>
 
-              {intervals.map(({ time }) => {
+              {intervals.map(({ time }: { time: string }) => {
                 const intervalHour = dayjs(time, 'h A').hour()
 
                 const appointmentsInInterval = dayAppointments?.filter(
@@ -319,7 +319,7 @@ function CalendarWeek() {
                   <div
                     className='cursor-pointer h-[60px] border border-base-neutral-gray-600'
                     onClick={() => {
-                      setAppointmets(appointmentsInInterval)
+                      setAppointments(appointmentsInInterval)
                       navigate('/appointment-detail')
                     }}
                   >
