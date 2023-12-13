@@ -121,7 +121,7 @@ function ClinicHeader() {
 
           <Label.Large
             className='col-span-5'
-            text={String(total_points / total_users) ?? '0'}
+            text={String((total_points / total_users).toPrecision(2)) ?? '0'}
           />
         </div>
       </article>
@@ -214,13 +214,15 @@ function CommentsAndReview() {
     queryFn: getMyClinicComments,
   })
 
+  if (!comments) return null
+
   return (
     <SectionCard
       className='p-0 max-h-[300px] overflow-y-scroll'
-      title={t('comments-reviews')}
+      title={t('comments')}
     >
       {comments.map((comment: GetMyComment) => {
-        return <Review {...comment} />
+        return <Review key={comment.id} {...comment} />
       })}
     </SectionCard>
   )

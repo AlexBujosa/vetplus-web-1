@@ -93,6 +93,7 @@
     "go-back": "Volver atrás",
     "email-not-found": "El usuario no existe",
     "invite-employee-succesfull": "Se ha enviado la invitación",
-    "login-with-google": "Iniciar sesión con Google"
+    "login-with-google": "Iniciar sesión con Google",
+    "comments": "Comentarios"
   }
 }

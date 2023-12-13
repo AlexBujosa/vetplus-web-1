@@ -93,6 +93,7 @@
     "go-back": "Go back",
     "email-not-found": "Email address was not found",
     "invite-employee-succesfull": "Invitation was succesfull",
-    "login-with-google": "Login with Google"
+    "login-with-google": "Login with Google",
+    "comments": "Comments"
   }
 }
