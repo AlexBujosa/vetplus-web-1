@@ -238,7 +238,7 @@ function CalendarHeader() {
 }
 
 function CalendarWeek() {
-  const { getVerifiedAppointments, getVeterinaryAppointments } = useClinic()
+  const { getVerifiedAppointments } = useClinic()
 
   const { data: allAppointments } = useQuery({
     queryKey: ['verified-appointments'],
