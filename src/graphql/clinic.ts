@@ -1,4 +1,4 @@
-import { gql } from 'graphql-request'
+import { gql } from '@apollo/client'
 
 export const GET_MY_EMPLOYEES = gql`
   query GetMyEmployees {
