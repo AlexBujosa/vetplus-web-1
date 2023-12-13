@@ -1,13 +1,20 @@
 import Input from '@/components/input'
 import { Body, Title } from '@/components/typography'
 import { SearchOutlined } from '@mui/icons-material'
-import { Avatar, AvatarGroup, InputAdornment, Skeleton } from '@mui/material'
+import {
+  Avatar,
+  AvatarGroup,
+  InputAdornment,
+  Skeleton,
+  Tooltip,
+} from '@mui/material'
 import Table, { Row } from '@/components/table'
 import { useTranslation } from 'react-i18next'
 import { useClinic } from '@/hooks/use-clinic'
 import { useQuery } from '@tanstack/react-query'
 import { Profile } from '@/components/profile'
 import { AppointmentOwner, Pet } from '@/types/constant/admin/clients'
+import dayjs from 'dayjs'
 
 export default function ClientsPage() {
   const { t } = useTranslation()
@@ -52,6 +59,7 @@ export default function ClientsPage() {
 
   function ClientsRowValues(clients: GetAllClient[]): Row[] {
     return clients.map((client) => {
+      console.log({ client })
       const { User } = client
       const {
         names,
@@ -74,7 +82,7 @@ export default function ClientsPage() {
           className='text-base-neutral-gray-900'
           text={
             AppointmentOwner.length > 0
-              ? new Date(AppointmentOwner[0].start_at).toISOString()
+              ? dayjs(AppointmentOwner[0].start_at).format('LLLL')
               : 'N/A'
           }
         />,
@@ -111,17 +119,12 @@ export default function ClientsPage() {
 
 function Pets({ pets }: { pets: Pet[] }) {
   return (
-    <AvatarGroup max={4}>
-      {pets.map((pet) => {
-        return (
-          <Avatar
-            key={pet.id}
-            className='w-8 h-8'
-            alt={pet.name}
-            src={pet.image}
-          />
-        )
-      })}
+    <AvatarGroup max={10}>
+      {pets.map((pet) => (
+        <Tooltip key={pet.id} title={pet.name} placement='top'>
+          <Avatar className='w-8 h-8' alt={pet.name} src={pet.image} />
+        </Tooltip>
+      ))}
     </AvatarGroup>
   )
 }

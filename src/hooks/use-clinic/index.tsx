@@ -1,6 +1,7 @@
 import {
   GET_ALL_CLIENTS,
   GET_APPOINTMENTS,
+  GET_APPOINTMENTS_VERIFIED,
   GET_CLINIC_COMMENTS,
   GET_MY_CLINIC,
   GET_MY_EMPLOYEES,
@@ -40,6 +41,22 @@ export function useClinic() {
     queryKey: ['appointments'],
     queryFn: getAppointments,
   })
+
+  async function getVeterinaryAppointments() {
+    const {
+      data: { getAppointmentsVerified },
+    } = await client.query<any>({
+      query: GET_APPOINTMENTS_VERIFIED,
+      variables: {
+        filterAppointmentBySSInput: {
+          state: AppointmentState.PENDING,
+          appointment_status: AppointmentStatus.ACCEPTED,
+        },
+      },
+    })
+
+    return getAppointmentsVerified
+  }
 
   async function getMyEmployees(): Promise<
     {
@@ -99,7 +116,10 @@ export function useClinic() {
         employee_invitation_status: 'PENDING',
       },
     }
-    const request = await client.query({ query: INVITE_TO_CLINIC, variables })
+    const request = await client.mutate({
+      mutation: INVITE_TO_CLINIC,
+      variables,
+    })
 
     return request
   }
@@ -107,10 +127,8 @@ export function useClinic() {
   async function updateClinic(payload: UpdateClinicForm) {
     const {
       data: { updateClinic },
-    } = await client.query<{
-      updateClinic: { result: string }
-    }>({
-      query: UPDATE_CLINIC,
+    } = await client.mutate({
+      mutation: UPDATE_CLINIC,
       variables: {
         updateClinicInput: { ...payload },
       },
@@ -205,8 +223,8 @@ export function useClinic() {
   ) {
     const {
       data: { respondToAppointment },
-    } = await client.query<any>({
-      query: RESPOND_APPOINTMENT,
+    } = await client.mutate<any>({
+      mutation: RESPOND_APPOINTMENT,
       variables: {
         updateAppointmentInput: {
           id: appointmentId,
@@ -234,6 +252,7 @@ export function useClinic() {
     getMyClinicComments,
     getAppointments,
     getPendingAppointments,
+    getVeterinaryAppointments,
     getMyEmployeesForSelect,
     getVerifiedAppointments,
     findEmployeeByEmail,

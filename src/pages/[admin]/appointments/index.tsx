@@ -46,8 +46,6 @@ function SideSection() {
     queryFn: getVerifiedAppointments,
   })
 
-  console.log({ allAppointments })
-
   return (
     <aside className='col-span-2 border-r-2 border-r-base-neutral-gray-600'>
       <div className='w-full h-full'>
@@ -240,7 +238,7 @@ function CalendarHeader() {
 }
 
 function CalendarWeek() {
-  const { getVerifiedAppointments } = useClinic()
+  const { getVerifiedAppointments, getVeterinaryAppointments } = useClinic()
 
   const { data: allAppointments } = useQuery({
     queryKey: ['verified-appointments'],

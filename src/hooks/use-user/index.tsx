@@ -17,8 +17,8 @@ export default function useUser() {
   async function updateUser(payload: EditUserForm) {
     const {
       data: { updateUser },
-    } = await client.query<any>({
-      query: UPDATE_USER,
+    } = await client.mutate<any>({
+      mutation: UPDATE_USER,
       variables: {
         updateUserInput: { ...payload },
       },

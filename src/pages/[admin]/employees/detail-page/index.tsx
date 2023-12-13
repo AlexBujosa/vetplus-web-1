@@ -17,9 +17,9 @@ export default function EmployeesDetailPage() {
   const client = useQueryClient()
 
   // @ts-ignore
-  const clinicEmployees: any[] | undefined = client.getQueryData([
-    'employees',
-  ]).ClinicEmployees
+  const clinicEmployees:
+    | { id_employee: string; Employee: Employee; status: boolean }[]
+    | undefined = client.getQueryData(['employees'])
 
   if (!clinicEmployees) return null
 
@@ -27,10 +27,15 @@ export default function EmployeesDetailPage() {
     return Employee.email === employeeEmail
   })
 
+  if (!clinicEmployee) return null
+
   return (
     <main className='flex flex-col gap-y-[60px]'>
-      <EmployeeHeader employee={clinicEmployee} />
-      <GeneralDescription employee={clinicEmployee} />
+      <EmployeeHeader employee={clinicEmployee.Employee} />
+      <GeneralDescription
+        employee={clinicEmployee.Employee}
+        status={clinicEmployee.status}
+      />
     </main>
   )
 }
@@ -39,7 +44,7 @@ function EmployeeHeader({ employee }: { employee: Employee }) {
   const navigate = useNavigate()
 
   // @ts-ignore
-  const { names, surnames, image } = employee.Employee
+  const { names, surnames, image } = employee
 
   const fullName = `${names} ${surnames}`
 
@@ -81,11 +86,10 @@ function ProfileWithRole({ image }: { image: string }) {
 
 function GeneralDescription({
   employee,
+  status,
 }: {
-  employee: {
-    status: boolean
-    Employee: Employee
-  }
+  employee: Employee
+  status: boolean
 }) {
   const {
     email,
@@ -93,7 +97,7 @@ function GeneralDescription({
     address,
     VeterinarianSummaryScore,
     VeterinariaSpecialties,
-  } = employee.Employee
+  } = employee
   const { t } = useTranslation()
 
   const data: Record<string, JSX.Element> = {
@@ -106,7 +110,7 @@ function GeneralDescription({
     [t('review')]: (
       <StarsReview review={calculateStars(VeterinarianSummaryScore) ?? 'N/A'} />
     ),
-    [t('status')]: <StatusBadge status={employee.status} />,
+    [t('status')]: <StatusBadge status={status} />,
   }
 
   return (
