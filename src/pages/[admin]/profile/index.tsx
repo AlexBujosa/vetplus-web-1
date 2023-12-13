@@ -71,8 +71,6 @@ export function ProfileWithRole({
   image: string
   role: Role
 }) {
-  const { t } = useTranslation()
-
   return (
     <div className='flex flex-row gap-x-[10px] items-center'>
       <ProfileImage
