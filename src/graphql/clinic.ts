@@ -164,7 +164,6 @@ export const GET_APPOINTMENTS = gql`
       id_pet
       services
       id_clinic
-      observations
       appointment_status
       state
       created_at
@@ -193,7 +192,6 @@ export const GET_APPOINTMENTS = gql`
         gender
         castrated
         dob
-        observations
         created_at
         updated_at
         status

@@ -37,7 +37,14 @@ function SideSection() {
   const currentMonthIdx = useAtomValue(monthAtom)
   const currentMonth = useAtomValue(currentMonthAtom)
 
-  const { handlePrevMonth, handleNextMonth } = useCalendar()
+  const { handlePrevMonth, handleNextMonth, handleDateClick } = useCalendar()
+
+  const { getVerifiedAppointments } = useClinic()
+
+  const { data: allAppointments } = useQuery({
+    queryKey: ['verified-appointments'],
+    queryFn: getVerifiedAppointments,
+  })
 
   return (
     <aside className='col-span-2 border-r-2 border-r-base-neutral-gray-600'>
@@ -80,15 +87,22 @@ function SideSection() {
                   // Check if the current date in the loop is today
                   const isToday = dayjs(day).isSame(dayjs(), 'day')
 
+                  // Check if there is an appointment for the current date
+                  const hasAppointment = allAppointments
+                    ? allAppointments.some(({ start_at }) =>
+                        dayjs(start_at).isSame(dayjs(day), 'day')
+                      )
+                    : false
+
                   return (
                     <button
                       key={idx}
-                      onClick={() => {
-                        // Do something when the button is clicked
-                        null
-                      }}
+                      onClick={() => handleDateClick(day)}
                       className={`w-full rounded-full hover:bg-base-neutral-gray-500 ${
                         isToday && 'bg-blue-500 hover:bg-blue-600 text-white'
+                      } ${
+                        hasAppointment &&
+                        'bg-red-500 text-white hover:bg-red-400'
                       }`}
                     >
                       <span className='text-sm'>{dayjs(day).format('D')}</span>

@@ -123,7 +123,7 @@ export function useClinic() {
     const {
       data: { getAppointmentDetailClinicOwner },
     } = await client.query<{
-      getAppointmentDetailClinicOwner: Appointment[]
+      getAppointmentDetailClinicOwner: any[]
     }>({
       query: GET_APPOINTMENTS,
       variables: {
