@@ -5,9 +5,12 @@ import useUser from '@/hooks/use-user'
 import { allowedRoles, defaultRoute, routes } from '@/config/routes'
 import { useSetAtom } from 'jotai'
 import { roleAtom } from './roleAtom'
-import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth'
+import {
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+} from 'firebase/auth'
 import { auth, provider } from '../use-google'
-import { GraphQLClient } from 'graphql-request'
 import { userAtom } from '../use-user/userAtom'
 import { GET_MY_PROFILE } from '@/graphql/user'
 import { Role } from '@/types/role'
@@ -33,12 +36,11 @@ export default function useAuth() {
     }
 
     const {
-      signInWithEmail,
-    }: {
-      signInWithEmail: {
-        access_token: string
-      }
-    } = await client.request(SIGN_WITH_EMAIL_QUERY, variables)
+      data: { signInWithEmail },
+    } = await client.query({
+      query: SIGN_WITH_EMAIL_QUERY,
+      variables,
+    })
 
     const token = signInWithEmail.access_token
 
@@ -68,31 +70,26 @@ export default function useAuth() {
 
     const credential = GoogleAuthProvider.credentialFromResult(result)!
 
+    console.log({ credential })
+
     localStorage.setItem('token', credential.idToken!)
 
-    let client = new GraphQLClient(import.meta.env.VITE_GRAPHQL_ENDPOINT!, {
-      headers: {
-        authorization: `Bearer ${credential.idToken!}`,
-      },
+    const {
+      data: { googleLogin },
+    } = await client.query({
+      query: SIGN_IN_WITH_GOOGLE,
     })
 
-    const {
-      googleLogin,
-    }: {
-      googleLogin: {
-        access_token: string
-      }
-    } = await client.request(SIGN_IN_WITH_GOOGLE)
+    console.log({ googleLogin })
 
     localStorage.setItem('token', googleLogin.access_token!)
 
-    client = new GraphQLClient(import.meta.env.VITE_GRAPHQL_ENDPOINT!, {
-      headers: {
-        authorization: `Bearer ${googleLogin.access_token!}`,
-      },
+    const {
+      data: { getMyProfile },
+    } = await client.query({
+      query: GET_MY_PROFILE,
     })
 
-    const { getMyProfile } = await client.request<any>(GET_MY_PROFILE)
     setUser(getMyProfile)
 
     const { role }: { role: Role } = getMyProfile
