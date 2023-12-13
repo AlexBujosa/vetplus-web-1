@@ -3,7 +3,7 @@ import { Role } from '@/types/role'
 import { atomWithStorage } from 'jotai/utils'
 
 export type Employee = {
-  id: string
+  id_employee: string
   fullName: string
   names: string
   surnames: string

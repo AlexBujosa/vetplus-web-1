@@ -1,7 +1,8 @@
 import { routes } from '@/config/routes'
 import { useNavigate } from 'react-router'
+import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
-import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { appointmentsAtom } from '@/hooks/use-clinic/appointmentsAtom'
 import {
   CircularProgress,
@@ -94,6 +95,8 @@ function Body() {
 
   if (!appointments || !employees || !user) return null
 
+  console.log({ appointments })
+
   return (
     <TableBody>
       {appointments.map(({ id, Pet, start_at, Veterinarian, services }) => {
@@ -151,9 +154,15 @@ function VeterinaryCell(props: {
 
   const employees = getMyEmployeesForSelect()
   const { reassignAppointment } = useClinic()
-  const queryClient = useQueryClient()
   const [veterinarianId, setVeterinarianId] = useState<string>(veterinarian.id)
-  const setAppointments = useSetAtom(appointmentsAtom)
+  const [appointments, setAppointments] = useAtom(appointmentsAtom)
+  const queryClient = useQueryClient()
+  const { getMyEmployees } = useClinic()
+
+  const { data: AllEmployees } = useQuery({
+    queryKey: ['employees'],
+    queryFn: getMyEmployees,
+  })
 
   const { mutateAsync, isPending: isLoading } = useMutation({
     mutationFn: ({
@@ -165,7 +174,9 @@ function VeterinaryCell(props: {
     }) => reassignAppointment(appointmentId, veterinarianId),
   })
 
-  if (!employees) return
+  if (!employees || !appointments) return
+
+  console.log({ veterinarianId, newVeterinarianId: veterinarian.id })
 
   return (
     <TableCell component='th' scope='row'>
@@ -194,28 +205,34 @@ function VeterinaryCell(props: {
 
                 setVeterinarianId(veterinarianId)
 
-                setAppointments((prevAppointments) =>
-                  prevAppointments?.map((appointment) => {
-                    if (appointment.id === appointmentId) {
-                      const updatedVeterinarian = {
-                        ...appointment.Veterinarian,
-                        id: veterinarianId,
-                      }
-                      return {
-                        ...appointment,
-                        Veterinarian: updatedVeterinarian,
-                      }
-                    }
-
+                const updatedAppointments = appointments.map((appointment) => {
+                  if (!AllEmployees || appointment.id !== appointmentId)
                     return appointment
-                  })
-                )
+
+                  const newVeterinarian = AllEmployees.find(
+                    ({ id_employee }) => {
+                      return id_employee === veterinarianId
+                    }
+                  )
+
+                  if (!newVeterinarian) return appointment
+
+                  return {
+                    ...appointment,
+                    // @ts-ignore
+                    Veterinarian: {
+                      ...newVeterinarian.Employee,
+                      id: newVeterinarian.id_employee,
+                    } as Veterinarian,
+                    id_veterinarian: veterinarianId,
+                  }
+                })
+
+                setAppointments(updatedAppointments)
 
                 toast.success(response.result)
 
-                queryClient.invalidateQueries({
-                  queryKey: ['verified-appointments'],
-                })
+                queryClient.invalidateQueries()
               }}
             >
               <SyncAltOutlined />

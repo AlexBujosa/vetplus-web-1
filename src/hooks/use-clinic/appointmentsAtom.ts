@@ -1,7 +1,4 @@
 import { Appointment } from '@/types/clinic'
-import { atomWithStorage } from 'jotai/utils'
+import { atom } from 'jotai'
 
-export const appointmentsAtom = atomWithStorage<Appointment[] | undefined>(
-  'appointments',
-  undefined
-)
+export const appointmentsAtom = atom<Appointment[] | undefined>(undefined)

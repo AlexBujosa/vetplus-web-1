@@ -5,11 +5,7 @@ import useUser from '@/hooks/use-user'
 import { allowedRoles, defaultRoute, routes } from '@/config/routes'
 import { useSetAtom } from 'jotai'
 import { roleAtom } from './roleAtom'
-import {
-  GoogleAuthProvider,
-  signInWithPopup,
-  signOut,
-} from 'firebase/auth'
+import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth'
 import { auth, provider } from '../use-google'
 import { userAtom } from '../use-user/userAtom'
 import { GET_MY_PROFILE } from '@/graphql/user'
@@ -70,8 +66,6 @@ export default function useAuth() {
 
     const credential = GoogleAuthProvider.credentialFromResult(result)!
 
-    console.log({ credential })
-
     localStorage.setItem('token', credential.idToken!)
 
     const {
@@ -79,8 +73,6 @@ export default function useAuth() {
     } = await client.query({
       query: SIGN_IN_WITH_GOOGLE,
     })
-
-    console.log({ googleLogin })
 
     localStorage.setItem('token', googleLogin.access_token!)
 

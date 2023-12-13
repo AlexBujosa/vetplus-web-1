@@ -46,6 +46,8 @@ function SideSection() {
     queryFn: getVerifiedAppointments,
   })
 
+  console.log({ allAppointments })
+
   return (
     <aside className='col-span-2 border-r-2 border-r-base-neutral-gray-600'>
       <div className='w-full h-full'>

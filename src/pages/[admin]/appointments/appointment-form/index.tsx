@@ -25,7 +25,6 @@ export default function AppointmentForm() {
   const handleSubmit = (event: any) => {
     event.preventDefault()
     // Handle form submission logic here
-    console.log(formData)
   }
 
   const [formData, setFormData] = useState({

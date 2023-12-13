@@ -1,9 +1,26 @@
-import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client'
+import {
+  ApolloClient,
+  createHttpLink,
+  DefaultOptions,
+  InMemoryCache,
+} from '@apollo/client'
 import { setContext } from '@apollo/client/link/context'
 
 const httpLink = createHttpLink({
   uri: import.meta.env.VITE_GRAPHQL_ENDPOINT,
 })
+
+const defaultOptions: DefaultOptions = {
+  watchQuery: {
+    fetchPolicy: 'network-only',
+  },
+  query: {
+    fetchPolicy: 'no-cache',
+  },
+  mutate: {
+    fetchPolicy: 'network-only',
+  },
+}
 
 const authLink = setContext((_, { headers }) => {
   // get the authentication token from local storage if it exists
@@ -20,6 +37,7 @@ const authLink = setContext((_, { headers }) => {
 const client = new ApolloClient({
   link: authLink.concat(httpLink),
   cache: new InMemoryCache(),
+  defaultOptions,
 })
 
 export default client
