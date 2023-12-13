@@ -48,13 +48,21 @@ export function useClinic() {
       Employee: Employee
     }[]
   > {
-    const { getMyEmployees } = await client.request<any>(GET_MY_EMPLOYEES)
+    const {
+      data: { getMyEmployees },
+    } = await client.query<any>({
+      query: GET_MY_EMPLOYEES,
+    })
 
     return getMyEmployees.ClinicEmployees
   }
 
   async function getMyClients() {
-    const { getAllClients } = await client.request<any>(GET_ALL_CLIENTS)
+    const {
+      data: { getAllClients },
+    } = await client.query<any>({
+      query: GET_ALL_CLIENTS,
+    })
     return getAllClients
   }
 
@@ -71,9 +79,11 @@ export function useClinic() {
   }
 
   async function getMyClinic() {
-    const { getMyClinic } = await client.request<{ getMyClinic: Clinic }>(
-      GET_MY_CLINIC
-    )
+    const {
+      data: { getMyClinic },
+    } = await client.query<{ getMyClinic: Clinic }>({
+      query: GET_MY_CLINIC,
+    })
 
     return getMyClinic
   }
@@ -89,28 +99,38 @@ export function useClinic() {
         employee_invitation_status: 'PENDING',
       },
     }
-    const request = await client.request(INVITE_TO_CLINIC, variables)
+    const request = await client.query({ query: INVITE_TO_CLINIC, variables })
 
     return request
   }
 
   async function updateClinic(payload: UpdateClinicForm) {
-    const { updateClinic } = await client.request<{
+    const {
+      data: { updateClinic },
+    } = await client.query<{
       updateClinic: { result: string }
-    }>(UPDATE_CLINIC, {
-      updateClinicInput: { ...payload },
+    }>({
+      query: UPDATE_CLINIC,
+      variables: {
+        updateClinicInput: { ...payload },
+      },
     })
 
     return updateClinic
   }
 
   async function getAppointments() {
-    const { getAppointmentDetailClinicOwner } = await client.request<{
+    const {
+      data: { getAppointmentDetailClinicOwner },
+    } = await client.query<{
       getAppointmentDetailClinicOwner: Appointment[]
-    }>(GET_APPOINTMENTS, {
-      filterAppointmentBySSInput: {
-        state: null,
-        appointment_status: null,
+    }>({
+      query: GET_APPOINTMENTS,
+      variables: {
+        filterAppointmentBySSInput: {
+          state: null,
+          appointment_status: null,
+        },
       },
     })
 
@@ -151,15 +171,15 @@ export function useClinic() {
     appointmentId: string,
     veterinarianId: string
   ) {
-    const { reassignAppoinment } = await client.request<any>(
-      REASSIGN_APPOINTMENT,
-      {
+    const { data: reassignAppoinment } = await client.query<any>({
+      query: REASSIGN_APPOINTMENT,
+      variables: {
         reassignAppointmentToVeterinarianInput: {
           id: appointmentId,
           id_veterinarian: veterinarianId,
         },
-      }
-    )
+      },
+    })
 
     return reassignAppoinment
   }
@@ -181,22 +201,26 @@ export function useClinic() {
     appointmentId: string,
     status: AppointmentStatus
   ) {
-    const { respondToAppointment } = await client.request<any>(
-      RESPOND_APPOINTMENT,
-      {
+    const {
+      data: { respondToAppointment },
+    } = await client.query<any>({
+      query: RESPOND_APPOINTMENT,
+      variables: {
         updateAppointmentInput: {
           id: appointmentId,
           appointment_status: status,
           // end_at: '2022-03-06T08:23:45.000Z',
         },
-      }
-    )
+      },
+    })
 
     return respondToAppointment
   }
 
   async function getMyClinicComments() {
-    const { getMyComments } = await client.request<any>(GET_CLINIC_COMMENTS)
+    const {
+      data: { getMyComments },
+    } = await client.query<any>({ query: GET_CLINIC_COMMENTS })
 
     return getMyComments
   }
