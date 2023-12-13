@@ -11,11 +11,19 @@ function useCalendar() {
   function handlePrevMonth() {
     setMonthIndex(monthIndex - 1)
     setCurrentMonth(getMonth(monthIndex - 1))
+
+    const previousMonthWeek = dayjs(week).subtract(1, 'month')
+
+    setWeek(previousMonthWeek)
   }
 
   function handleNextMonth() {
     setMonthIndex(monthIndex + 1)
     setCurrentMonth(getMonth(monthIndex + 1))
+
+    const nextMonthWeek = dayjs(week).add(1, 'month')
+
+    setWeek(nextMonthWeek)
   }
 
   function handlePrevWeek() {
