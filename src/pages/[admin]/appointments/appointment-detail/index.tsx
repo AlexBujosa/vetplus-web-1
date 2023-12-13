@@ -95,8 +95,6 @@ function Body() {
 
   if (!appointments || !employees || !user) return null
 
-  console.log({ appointments })
-
   return (
     <TableBody>
       {appointments.map(({ id, Pet, start_at, Veterinarian, services }) => {
@@ -175,8 +173,6 @@ function VeterinaryCell(props: {
   })
 
   if (!employees || !appointments) return
-
-  console.log({ veterinarianId, newVeterinarianId: veterinarian.id })
 
   return (
     <TableCell component='th' scope='row'>
