@@ -188,6 +188,8 @@ function CalendarHeader() {
     queryFn: getVerifiedAppointments,
   })
 
+  const appointmentsCount = allAppointments?.length ?? 0
+
   return (
     <header className='flex flex-row items-center w-full px-4 py-2 mb-6 gap-x-2'>
       <Button
@@ -215,7 +217,7 @@ function CalendarHeader() {
 
       <Label.ExtraLarge
         className='ml-auto font-bold text-base-primary-600'
-        text={`${allAppointments?.length} ${t('appointments')}`}
+        text={`${appointmentsCount} ${t('appointments')}`}
       />
     </header>
   )
@@ -292,11 +294,9 @@ function CalendarWeek() {
                   }
                 )
 
-                if (!appointmentsInInterval) return null
+                const appointmentsCount = appointmentsInInterval?.length ?? 0
 
-                const appointmentsCount = appointmentsInInterval.length
-
-                if (appointmentsInInterval.length === 0)
+                if (appointmentsCount === 0)
                   return (
                     <div className='h-[60px] border border-base-neutral-gray-600' />
                   )
@@ -318,7 +318,7 @@ function CalendarWeek() {
                       <Body.Small
                         className='text-base-primary-700'
                         text={
-                          appointmentsCount > 1
+                          !appointmentsInInterval
                             ? `${appointmentsCount} ${t('appointments')}`
                             : appointmentsInInterval[0].services.join()
                         }
