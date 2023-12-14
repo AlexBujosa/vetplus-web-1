@@ -279,7 +279,6 @@ function CalendarWeek() {
           const weekday = getWeekdayInLocale(day)
           const dayNumber = day.get('D').toString()
           const isToday = day.isSame(dayjs(), 'day')
-          console.log(isToday, day.format('DD/MM'))
 
           return (
             <article key={index} className='flex flex-col'>

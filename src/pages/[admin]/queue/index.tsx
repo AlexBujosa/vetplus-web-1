@@ -41,6 +41,7 @@ export default function QueuePage() {
 
       <article className='flex items-center gap-x-4'>
         <TextField
+          sx={{ mt: 1 }}
           className='w-[300px]'
           placeholder={t('name')}
           variant='outlined'
