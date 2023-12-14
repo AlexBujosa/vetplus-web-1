@@ -1,10 +1,6 @@
 import useUser from '@/hooks/use-user'
 import cn from '@/utils/cn'
-import {
-  ChecklistOutlined,
-  ManageAccountsOutlined,
-  NotificationsOutlined,
-} from '@mui/icons-material'
+import { ChecklistOutlined, ManageAccountsOutlined } from '@mui/icons-material'
 import { Box, Divider, Popover, Stack, Switch } from '@mui/material'
 import { Body, Title } from '../typography'
 import { useAtom, useAtomValue } from 'jotai'

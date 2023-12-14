@@ -278,15 +278,20 @@ function CalendarWeek() {
 
           const weekday = getWeekdayInLocale(day)
           const dayNumber = day.get('D').toString()
+          const isToday = day.isSame(dayjs(), 'day')
+          console.log(isToday, day.format('DD/MM'))
 
           return (
             <article key={index} className='flex flex-col'>
               <header
                 key={index}
-                className='flex flex-col gap-y-1 border border-base-neutral-gray-600 border-t-0 py-[10px] px-[15px]'
+                className={cn(
+                  'flex flex-col gap-y-1 border border-base-neutral-gray-600 border-t-0 py-[10px] px-[15px]',
+                  isToday && 'bg-base-primary-400 text-white shadow-elevation-1'
+                )}
               >
                 <Label.Medium
-                  className='text-base-neutral-gray-900'
+                  className={cn(!isToday && 'text-base-neutral-gray-900')}
                   text={weekday}
                 />
 
