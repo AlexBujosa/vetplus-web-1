@@ -49,10 +49,9 @@ export function useClinic() {
       query: GET_APPOINTMENTS_PER_DATETIME,
       variables: {
         filterAppointmentByDateRangeInput: {
+          // INFO: OPTIONAL PARAMETERS AS ISO STRING
           start_at: null,
           end_at: null,
-          // start_at: dayjs('2023-11-29').toISOString(),
-          // end_at: dayjs('2023-12-01').toISOString(),
         },
       },
     })

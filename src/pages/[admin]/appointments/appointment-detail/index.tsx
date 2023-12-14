@@ -89,11 +89,7 @@ function Body() {
 
   const navigate = useNavigate()
 
-  const { getMyEmployeesForSelect } = useClinic()
-
-  const employees = getMyEmployeesForSelect()
-
-  if (!appointments || !employees || !user) return null
+  if (!appointments || !user) return null
 
   return (
     <TableBody>
@@ -172,13 +168,11 @@ function VeterinaryCell(props: {
     }) => reassignAppointment(appointmentId, veterinarianId),
   })
 
-  console.log({ appointments })
-
-  if (!employees || !appointments) return
+  if (!appointments) return
 
   return (
     <TableCell component='th' scope='row'>
-      {role === 'CLINIC_OWNER' ? (
+      {role === 'CLINIC_OWNER' && employees ? (
         <div className='flex flex-row items-center gap-x-2'>
           <Select
             label={t('veterinary')}
