@@ -1,7 +1,7 @@
 import {
   GET_ALL_CLIENTS,
   GET_APPOINTMENTS,
-  GET_APPOINTMENTS_VERIFIED,
+  GET_APPOINTMENTS_PER_DATETIME,
   GET_CLINIC_COMMENTS,
   GET_MY_CLINIC,
   GET_MY_EMPLOYEES,
@@ -44,18 +44,20 @@ export function useClinic() {
 
   async function getVeterinaryAppointments() {
     const {
-      data: { getAppointmentsVerified },
-    } = await client.query<any>({
-      query: GET_APPOINTMENTS_VERIFIED,
+      data: { getAppointmentPerRangeDateTime },
+    } = await client.query({
+      query: GET_APPOINTMENTS_PER_DATETIME,
       variables: {
-        filterAppointmentBySSInput: {
-          state: AppointmentState.PENDING,
-          appointment_status: AppointmentStatus.ACCEPTED,
+        filterAppointmentByDateRangeInput: {
+          start_at: null,
+          end_at: null,
+          // start_at: dayjs('2023-11-29').toISOString(),
+          // end_at: dayjs('2023-12-01').toISOString(),
         },
       },
     })
 
-    return getAppointmentsVerified
+    return getAppointmentPerRangeDateTime
   }
 
   async function getMyEmployees(): Promise<
@@ -138,6 +140,15 @@ export function useClinic() {
   }
 
   async function getAppointments() {
+    if (!user) return
+
+    const { role } = user
+
+    if (role === Role.VETERINARIAN) {
+      const veterinaryAppointments = await getVeterinaryAppointments()
+      return veterinaryAppointments
+    }
+
     const {
       data: { getAppointmentDetailClinicOwner },
     } = await client.query<{
@@ -158,31 +169,30 @@ export function useClinic() {
   function getPendingAppointments(): Appointment[] | null {
     if (!allAppointments) return null
 
-    return allAppointments.filter(({ state, appointment_status }) => {
-      return (
-        state === AppointmentState.PENDING &&
-        appointment_status !== AppointmentStatus.ACCEPTED
-      )
-    })
+    return allAppointments.filter(
+      ({
+        state,
+        appointment_status,
+      }: {
+        state: AppointmentState
+        appointment_status: AppointmentStatus
+      }) => {
+        return (
+          state === AppointmentState.PENDING &&
+          appointment_status !== AppointmentStatus.ACCEPTED
+        )
+      }
+    )
   }
 
   function getVerifiedAppointments(): Appointment[] | null {
     if (!allAppointments || !user) return null
 
-    const { role, id: userId } = user
-
-    if (role === Role.VETERINARIAN) {
-      return allAppointments.filter(({ appointment_status, Veterinarian }) => {
-        return (
-          appointment_status === AppointmentStatus.ACCEPTED &&
-          Veterinarian.id === userId
-        )
-      })
-    }
-
-    return allAppointments.filter(({ appointment_status }) => {
-      return appointment_status === AppointmentStatus.ACCEPTED
-    })
+    return allAppointments.filter(
+      ({ appointment_status }: { appointment_status: AppointmentStatus }) => {
+        return appointment_status === AppointmentStatus.ACCEPTED
+      }
+    )
   }
 
   async function reassignAppointment(

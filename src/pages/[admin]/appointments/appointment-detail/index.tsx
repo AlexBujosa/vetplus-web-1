@@ -172,6 +172,8 @@ function VeterinaryCell(props: {
     }) => reassignAppointment(appointmentId, veterinarianId),
   })
 
+  console.log({ appointments })
+
   if (!employees || !appointments) return
 
   return (

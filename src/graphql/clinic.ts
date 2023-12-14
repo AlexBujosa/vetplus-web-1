@@ -269,10 +269,12 @@ export const GET_CLINIC_COMMENTS = gql`
   }
 `
 
-export const GET_APPOINTMENTS_VERIFIED = gql`
-  query ($filterAppointmentBySSInput: FilterAppointmentBySSInput!) {
-    getAppointmentDetailAllRoles(
-      filterAppointmentBySSInput: $filterAppointmentBySSInput
+export const GET_APPOINTMENTS_PER_DATETIME = gql`
+  query (
+    $filterAppointmentByDateRangeInput: FilterAppointmentByDateRangeInput!
+  ) {
+    getAppointmentPerRangeDateTime(
+      filterAppointmentByDateRangeInput: $filterAppointmentByDateRangeInput
     ) {
       start_at
       end_at
@@ -292,64 +294,6 @@ export const GET_APPOINTMENTS_VERIFIED = gql`
       created_at
       updated_at
       status
-      Clinic {
-        id
-        id_owner
-        name
-        telephone_number
-        google_maps_url
-        email
-        image
-        address
-        created_at
-        updated_at
-        status
-      }
-      Pet {
-        id
-        id_owner
-        id_specie
-        id_breed
-        name
-        image
-        gender
-        castrated
-        dob
-        observations
-        created_at
-        updated_at
-        status
-      }
-      Veterinarian {
-        id
-        names
-        surnames
-        email
-        provider
-        document
-        address
-        telephone_number
-        image
-        role
-        created_at
-        updated_at
-        status
-      }
-      Owner {
-        id
-        names
-        surnames
-        email
-        provider
-        document
-        address
-        telephone_number
-        image
-        role
-        created_at
-        updated_at
-        status
-      }
     }
   }
 `

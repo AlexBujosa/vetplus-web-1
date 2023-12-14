@@ -250,6 +250,8 @@ function NotificationModal(props: NotificationModalProps) {
 
   if (!appointment || !employees) return null
 
+  console.log({ appointment })
+
   return (
     <MuiModal open={open} onClose={handleClose}>
       <Box sx={style}>
@@ -258,12 +260,17 @@ function NotificationModal(props: NotificationModalProps) {
             <span className='flex flex-col col-span-3 gap-y-[10px]'>
               <Body.Large text={t('owner')} />
 
-              <div className='flex flex-row items-center gap-x-[10px]'>
+              <div className='flex flex-row items-center gap-x-5'>
                 <Image
                   src={appointment.Owner?.image ?? ''}
                   className='rounded-full h-[50px] w-[50px]'
                 />
-                {/* <Body.Medium text={appointment.Pet.name} /> */}
+
+                <Body.Medium
+                  text={`${appointment.Owner.names ?? ''} ${
+                    appointment.Owner.surnames ?? ''
+                  }`}
+                />
               </div>
             </span>
             <span className='flex flex-col col-span-5 gap-y-[10px]'>
@@ -293,6 +300,7 @@ function NotificationModal(props: NotificationModalProps) {
             </span>
             <span className='col-span-3'>
               <Select
+                className='w-[250px]'
                 label={t('veterinary')}
                 onChange={() => {}}
                 // value={undefined}

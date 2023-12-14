@@ -238,13 +238,6 @@ function CalendarHeader() {
 }
 
 function CalendarWeek() {
-  const { getVerifiedAppointments } = useClinic()
-
-  const { data: allAppointments } = useQuery({
-    queryKey: ['verified-appointments'],
-    queryFn: getVerifiedAppointments,
-  })
-
   const week = useAtomValue(weekAtom)
   const startOfWeek = dayjs(getMonday(week))
   const arr = getWeekDays(startOfWeek)
@@ -252,6 +245,12 @@ function CalendarWeek() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const setAppointments = useSetAtom(appointmentsAtom)
+  const { getVerifiedAppointments } = useClinic()
+
+  const { data: allAppointments } = useQuery({
+    queryKey: ['verified-appointments'],
+    queryFn: getVerifiedAppointments,
+  })
 
   return (
     <div className='grid flex-1 grid-cols-7'>
