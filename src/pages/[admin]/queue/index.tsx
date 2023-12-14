@@ -137,11 +137,11 @@ function VerifiedAppointments(props: SearchFilters) {
     .sort((a, b) => dayjs(b.start_at).valueOf() - dayjs(a.start_at).valueOf())
 
   return (
-    <>
+    <article className='overflow-y-scroll max-h-[600px]'>
       {filteredAppointments.map((appointment, index) => {
         return <Notification key={index} appointment={appointment} />
       })}
-    </>
+    </article>
   )
 }
 
@@ -298,8 +298,6 @@ function NotificationModal(props: NotificationModalProps) {
   })
 
   if (!appointment || !employees) return null
-
-  console.log({ appointment })
 
   return (
     <MuiModal open={open} onClose={handleClose}>
