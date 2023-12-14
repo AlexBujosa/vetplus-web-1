@@ -94,6 +94,8 @@
     "email-not-found": "El usuario no existe",
     "invite-employee-succesfull": "Se ha enviado la invitación",
     "login-with-google": "Iniciar sesión con Google",
-    "comments": "Comentarios"
+    "comments": "Comentarios",
+    "search": "Buscar",
+    "date": "Fecha"
   }
 }

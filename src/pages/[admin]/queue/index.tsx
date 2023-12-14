@@ -1,5 +1,5 @@
 import { Body, Title } from '@/components/typography'
-import { Box, Modal as MuiModal, Tab, Tabs } from '@mui/material'
+import { Box, Modal as MuiModal, Tab, Tabs, TextField } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import CustomTabPanel from '@/components/molecules/custom-tab-panel'
 import { Profile } from '@/components/profile'
@@ -13,25 +13,65 @@ import { useState } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { useClinic } from '@/hooks/use-clinic'
 import { AppointmentStatus, type Appointment } from '@/types/clinic'
-import dayjs from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 import { useFormik } from 'formik'
 import toast from 'react-hot-toast'
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+
+interface SearchFilters {
+  nameFilter?: string
+  dateFilter?: Dayjs | null
+}
 
 export default function QueuePage() {
   const { t } = useTranslation()
+  const [nameFilter, setNameFilter] = useState('')
+  const [dateFilter, setDateFilter] = useState<Dayjs | null>()
+
+  const handleNameFilterChange = (event: any) => {
+    setNameFilter(event.target.value)
+  }
 
   return (
     <>
       <Title.Large text={t('notifications')} />
 
-      <Card />
+      <article className='flex items-center gap-x-4'>
+        <TextField
+          className='w-[300px]'
+          placeholder={t('name')}
+          variant='outlined'
+          value={nameFilter}
+          onChange={handleNameFilterChange}
+        />
+
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DemoContainer components={['DatePicker']}>
+            <DatePicker
+              label={t('date')}
+              value={dateFilter}
+              onChange={(newDate) => setDateFilter(newDate)}
+              componentsProps={{
+                actionBar: {
+                  actions: ['clear'],
+                },
+              }}
+            />
+          </DemoContainer>
+        </LocalizationProvider>
+      </article>
+
+      <Card nameFilter={nameFilter} dateFilter={dateFilter} />
     </>
   )
 }
 
 // TODO: If the formulary have not been filled, the user is alerted that have to fill out the form to end the appointment.
 
-function Card() {
+function Card(props: SearchFilters) {
   const { t } = useTranslation()
 
   const [value, setValue] = useState(0)
@@ -40,7 +80,10 @@ function Card() {
     setValue(newValue)
   }
 
-  const sections = [<VerifiedAppointments />, <PendingAppointments />]
+  const sections = [
+    <VerifiedAppointments {...props} />,
+    <PendingAppointments {...props} />,
+  ]
 
   return (
     <article className='bg-white shadow-elevation-1'>
@@ -62,7 +105,8 @@ function Card() {
   )
 }
 
-function VerifiedAppointments() {
+function VerifiedAppointments(props: SearchFilters) {
+  const { nameFilter, dateFilter } = props
   const { getVerifiedAppointments } = useClinic()
 
   const { data: verifiedAppointments } = useQuery({
@@ -80,16 +124,30 @@ function VerifiedAppointments() {
       </>
     )
 
+  // Filter appointments based on name and date if filters are provided
+  const filteredAppointments = verifiedAppointments
+    ?.filter((appointment) => {
+      const isNameMatch =
+        !nameFilter ||
+        appointment.Pet.name.toLowerCase().includes(nameFilter.toLowerCase())
+      const isDateMatch =
+        !dateFilter || dayjs(appointment.start_at).isSame(dateFilter, 'day')
+      return isNameMatch && isDateMatch
+    })
+    .sort((a, b) => dayjs(b.start_at).valueOf() - dayjs(a.start_at).valueOf())
+
   return (
     <>
-      {verifiedAppointments.map((appointment, index) => {
+      {filteredAppointments.map((appointment, index) => {
         return <Notification key={index} appointment={appointment} />
       })}
     </>
   )
 }
 
-function PendingAppointments() {
+function PendingAppointments(props: SearchFilters) {
+  const { nameFilter, dateFilter } = props
+
   const { getPendingAppointments } = useClinic()
 
   const { data: pendingAppointments } = useQuery({
@@ -116,9 +174,21 @@ function PendingAppointments() {
       </>
     )
 
+  // Filter appointments based on name and date if filters are provided
+  const filteredAppointments = pendingAppointments
+    ?.filter((appointment) => {
+      const isNameMatch =
+        !nameFilter ||
+        appointment.Pet.name.toLowerCase().includes(nameFilter.toLowerCase())
+      const isDateMatch =
+        !dateFilter || dayjs(appointment.start_at).isSame(dateFilter, 'day')
+      return isNameMatch && isDateMatch
+    })
+    .sort((a, b) => dayjs(b.start_at).valueOf() - dayjs(a.start_at).valueOf())
+
   return (
-    <>
-      {pendingAppointments.map((appointment, index) => {
+    <div className='overflow-y-scroll max-h-[600px]'>
+      {filteredAppointments.map((appointment, index) => {
         return (
           <Notification
             key={index}
@@ -133,7 +203,7 @@ function PendingAppointments() {
         handleClose={handleClose}
         appointment={selectedAppointment}
       />
-    </>
+    </div>
   )
 }
 
@@ -152,6 +222,7 @@ function Notification(props: AppointmentProps) {
     >
       <aside className='flex flex-row items-center gap-x-[30px]'>
         <Profile className='text-black' image={Pet.image} profile={Pet.name} />
+
         <Badge
           className='bg-base-primary-50 text-base-primary-700'
           label={Pet.gender}
@@ -184,28 +255,6 @@ function NotificationDatetime(props: { datetime: Date }) {
     </span>
   )
 }
-
-// function AcceptedBadge() {
-//   const { t } = useTranslation()
-
-//   return (
-//     <Badge
-//       className='text-white bg-base-semantic-success-300'
-//       label={t('accepted')}
-//     />
-//   )
-// }
-
-// function RejectedBadge() {
-//   const { t } = useTranslation()
-
-//   return (
-//     <Badge
-//       className='text-white bg-base-semantic-danger-300'
-//       label={t('rejected')}
-//     />
-//   )
-// }
 
 interface NotificationModalProps {
   appointment: Appointment | undefined
