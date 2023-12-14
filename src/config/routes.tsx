@@ -12,7 +12,6 @@ import { ChecklistOutlined, StoreOutlined } from '@mui/icons-material'
 import GeneralViewPage from '@/pages/[admin]/clinic/general-info'
 import AuthLayout from '@/layout/auth'
 import Layout from '@/layout/admin'
-import NotificationsPage from '@/pages/[admin]/notifications'
 import ProfilePage from '@/pages/[admin]/profile'
 import AppointmentsPage from '@/pages/[admin]/appointments'
 import ClientsDetailPage from '@/pages/[admin]/clients/detail-page'
@@ -110,12 +109,6 @@ let routes: Routes = {
         icon: <StoreOutlined />,
         page: <GeneralViewPage />,
         allowedRoles: [Role.CLINIC_OWNER],
-      },
-      notifications: {
-        href: '/notifications',
-        page: <NotificationsPage />,
-        show: false,
-        allowedRoles,
       },
       'user-profile': {
         show: false,
