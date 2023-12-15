@@ -1,5 +1,12 @@
 import { Body, Title } from '@/components/typography'
-import { Box, Modal as MuiModal, Tab, Tabs, TextField } from '@mui/material'
+import {
+  Box,
+  Modal as MuiModal,
+  SelectChangeEvent,
+  Tab,
+  Tabs,
+  TextField,
+} from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import CustomTabPanel from '@/components/molecules/custom-tab-panel'
 import { Profile } from '@/components/profile'
@@ -273,18 +280,33 @@ function NotificationModal(props: NotificationModalProps) {
   const { mutateAsync } = useMutation({
     mutationFn: ({
       appointmentStatus,
+      veterinarianId,
     }: {
       appointmentStatus: AppointmentStatus
+      veterinarianId: string
     }) => {
-      return respondToAppointment(appointment?.id as string, appointmentStatus)
+      return respondToAppointment(
+        appointment?.id as string,
+        veterinarianId,
+        appointmentStatus
+      )
     },
   })
 
-  const onSubmit = async ({ status }: { status: AppointmentStatus }) => {
+  const onSubmit = async ({
+    status,
+    veterinarianId,
+  }: {
+    status: AppointmentStatus
+    veterinarianId: string
+  }) => {
     try {
       await mutateAsync({
         appointmentStatus: status,
+        veterinarianId,
       })
+
+      toast.success(t('succesfull-appointment'))
       handleClose()
     } catch (error) {
       toast.error(t('something-wrong'))
@@ -294,9 +316,17 @@ function NotificationModal(props: NotificationModalProps) {
   const formik = useFormik({
     initialValues: {
       status: AppointmentStatus.ACCEPTED,
+      veterinarianId: '',
     },
     onSubmit,
   })
+
+  const [veterinarianId, setVeterinarianId] = useState<string>('')
+
+  const handleSelectChange = (e: any) => {
+    setVeterinarianId(e.target.value)
+    formik.setFieldValue('veterinarianId', e.target?.value) // set formik value
+  }
 
   if (!appointment || !employees) return null
 
@@ -304,33 +334,37 @@ function NotificationModal(props: NotificationModalProps) {
     <MuiModal open={open} onClose={handleClose}>
       <Box sx={style}>
         <Modal title='Medicina preventiva'>
-          <div className='grid mt-5 mb-10 grid--cols-8 gap-y-10'>
-            <span className='flex flex-col col-span-3 gap-y-[10px]'>
-              <Body.Large text={t('owner')} />
+          <form
+            className='flex flex-col justify-between'
+            onSubmit={formik.handleSubmit}
+          >
+            <div className='grid mt-5 mb-10 grid--cols-8 gap-y-10'>
+              <span className='flex flex-col col-span-3 gap-y-[10px]'>
+                <Body.Large text={t('owner')} />
 
-              <div className='flex flex-row items-center gap-x-5'>
-                <Image
-                  src={appointment.Owner?.image ?? ''}
-                  className='rounded-full h-[50px] w-[50px]'
-                />
+                <div className='flex flex-row items-center gap-x-5'>
+                  <Image
+                    src={appointment.Owner?.image ?? ''}
+                    className='rounded-full h-[50px] w-[50px]'
+                  />
 
-                <Body.Medium
-                  text={`${appointment.Owner.names ?? ''} ${
-                    appointment.Owner.surnames ?? ''
-                  }`}
-                />
-              </div>
-            </span>
-            <span className='flex flex-col col-span-5 gap-y-[10px]'>
-              <Body.Large text={t('pet')} />
+                  <Body.Medium
+                    text={`${appointment.Owner.names ?? ''} ${
+                      appointment.Owner.surnames ?? ''
+                    }`}
+                  />
+                </div>
+              </span>
+              <span className='flex flex-col col-span-5 gap-y-[10px]'>
+                <Body.Large text={t('pet')} />
 
-              <div className='flex flex-row items-center gap-x-5'>
-                <Image
-                  src={appointment.Pet.image}
-                  className='rounded-full h-[50px] w-[50px]'
-                />
-                <Body.Medium text={appointment.Pet.name} />
-                {/* 
+                <div className='flex flex-row items-center gap-x-5'>
+                  <Image
+                    src={appointment.Pet.image}
+                    className='rounded-full h-[50px] w-[50px]'
+                  />
+                  <Body.Medium text={appointment.Pet.name} />
+                  {/* 
                     {Object.entries(appointment.pet).map(
                       ([key, value]) => {
                         return (
@@ -344,50 +378,47 @@ function NotificationModal(props: NotificationModalProps) {
                         )
                       }
                     )} */}
-              </div>
-            </span>
-            <span className='col-span-3'>
-              <Select
-                className='w-[250px]'
-                label={t('veterinary')}
-                onChange={() => {}}
-                // value={undefined}
-                options={employees}
-                defaultValue={employees[0].value}
-              />
-            </span>
-            <span className='col-span-3'>
-              <Body.Large text={t('appointment')} />
+                </div>
+              </span>
+              <span className='col-span-3'>
+                <Select
+                  className='w-[250px]'
+                  name='veterinarianId'
+                  value={veterinarianId}
+                  onChange={(e) => handleSelectChange(e)}
+                  label={t('veterinary')}
+                  options={employees}
+                />
+              </span>
+              <span className='col-span-3'>
+                <Body.Large text={t('appointment')} />
 
-              <Body.Medium
-                className='text-base-neutral-gray-800'
-                text={dayjs(appointment.start_at).format('dddd MMM HH:MM A')}
-              />
-            </span>
-
-            <span className='col-span-2'>
-              <Body.Large text={t('time')} />
-
-              <Body.Medium
-                className='text-base-neutral-gray-800'
-                text={dayjs(appointment.start_at).format('hh:mm A')}
-              />
-
-              {appointment.end_at && (
                 <Body.Medium
                   className='text-base-neutral-gray-800'
-                  text={dayjs(appointment.end_at).format('hh:mm A')}
+                  text={dayjs(appointment.start_at).format('dddd MMM HH:MM A')}
                 />
-              )}
-            </span>
-            {/* <Button icon={<Check />} label={t('accept')} />
+              </span>
+
+              <span className='col-span-2'>
+                <Body.Large text={t('time')} />
+
+                <Body.Medium
+                  className='text-base-neutral-gray-800'
+                  text={dayjs(appointment.start_at).format('hh:mm A')}
+                />
+
+                {appointment.end_at && (
+                  <Body.Medium
+                    className='text-base-neutral-gray-800'
+                    text={dayjs(appointment.end_at).format('hh:mm A')}
+                  />
+                )}
+              </span>
+              {/* <Button icon={<Check />} label={t('accept')} />
                 <Button icon={<Close />} label={t('deny')} />
                 <Button label={t('save')} /> */}
-          </div>
-          <form
-            className='flex flex-row justify-between'
-            onSubmit={formik.handleSubmit}
-          >
+            </div>
+
             <aside className='flex flex-row gap-x-7'>
               <Button
                 className='bg-base-semantic-success-300 hover:bg-base-semantic-success-400'

@@ -96,6 +96,7 @@
     "login-with-google": "Iniciar sesión con Google",
     "comments": "Comentarios",
     "search": "Buscar",
-    "date": "Fecha"
+    "date": "Fecha",
+    "succesfull-appointment": "La cita ha sido agendada satisfactoriamente"
   }
 }

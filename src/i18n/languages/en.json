@@ -95,6 +95,7 @@
     "invite-employee-succesfull": "Invitation was succesfull",
     "login-with-google": "Login with Google",
     "comments": "Comments",
-    "date": "Date"
+    "date": "Date",
+    "succesfull-appointment": "Appointment has been scheduled succesfully"
   }
 }

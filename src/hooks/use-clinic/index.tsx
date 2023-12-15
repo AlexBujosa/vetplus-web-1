@@ -228,6 +228,7 @@ export function useClinic() {
 
   async function respondToAppointment(
     appointmentId: string,
+    id_veterinarian: string,
     status: AppointmentStatus
   ) {
     const {
@@ -238,6 +239,7 @@ export function useClinic() {
         updateAppointmentInput: {
           id: appointmentId,
           appointment_status: status,
+          id_veterinarian,
           // end_at: '2022-03-06T08:23:45.000Z',
         },
       },
