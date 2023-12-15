@@ -138,14 +138,11 @@ export function useClinic() {
     return updateClinic
   }
 
-  async function getAppointments() {
+  async function getAppointments(): Promise<Appointment[] | undefined> {
     if (!user) return
 
-    const { role } = user
-
-    if (role === Role.VETERINARIAN) {
-      const veterinaryAppointments = await getVeterinaryAppointments()
-      return veterinaryAppointments
+    if (user.role === Role.VETERINARIAN) {
+      return await getVeterinaryAppointments()
     }
 
     const {
@@ -184,14 +181,12 @@ export function useClinic() {
     )
   }
 
-  function getVerifiedAppointments(): Appointment[] | null {
-    if (!allAppointments || !user) return null
+  function getVerifiedAppointments(): Appointment[] | undefined {
+    getAppointments()
 
-    return allAppointments.filter(
-      ({ appointment_status }: { appointment_status: AppointmentStatus }) => {
-        return appointment_status === AppointmentStatus.ACCEPTED
-      }
-    )
+    return allAppointments?.filter(({ appointment_status }) => {
+      return appointment_status === AppointmentStatus.ACCEPTED
+    })
   }
 
   async function reassignAppointment(
