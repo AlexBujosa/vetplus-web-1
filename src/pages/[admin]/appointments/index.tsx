@@ -7,7 +7,7 @@ import useCalendar from '@/hooks/use-calendar'
 import { ChevronLeft, ChevronRight } from '@mui/icons-material'
 import dayjs, { type Dayjs } from 'dayjs'
 import { getWeekdayInLocale } from '@/utils'
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import {
   currentMonthAtom,
   monthAtom,
@@ -17,6 +17,9 @@ import { useQuery } from '@tanstack/react-query'
 import { useClinic } from '@/hooks/use-clinic'
 import { useNavigate } from 'react-router-dom'
 import { appointmentsAtom } from '@/hooks/use-clinic/appointmentsAtom'
+import { Role } from '@/types/role'
+import { roleAtom } from '@/hooks/use-auth/roleAtom'
+import { userAtom } from '@/hooks/use-user/userAtom'
 
 export default function AppointmentsPage() {
   const { t } = useTranslation()
@@ -38,6 +41,8 @@ function SideSection() {
   const currentMonth = useAtomValue(currentMonthAtom)
 
   const { handlePrevMonth, handleNextMonth, handleDateClick } = useCalendar()
+  const role = useAtomValue(roleAtom)
+  const user = useAtomValue(userAtom)
 
   const { getVerifiedAppointments } = useClinic()
 
@@ -45,6 +50,13 @@ function SideSection() {
     queryKey: ['verified-appointments'],
     queryFn: getVerifiedAppointments,
   })
+
+  const filteredAppointments =
+    role === Role.VETERINARIAN
+      ? allAppointments?.filter(({ id_veterinarian }) => {
+          return id_veterinarian === user?.id
+        })
+      : allAppointments
 
   return (
     <aside className='col-span-2 border-r-2 border-r-base-neutral-gray-600'>
@@ -88,8 +100,8 @@ function SideSection() {
                   const isToday = dayjs(day).isSame(dayjs(), 'day')
 
                   // Check if there is an appointment for the current date
-                  const hasAppointment = allAppointments
-                    ? allAppointments.some(({ start_at }) =>
+                  const hasAppointment = filteredAppointments
+                    ? filteredAppointments.some(({ start_at }) =>
                         dayjs(start_at).isSame(dayjs(day), 'day')
                       )
                     : false
@@ -246,11 +258,24 @@ function CalendarWeek() {
   const navigate = useNavigate()
   const setAppointments = useSetAtom(appointmentsAtom)
   const { getVerifiedAppointments } = useClinic()
+  const role = useAtomValue(roleAtom)
+  const user = useAtomValue(userAtom)
 
-  const { data: allAppointments } = useQuery({
+  const { data: allAppointments, isLoading } = useQuery({
     queryKey: ['verified-appointments'],
     queryFn: getVerifiedAppointments,
   })
+
+  if (isLoading || !allAppointments) return <>loading data...</>
+
+  const filteredAppointments =
+    role === Role.VETERINARIAN
+      ? allAppointments.filter(({ id_veterinarian }) => {
+          return id_veterinarian === user?.id
+        })
+      : allAppointments
+
+  console.log({ filteredAppointments, allAppointments, role })
 
   return (
     <div className='grid flex-1 grid-cols-7'>
@@ -272,9 +297,11 @@ function CalendarWeek() {
         {
           const workingDay = arr[index]
 
-          const dayAppointments = allAppointments?.filter(({ start_at }) => {
-            return dayjs(workingDay).isSame(start_at, 'day')
-          })
+          const dayAppointments = filteredAppointments?.filter(
+            ({ start_at }) => {
+              return dayjs(workingDay).isSame(start_at, 'day')
+            }
+          )
 
           const weekday = getWeekdayInLocale(day)
           const dayNumber = day.get('D').toString()
