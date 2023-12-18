@@ -1,4 +1,4 @@
-import { GET_MY_PROFILE, UPDATE_USER } from '@/graphql/user'
+import { GET_MY_PROFILE, REGISTER_SPECIALTY, UPDATE_USER } from '@/graphql/user'
 import { useAtom } from 'jotai'
 import { userAtom } from './userAtom'
 import client from '@/utils/apolloClient'
@@ -27,7 +27,22 @@ export default function useUser() {
     return updateUser
   }
 
-  return { getUserProfile, updateUser }
+  async function updateSpecialty(payload: { specialties: string }) {
+    const {
+      data: { registerSpecialty },
+    } = await client.mutate({
+      mutation: REGISTER_SPECIALTY,
+      variables: {
+        addSpecialtyInput: {
+          specialties: payload.specialties,
+        },
+      },
+    })
+
+    return registerSpecialty
+  }
+
+  return { getUserProfile, updateUser, updateSpecialty }
 }
 
 export type EditUserForm = {

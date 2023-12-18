@@ -11,7 +11,7 @@ import { roleAtom } from '@/hooks/use-auth/roleAtom'
 import { Role } from '@/types/role'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import useUser, { EditUserForm } from '@/hooks/use-user'
 import Input from '@/components/input'
@@ -157,6 +157,8 @@ function UpdateUserForm() {
     setValue(newValue)
   }
 
+  const role = useAtomValue(roleAtom)
+
   return (
     <Box sx={style}>
       <article className='bg-white px-[30px] py-[20px]'>
@@ -168,7 +170,7 @@ function UpdateUserForm() {
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <Tabs value={value} onChange={handleChange}>
               <Tab label={t('profile')} />
-              <Tab label={t('professional')} />
+              {role === 'VETERINARIAN' && <Tab label={t('professional')} />}
             </Tabs>
           </Box>
 
@@ -299,13 +301,50 @@ function ProfessionalForm(props: TabsProps) {
   const { value } = props
   const { t } = useTranslation()
 
-  // const { mutateAsync, isPending: isLoading } = useMutation({
-  //   mutationFn: updateUser,
-  // })
+  const { updateSpecialty, getUserProfile } = useUser()
+
+  const { data: user } = useQuery({
+    queryKey: ['profile'],
+    queryFn: getUserProfile,
+  })
+
+  const { mutateAsync, isPending: isLoading } = useMutation({
+    mutationFn: updateSpecialty,
+  })
 
   const initialValues = {
-    specialty: '',
+    specialties: user.VeterinariaSpecialties?.specialties ?? '',
   }
+
+  const [specialty, setSpecialty] = useState<string>(initialValues.specialties)
+
+  if (user.role !== 'VETERINARIAN') return null
+
+  const options = [
+    { label: 'Medicina General', value: 'Medicina General' },
+    { label: 'Medicina Interna', value: 'Medicina Interna' },
+    { label: 'Cirugía', value: 'Cirugía' },
+    { label: 'Odontología', value: 'Odontología' },
+    { label: 'Ortopedia', value: 'Ortopedia' },
+    { label: 'Cardiología', value: 'Cardiología' },
+    { label: 'Dermatología', value: 'Dermatología' },
+    { label: 'Oftalmología', value: 'Oftalmología' },
+  ]
+
+  const isUserSpecialtyNotInOptions =
+    initialValues.specialties &&
+    !options.some(
+      (option) =>
+        option.value.toLowerCase() === initialValues.specialties?.toLowerCase()
+    )
+
+  // If not in options, append it
+  const updatedOptions = isUserSpecialtyNotInOptions
+    ? [
+        ...options,
+        { label: initialValues.specialties, value: initialValues.specialties },
+      ]
+    : options
 
   const formik = useFormik({
     initialValues,
@@ -314,26 +353,37 @@ function ProfessionalForm(props: TabsProps) {
   })
 
   async function onSubmit(data: typeof initialValues) {
-    // await mutateAsync({ ...data })
-    toast.success(t('updated-fields'))
+    try {
+      await mutateAsync({ ...data })
+      toast.success(t('updated-fields'))
+    } catch (error: any) {
+      toast.error(error.message)
+    }
   }
 
   return (
     <CustomTabPanel value={value} index={1}>
-      <form>
+      <form className='flex flex-col gap-y-3' onSubmit={formik.handleSubmit}>
         <Select
           label={t('specialty')}
-          value={'Cirugia'}
-          onChange={() => {}}
-          options={[{ label: 'Cirugia', value: 'Cirugia' }]}
-          name='specialty'
-          value={formik.values.specialty}
-          onChange={formik.handleChange}
-          error={formik.touched.address && Boolean(formik.errors.address)}
-          helperText={formik.touched.address && formik.errors.address}
+          options={updatedOptions}
+          name='specialties'
+          value={specialty}
+          onChange={(e: any) => {
+            setSpecialty(e.target?.value)
+            formik.setFieldValue('specialty', e.target?.value)
+          }}
+          error={
+            formik.touched.specialties && Boolean(formik.errors.specialties)
+          }
         />
 
-        <Button type='submit' label={t('edit')} />
+        <Button
+          type='submit'
+          label={t('edit')}
+          loading={isLoading}
+          disabled={isLoading}
+        />
       </form>
     </CustomTabPanel>
   )

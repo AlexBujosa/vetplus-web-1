@@ -16,6 +16,9 @@ export const GET_MY_PROFILE = gql`
       created_at
       updated_at
       status
+      VeterinariaSpecialties {
+        specialties
+      }
     }
   }
 `
@@ -23,6 +26,14 @@ export const GET_MY_PROFILE = gql`
 export const UPDATE_USER = gql`
   mutation ($updateUserInput: UpdateUserInput!) {
     updateUser(updateUserInput: $updateUserInput) {
+      result
+    }
+  }
+`
+
+export const REGISTER_SPECIALTY = gql`
+  mutation ($addSpecialtyInput: AddSpecialtyInput!) {
+    registerSpecialty(addSpecialtyInput: $addSpecialtyInput) {
       result
     }
   }
