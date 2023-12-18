@@ -322,8 +322,6 @@ function ProfessionalForm(props: TabsProps) {
     specialty: user.VeterinariaSpecialties?.specialties ?? '',
   }
 
-  console.log({ user })
-
   const [specialty, setSpecialty] = useState<string>(initialValues.specialty)
 
   if (user.role !== 'VETERINARIAN') return null
