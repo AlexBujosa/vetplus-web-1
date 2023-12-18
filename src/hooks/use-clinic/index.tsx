@@ -22,6 +22,7 @@ import {
 import { useQuery } from '@tanstack/react-query'
 import { userAtom } from '../use-user/userAtom'
 import { Role } from '@/types/role'
+import dayjs from 'dayjs'
 
 export function useClinic() {
   const [currentEmployees] = useAtom(employeesAtom)
@@ -42,16 +43,17 @@ export function useClinic() {
     queryFn: getAppointments,
   })
 
-  async function getVeterinaryAppointments() {
+  async function getVeterinaryAppointments(): Promise<
+    Appointment[] | undefined
+  > {
     const {
       data: { getAppointmentPerRangeDateTime },
     } = await client.query({
       query: GET_APPOINTMENTS_PER_DATETIME,
       variables: {
         filterAppointmentByDateRangeInput: {
-          // INFO: OPTIONAL PARAMETERS AS ISO STRING
-          start_at: null,
-          end_at: null,
+          start_at: '2023-01-01T04:00:00.000Z',
+          end_at: '2030-01-01T04:00:00.000Z',
         },
       },
     })
@@ -141,6 +143,11 @@ export function useClinic() {
   async function getAppointments(): Promise<Appointment[] | undefined> {
     if (!user) return
 
+    console.log({
+      user,
+      role: user.role,
+    })
+
     if (user.role === Role.VETERINARIAN) {
       return await getVeterinaryAppointments()
     }
@@ -181,10 +188,12 @@ export function useClinic() {
     )
   }
 
-  function getVerifiedAppointments(): Appointment[] | undefined {
-    getAppointments()
+  async function getVerifiedAppointments(): Promise<Appointment[] | undefined> {
+    const appointments = await getAppointments()
 
-    return allAppointments?.filter(({ appointment_status }) => {
+    console.log({ appointments })
+
+    return appointments?.filter(({ appointment_status }) => {
       return appointment_status === AppointmentStatus.ACCEPTED
     })
   }
