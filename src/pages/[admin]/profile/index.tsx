@@ -319,8 +319,10 @@ function ProfessionalForm(props: TabsProps) {
   })
 
   const initialValues = {
-    specialty: user.Veterinariaspecialty?.specialties ?? '',
+    specialty: user.VeterinariaSpecialties?.specialties ?? '',
   }
+
+  console.log({ user })
 
   const [specialty, setSpecialty] = useState<string>(initialValues.specialty)
 
