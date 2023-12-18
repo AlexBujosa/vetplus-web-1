@@ -104,7 +104,7 @@ function GeneralDescription({
     [t('email')]: <Typography text={email ?? 'N/A'} />,
     [t('telephone-number')]: <Typography text={telephone_number ?? 'N/A'} />,
     [t('address')]: <Typography text={address ?? 'N/A'} />,
-    [t('speciality')]: (
+    [t('specialty')]: (
       <Typography text={VeterinariaSpecialties?.specialties ?? 'N/A'} />
     ),
     [t('review')]: (

@@ -102,7 +102,7 @@ function GeneralDescription() {
     [t('email')]: <Typography text={email} />,
     [t('telephone-number')]: <Typography text={telephone_number} />,
     [t('address')]: <Typography text={address} />,
-    // [t('speciality')]: <Typography text={'specialty'} />,
+    // [t('specialty')]: <Typography text={'specialty'} />,
     // [t('review')]: <StarsReview review={2} />,
     [t('status')]: <StatusBadge status={status} />,
   }
@@ -150,7 +150,45 @@ function Typography(props: { text?: string }) {
 }
 
 function UpdateUserForm() {
+  const { t } = useTranslation()
+
+  const [value, setValue] = useState<number>(0)
+  const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue)
+  }
+
+  return (
+    <Box sx={style}>
+      <article className='bg-white px-[30px] py-[20px]'>
+        <div className='flex flex-row items-center justify-between '>
+          <Title.Small className='text-2xl' text={t('edit')} />
+        </div>
+
+        <div className='flex flex-col'>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <Tabs value={value} onChange={handleChange}>
+              <Tab label={t('profile')} />
+              <Tab label={t('professional')} />
+            </Tabs>
+          </Box>
+
+          <ProfileForm value={value} />
+
+          <ProfessionalForm value={value} />
+        </div>
+      </article>
+    </Box>
+  )
+}
+
+interface TabsProps {
+  value: number
+}
+
+function ProfileForm(props: TabsProps) {
+  const { value } = props
   const { getUserProfile } = useUser()
+  const { t } = useTranslation()
 
   const { data: user } = useQuery({
     queryKey: ['profile'],
@@ -173,11 +211,100 @@ function UpdateUserForm() {
     mutationFn: updateUser,
   })
 
-  const { t } = useTranslation()
+  const formik = useFormik({
+    initialValues,
+    onSubmit,
+    validationSchema: schema,
+  })
 
-  const onSubmit = async (data: EditUserForm) => {
+  async function onSubmit(data: EditUserForm) {
     await mutateAsync({ ...data })
     toast.success(t('updated-fields'))
+  }
+
+  return (
+    <CustomTabPanel value={value} index={0}>
+      <form
+        className='grid grid-cols-2 gap-x-3 my-[45px] gap-y-[45px]'
+        onSubmit={formik.handleSubmit}
+      >
+        <Input
+          variant='outlined'
+          label='Nombres'
+          name='names'
+          value={formik.values.names}
+          onChange={formik.handleChange}
+          error={formik.touched.names && Boolean(formik.errors.names)}
+          helperText={formik.touched.names && formik.errors.names}
+        />
+
+        <Input
+          variant='outlined'
+          label='Apellidos'
+          name='surnames'
+          value={formik.values.surnames}
+          onChange={formik.handleChange}
+          error={formik.touched.surnames && Boolean(formik.errors.surnames)}
+          helperText={formik.touched.surnames && formik.errors.surnames}
+        />
+
+        <Input
+          variant='outlined'
+          label='Documento'
+          name='document'
+          value={formik.values.document}
+          onChange={formik.handleChange}
+          error={formik.touched.document && Boolean(formik.errors.document)}
+          helperText={formik.touched.document && formik.errors.document}
+        />
+
+        <Input
+          variant='outlined'
+          label='Dirección'
+          name='address'
+          value={formik.values.address}
+          onChange={formik.handleChange}
+          error={formik.touched.address && Boolean(formik.errors.address)}
+          helperText={formik.touched.address && formik.errors.address}
+        />
+
+        <Input
+          variant='outlined'
+          className='col-span-2'
+          label='Número telefónico'
+          name='telephone_number'
+          value={formik.values.telephone_number}
+          onChange={formik.handleChange}
+          error={
+            formik.touched.telephone_number &&
+            Boolean(formik.errors.telephone_number)
+          }
+          helperText={
+            formik.touched.telephone_number && formik.errors.telephone_number
+          }
+        />
+
+        <Button
+          type='submit'
+          className='w-full col-span-2'
+          label={t('edit')}
+          loading={isLoading}
+        />
+      </form>
+    </CustomTabPanel>
+  )
+}
+
+function ProfessionalForm(props: TabsProps) {
+  const { value } = props
+  const { t } = useTranslation()
+
+  // const { mutateAsync, isPending: isLoading } = useMutation({
+  //   mutationFn: updateUser,
+  // })
+
+  const initialValues = {
+    specialty: '',
   }
 
   const formik = useFormik({
@@ -186,112 +313,29 @@ function UpdateUserForm() {
     validationSchema: schema,
   })
 
-  const [value, setValue] = useState(0)
-  const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue)
+  async function onSubmit(data: typeof initialValues) {
+    // await mutateAsync({ ...data })
+    toast.success(t('updated-fields'))
   }
 
   return (
-    <Box sx={style}>
-      <article className='bg-white px-[30px] py-[20px]'>
-        <div className='flex flex-row items-center justify-between '>
-          <Title.Small className='text-2xl' text={t('edit')} />
-        </div>
+    <CustomTabPanel value={value} index={1}>
+      <form>
+        <Select
+          label={t('specialty')}
+          value={'Cirugia'}
+          onChange={() => {}}
+          options={[{ label: 'Cirugia', value: 'Cirugia' }]}
+          name='specialty'
+          value={formik.values.specialty}
+          onChange={formik.handleChange}
+          error={formik.touched.address && Boolean(formik.errors.address)}
+          helperText={formik.touched.address && formik.errors.address}
+        />
 
-        <div className='flex flex-col'>
-          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <Tabs value={value} onChange={handleChange}>
-              <Tab label={t('profile')} />
-              <Tab label={t('professional')} />
-            </Tabs>
-          </Box>
-
-          <CustomTabPanel value={value} index={0}>
-            <form
-              className='grid grid-cols-2 gap-x-3 my-[45px] gap-y-[45px]'
-              onSubmit={formik.handleSubmit}
-            >
-              <Input
-                variant='outlined'
-                label='Nombres'
-                name='names'
-                value={formik.values.names}
-                onChange={formik.handleChange}
-                error={formik.touched.names && Boolean(formik.errors.names)}
-                helperText={formik.touched.names && formik.errors.names}
-              />
-
-              <Input
-                variant='outlined'
-                label='Apellidos'
-                name='surnames'
-                value={formik.values.surnames}
-                onChange={formik.handleChange}
-                error={
-                  formik.touched.surnames && Boolean(formik.errors.surnames)
-                }
-                helperText={formik.touched.surnames && formik.errors.surnames}
-              />
-
-              <Input
-                variant='outlined'
-                label='Documento'
-                name='document'
-                value={formik.values.document}
-                onChange={formik.handleChange}
-                error={
-                  formik.touched.document && Boolean(formik.errors.document)
-                }
-                helperText={formik.touched.document && formik.errors.document}
-              />
-
-              <Input
-                variant='outlined'
-                label='Dirección'
-                name='address'
-                value={formik.values.address}
-                onChange={formik.handleChange}
-                error={formik.touched.address && Boolean(formik.errors.address)}
-                helperText={formik.touched.address && formik.errors.address}
-              />
-
-              <Input
-                variant='outlined'
-                className='col-span-2'
-                label='Número telefónico'
-                name='telephone_number'
-                value={formik.values.telephone_number}
-                onChange={formik.handleChange}
-                error={
-                  formik.touched.telephone_number &&
-                  Boolean(formik.errors.telephone_number)
-                }
-                helperText={
-                  formik.touched.telephone_number &&
-                  formik.errors.telephone_number
-                }
-              />
-
-              <Button
-                type='submit'
-                className='w-full col-span-2'
-                label={t('edit')}
-                loading={isLoading}
-              />
-            </form>
-          </CustomTabPanel>
-
-          <CustomTabPanel value={value} index={1}>
-            <Select
-              label={t('speciality')}
-              value={'Cirugia'}
-              onChange={() => {}}
-              options={[{ label: 'Cirugia', value: 'Cirugia' }]}
-            />
-          </CustomTabPanel>
-        </div>
-      </article>
-    </Box>
+        <Button type='submit' label={t('edit')} />
+      </form>
+    </CustomTabPanel>
   )
 }
 

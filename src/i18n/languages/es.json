@@ -34,7 +34,7 @@
     "breed": "Raza",
     "age": "Edad",
     "sex": "Sexo",
-    "speciality": "Especialidad",
+    "specialty": "Especialidad",
     "status": "Estado",
     "review": "Calificación",
     "no-review": "Sin calificación",

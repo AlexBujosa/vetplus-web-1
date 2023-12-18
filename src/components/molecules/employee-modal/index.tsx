@@ -118,7 +118,7 @@ function ProfessionalSection(props: { specialty: string; status: boolean }) {
   return (
     <div className='grid grid-cols-2 grid-rows-auto mt-[60px] mb-[20px] gap-x-[50px] gap-y-[40px]'>
       <Select
-        label={t('speciality')}
+        label={t('specialty')}
         value={specialty}
         // onChange={handleSpecialtyChange}
         options={[{ label: 'Cirugia', value: 'Cirugia' }]}

@@ -59,7 +59,7 @@ function GeneralDescription({ client }: { client: any }) {
     [t('email')]: <Typography text={email} />,
     [t('telephone-number')]: <Typography text={telephone_number} />,
     [t('address')]: <Typography text={address} />,
-    [t('speciality')]: <Typography text={specialty} />,
+    [t('specialty')]: <Typography text={specialty} />,
     // [t('review')]: <StarsReview review={score} />,
     [t('status')]: <StatusBadge status={status} />,
   }

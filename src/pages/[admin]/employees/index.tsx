@@ -122,7 +122,7 @@ function EmployeesTable() {
     t('name'),
     t('email'),
     t('status'),
-    t('speciality'),
+    t('specialty'),
     t('review'),
   ]
 
