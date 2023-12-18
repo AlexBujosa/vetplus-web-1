@@ -12,7 +12,7 @@ import { Role } from '@/types/role'
 import { useFormik } from 'formik'
 import * as yup from 'yup'
 import { useAtom, useAtomValue } from 'jotai'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import useUser, { EditUserForm } from '@/hooks/use-user'
 import Input from '@/components/input'
 import CustomTabPanel from '@/components/molecules/custom-tab-panel'
@@ -89,22 +89,28 @@ export function ProfileWithRole({
 
 function GeneralDescription() {
   const { getUserProfile } = useUser()
+  const role = useAtomValue(roleAtom)
 
   const { data: user } = useQuery({
     queryKey: ['profile'],
     queryFn: getUserProfile,
   })
 
-  const { email, telephone_number, address, status } = user
+  const { email, telephone_number, address, status, VeterinariaSpecialties } =
+    user
   const { t } = useTranslation()
 
   const data: Record<string, JSX.Element> = {
     [t('email')]: <Typography text={email} />,
     [t('telephone-number')]: <Typography text={telephone_number} />,
     [t('address')]: <Typography text={address} />,
-    // [t('specialty')]: <Typography text={'specialty'} />,
-    // [t('review')]: <StarsReview review={2} />,
     [t('status')]: <StatusBadge status={status} />,
+  }
+
+  if (role === 'VETERINARIAN') {
+    data[t('specialty')] = (
+      <Typography text={VeterinariaSpecialties?.specialties} />
+    )
   }
 
   return (
@@ -313,10 +319,10 @@ function ProfessionalForm(props: TabsProps) {
   })
 
   const initialValues = {
-    specialties: user.VeterinariaSpecialties?.specialties ?? '',
+    specialty: user.Veterinariaspecialty?.specialties ?? '',
   }
 
-  const [specialty, setSpecialty] = useState<string>(initialValues.specialties)
+  const [specialty, setSpecialty] = useState<string>(initialValues.specialty)
 
   if (user.role !== 'VETERINARIAN') return null
 
@@ -332,17 +338,17 @@ function ProfessionalForm(props: TabsProps) {
   ]
 
   const isUserSpecialtyNotInOptions =
-    initialValues.specialties &&
+    initialValues.specialty &&
     !options.some(
       (option) =>
-        option.value.toLowerCase() === initialValues.specialties?.toLowerCase()
+        option.value.toLowerCase() === initialValues.specialty?.toLowerCase()
     )
 
   // If not in options, append it
   const updatedOptions = isUserSpecialtyNotInOptions
     ? [
         ...options,
-        { label: initialValues.specialties, value: initialValues.specialties },
+        { label: initialValues.specialty, value: initialValues.specialty },
       ]
     : options
 
@@ -352,9 +358,14 @@ function ProfessionalForm(props: TabsProps) {
     validationSchema: schema,
   })
 
+  const client = useQueryClient()
+
   async function onSubmit(data: typeof initialValues) {
     try {
       await mutateAsync({ ...data })
+      client.invalidateQueries({
+        queryKey: ['profile'],
+      })
       toast.success(t('updated-fields'))
     } catch (error: any) {
       toast.error(error.message)
@@ -367,15 +378,13 @@ function ProfessionalForm(props: TabsProps) {
         <Select
           label={t('specialty')}
           options={updatedOptions}
-          name='specialties'
+          name='specialty'
           value={specialty}
           onChange={(e: any) => {
             setSpecialty(e.target?.value)
             formik.setFieldValue('specialty', e.target?.value)
           }}
-          error={
-            formik.touched.specialties && Boolean(formik.errors.specialties)
-          }
+          error={formik.touched.specialty && Boolean(formik.errors.specialty)}
         />
 
         <Button

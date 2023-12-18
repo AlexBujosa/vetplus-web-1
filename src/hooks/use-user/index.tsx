@@ -27,14 +27,14 @@ export default function useUser() {
     return updateUser
   }
 
-  async function updateSpecialty(payload: { specialties: string }) {
+  async function updateSpecialty(payload: { specialty: string }) {
     const {
       data: { registerSpecialty },
     } = await client.mutate({
       mutation: REGISTER_SPECIALTY,
       variables: {
         addSpecialtyInput: {
-          specialties: payload.specialties,
+          specialties: payload.specialty,
         },
       },
     })

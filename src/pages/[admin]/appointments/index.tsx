@@ -275,8 +275,6 @@ function CalendarWeek() {
         })
       : allAppointments
 
-  console.log({ filteredAppointments, allAppointments, role })
-
   return (
     <div className='grid flex-1 grid-cols-7'>
       <aside className='flex flex-col'>
