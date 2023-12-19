@@ -7,7 +7,7 @@ import useCalendar from '@/hooks/use-calendar'
 import { ChevronLeft, ChevronRight } from '@mui/icons-material'
 import dayjs, { type Dayjs } from 'dayjs'
 import { getWeekdayInLocale } from '@/utils'
-import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import {
   currentMonthAtom,
   monthAtom,

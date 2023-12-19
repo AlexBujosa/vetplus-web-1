@@ -1,11 +1,11 @@
-import { useAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
 import { currentMonthAtom, monthAtom, weekAtom } from './monthAtom'
 import { currentMonthIndex, getMonth } from '@/utils'
 import dayjs, { Dayjs } from 'dayjs'
 
 function useCalendar() {
   const [monthIndex, setMonthIndex] = useAtom(monthAtom)
-  const [, setCurrentMonth] = useAtom(currentMonthAtom)
+  const setCurrentMonth = useSetAtom(currentMonthAtom)
   const [week, setWeek] = useAtom(weekAtom)
 
   function handlePrevMonth() {
@@ -48,6 +48,7 @@ function useCalendar() {
   function handleReset() {
     const currentMonth = currentMonthIndex()
     setMonthIndex(currentMonth)
+    setCurrentMonth(getMonth(currentMonth))
     setWeek(dayjs())
   }
 
