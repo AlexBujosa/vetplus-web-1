@@ -52,7 +52,7 @@ export default function useAuth() {
       throw new Error('Forbidden error')
     }
 
-    navigate(routes.admin.pages.clients.href)
+    navigate(defaultRoute[role])
   }
 
   async function logout() {
