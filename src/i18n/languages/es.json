@@ -97,6 +97,10 @@
     "comments": "Comentarios",
     "search": "Buscar",
     "date": "Fecha",
-    "succesfull-appointment": "La cita ha sido agendada satisfactoriamente"
+    "succesfull-appointment": "La cita ha sido agendada satisfactoriamente",
+    "image": "Imágen",
+    "drag-and-drop": "Arrastra una imagen o haz click dentro del recuadro para seleccionar el archivo.",
+    "drop-here": "Arrastra el archivo aqui",
+    "remove": "Eliminar"
   }
 }

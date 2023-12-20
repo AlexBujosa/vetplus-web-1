@@ -1,4 +1,4 @@
-import { PropsWithChildren, useState, cloneElement } from 'react'
+import { PropsWithChildren, useState, cloneElement, useCallback } from 'react'
 import Image from '@/components/image'
 import { Body, Headline, Label, Title } from '@/components/typography'
 import {
@@ -29,6 +29,8 @@ import * as yup from 'yup'
 import { useFormik } from 'formik'
 import toast from 'react-hot-toast'
 import dayjs from 'dayjs'
+import { useDropzone } from 'react-dropzone'
+import isEqual from 'lodash.isequal'
 
 export default function GeneralViewPage() {
   const { t } = useTranslation()
@@ -363,13 +365,60 @@ function ProfileModalSection() {
     onSubmit,
   })
 
+  const [myFiles, setMyFiles] = useState<any[]>([])
+  const { saveClinicImage } = useClinic()
+
+  const onDrop = useCallback(
+    ([file]: any) => {
+      setMyFiles([...myFiles, file])
+      saveClinicImage(file)
+    },
+    [myFiles]
+  )
+
+  const { isDragActive, getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    maxFiles: 1,
+  })
+
+  const removeFile = (file: any) => () => {
+    const newFiles = [...myFiles]
+    newFiles.splice(newFiles.indexOf(file), 1)
+    setMyFiles(newFiles)
+  }
+
+  const files = myFiles.map((file) => (
+    <li className='flex flex-row justify-between' key={file.path}>
+      {file.path} - {file.size} bytes{' '}
+      <button
+        className='px-2 py-1 text-white rounded-md bg-base-semantic-danger-500'
+        onClick={removeFile(file)}
+      >
+        {t('remove')}
+      </button>
+    </li>
+  ))
+
   return (
     <article className='py-5'>
-      <div className='flex flex-row items-center'>
-        <Image className='w-40 rounded-lg' />
-        <input type='file' name='' id='' />
+      <Title.Large text={t('image')} />
+
+      <div {...getRootProps({ className: 'dropzone' })}>
+        <div
+          className='flex flex-col items-center justify-center h-16 text-gray-500 border-2 border-gray-500 border-dashed bg-gray-50'
+          {...getRootProps()}
+        >
+          <input {...getInputProps()} />
+          {isDragActive ? <p>{t('drop-here')}</p> : <p>{t('drag-and-drop')}</p>}
+        </div>
       </div>
 
+      {files.length !== 0 && (
+        <aside className='mt-2'>
+          <h4>Files</h4>
+          <ul>{files}</ul>
+        </aside>
+      )}
       <form
         className='grid grid-cols-2 py-12 gap-x-12 gap-y-10'
         onSubmit={formik.handleSubmit}
@@ -424,6 +473,7 @@ function ProfileModalSection() {
           className='w-full col-span-2'
           label={t('edit')}
           loading={isLoading}
+          disabled={isEqual(formik.values, initialValues)}
         />
       </form>
     </article>

@@ -355,3 +355,12 @@ export const GET_APPOINTMENTS_PER_DATETIME = gql`
     }
   }
 `
+
+export const SAVE_CLINIC_IMAGE = gql`
+  mutation ($saveClinicImageInput: SaveClinicImageInput!) {
+    saveClinicImage(saveClinicImageInput: $saveClinicImageInput) {
+      result
+      image
+    }
+  }
+`

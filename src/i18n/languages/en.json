@@ -96,6 +96,10 @@
     "login-with-google": "Login with Google",
     "comments": "Comments",
     "date": "Date",
-    "succesfull-appointment": "Appointment has been scheduled succesfully"
+    "succesfull-appointment": "Appointment has been scheduled succesfully",
+    "image": "Image",
+    "drag-and-drop": "Drag 'n' drop some files here, or click to select files",
+    "drop-here": "Drop the files here...",
+    "remove": "Remove"
   }
 }
