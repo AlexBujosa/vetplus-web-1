@@ -20,7 +20,7 @@ import {
   AppointmentStatus,
   Clinic,
 } from '@/types/clinic'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { userAtom } from '../use-user/userAtom'
 import { Role } from '@/types/role'
 
@@ -254,6 +254,8 @@ export function useClinic() {
   }
 
   async function saveClinicImage(file: File) {
+    const queryClient = useQueryClient()
+
     const {
       data: { saveClinicImage },
     } = await client.mutate({
@@ -265,6 +267,10 @@ export function useClinic() {
           old_image: clinic?.image ?? '',
         },
       },
+    })
+
+    queryClient.invalidateQueries({
+      queryKey: ['clinic'],
     })
 
     return saveClinicImage
