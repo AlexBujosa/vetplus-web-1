@@ -8,6 +8,7 @@ import {
   INVITE_TO_CLINIC,
   REASSIGN_APPOINTMENT,
   RESPOND_APPOINTMENT,
+  SAVE_CLINIC_IMAGE,
   UPDATE_CLINIC,
 } from '@/graphql/clinic'
 import { useAtom, useAtomValue } from 'jotai'
@@ -22,7 +23,6 @@ import {
 import { useQuery } from '@tanstack/react-query'
 import { userAtom } from '../use-user/userAtom'
 import { Role } from '@/types/role'
-import dayjs from 'dayjs'
 
 export function useClinic() {
   const [currentEmployees] = useAtom(employeesAtom)
@@ -143,11 +143,6 @@ export function useClinic() {
   async function getAppointments(): Promise<Appointment[] | undefined> {
     if (!user) return
 
-    console.log({
-      user,
-      role: user.role,
-    })
-
     if (user.role === Role.VETERINARIAN) {
       return await getVeterinaryAppointments()
     }
@@ -190,8 +185,6 @@ export function useClinic() {
 
   async function getVerifiedAppointments(): Promise<Appointment[] | undefined> {
     const appointments = await getAppointments()
-
-    console.log({ appointments })
 
     return appointments?.filter(({ appointment_status }) => {
       return appointment_status === AppointmentStatus.ACCEPTED
@@ -260,6 +253,23 @@ export function useClinic() {
     return getMyComments
   }
 
+  async function saveClinicImage(file: File) {
+    const {
+      data: { saveClinicImage },
+    } = await client.mutate({
+      mutation: SAVE_CLINIC_IMAGE,
+
+      variables: {
+        saveClinicImageInput: {
+          image: file,
+          old_image: clinic?.image ?? '',
+        },
+      },
+    })
+
+    return saveClinicImage
+  }
+
   return {
     getMyClinic,
     getMyEmployees,
@@ -275,6 +285,7 @@ export function useClinic() {
     updateClinic,
     respondToAppointment,
     reassignAppointment,
+    saveClinicImage,
   }
 }
 

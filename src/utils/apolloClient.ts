@@ -1,12 +1,8 @@
-import {
-  ApolloClient,
-  createHttpLink,
-  DefaultOptions,
-  InMemoryCache,
-} from '@apollo/client'
+import { ApolloClient, DefaultOptions, InMemoryCache } from '@apollo/client'
 import { setContext } from '@apollo/client/link/context'
+import { createUploadLink } from 'apollo-upload-client'
 
-const httpLink = createHttpLink({
+const httpLink = createUploadLink({
   uri: import.meta.env.VITE_GRAPHQL_ENDPOINT,
 })
 
