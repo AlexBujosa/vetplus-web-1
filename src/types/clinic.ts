@@ -72,7 +72,7 @@ export type Appointment = {
   id_pet: string
   services: string[]
   id_clinic: string
-  observations: string[]
+  observations: Observation
   appointment_status: AppointmentStatus
   state: AppointmentState
   start_at: Date
@@ -84,6 +84,12 @@ export type Appointment = {
   Pet: Pet
   Veterinarian: Veterinarian
   Owner: User
+}
+
+type Observation = {
+  suffering: string[]
+  treatment: string
+  feed: string
 }
 
 export enum AppointmentState {

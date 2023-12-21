@@ -1,15 +1,15 @@
 import { ChangeEvent, useState } from 'react'
 import { useQueryClient, useMutation } from '@tanstack/react-query'
 import { useParams } from 'react-router-dom'
-import { Appointment } from '@/types/clinic'
+import { Appointment, AppointmentForm } from '@/types/clinic'
 import TextField from '@mui/material/TextField'
 import Button from '@/components/button'
 import { Autocomplete, FormControl, MenuItem, Select } from '@mui/material'
 import { useClinic } from '@/hooks/use-clinic'
 import { useTranslation } from 'react-i18next'
-import Image from '@/components/image'
 import { Body, Title } from '@/components/typography'
 import { Profile } from '@/components/profile'
+import toast from 'react-hot-toast'
 
 interface FormData {
   suffering: string[]
@@ -31,31 +31,6 @@ interface FormData {
   }
 }
 
-interface AppointmentResume {
-  id: string
-  id_clinic: string
-  id_owner: string
-  observations: {
-    suffering: string[]
-    treatment: string
-    feed: string
-    deworming: {
-      date: string
-      product: string
-    }
-    reproductiveTimeline: {
-      reproductiveHistory: string
-      dateLastHeat: string
-      dateLastBirth: string
-    }
-    vaccines: {
-      date: string
-      vaccineBrand: string
-      vaccineBatch: string
-    }
-  }
-}
-
 const options = [
   'Alergias cutáneas',
   'Bronquitis',
@@ -71,7 +46,7 @@ const options = [
   'Traumatismos/lesiones',
 ]
 
-export default function AppointmentForm() {
+export default function Form() {
   const { appointmentId } = useParams()
   const queryClient = useQueryClient()
   const { t } = useTranslation()
@@ -79,7 +54,7 @@ export default function AppointmentForm() {
   const { updateAppointmentResumen } = useClinic()
 
   const { mutateAsync, isPending: isLoading } = useMutation({
-    mutationFn: updateAppointmentResumen,
+    mutationFn: (payload: AppointmentForm) => updateAppointmentResumen(payload),
   })
 
   const handleChange = (event: any) => {
@@ -89,26 +64,6 @@ export default function AppointmentForm() {
       [name]: value,
     })
   }
-
-  const [data, setData] = useState<FormData>({
-    suffering: [],
-    treatment: '',
-    feed: '',
-    deworming: {
-      date: '',
-      product: '',
-    },
-    reproductiveTimeline: {
-      reproductiveHistory: 'Entero',
-      dateLastHeat: '',
-      dateLastBirth: '',
-    },
-    vaccines: {
-      date: '',
-      vaccineBrand: '',
-      vaccineBatch: '',
-    },
-  })
 
   const [appointmentResume, setAppointmentResume] = useState({})
 
@@ -160,7 +115,29 @@ export default function AppointmentForm() {
 
   if (!appointment) return null
 
-  const { id, id_clinic, id_owner, Owner, Pet } = appointment
+  const { id, id_clinic, id_owner, Owner, Pet, observations } = appointment
+
+  const { feed, treatment } = observations
+
+  const [data, setData] = useState<FormData>({
+    suffering: [],
+    treatment,
+    feed,
+    deworming: {
+      date: '',
+      product: '',
+    },
+    reproductiveTimeline: {
+      reproductiveHistory: 'Entero',
+      dateLastHeat: '',
+      dateLastBirth: '',
+    },
+    vaccines: {
+      date: '',
+      vaccineBrand: '',
+      vaccineBatch: '',
+    },
+  })
 
   const handleSubmit = async (event: any) => {
     event.preventDefault()
@@ -193,8 +170,13 @@ export default function AppointmentForm() {
     const onSubmit = async () => {
       try {
         await mutateAsync({ ...newAppointmentResume })
+        queryClient.invalidateQueries({
+          queryKey: ['appointments'],
+        })
+        toast.success(t('updated-fields'))
       } catch (e) {
-        console.log(e)
+        toast.error('Something bad happened at updating the appointment data')
+        console.error(e)
       }
     }
     onSubmit()
@@ -233,6 +215,7 @@ export default function AppointmentForm() {
                   width: '20rem',
                 },
               }}
+              value={data.deworming.date}
               onChange={(e) => handleDewormingChange('date', e.target.value)}
             />
           </div>
@@ -246,6 +229,7 @@ export default function AppointmentForm() {
                   width: '20rem',
                 },
               }}
+              value={data.deworming.product}
               onChange={(e) => handleDewormingChange('product', e.target.value)}
             />
           </div>
@@ -319,6 +303,7 @@ export default function AppointmentForm() {
                   width: '20rem',
                 },
               }}
+              value={data.vaccines.date}
               onChange={(e) => handleVaccineChange('date', e.target.value)}
             />
           </div>
@@ -332,6 +317,7 @@ export default function AppointmentForm() {
                   width: '20rem',
                 },
               }}
+              value={data.vaccines.vaccineBrand}
               onChange={(e) =>
                 handleVaccineChange('vaccineBrand', e.target.value)
               }
@@ -347,6 +333,7 @@ export default function AppointmentForm() {
                   width: '20rem',
                 },
               }}
+              value={data.vaccines.vaccineBatch}
               onChange={(e) =>
                 handleVaccineChange('vaccineBatch', e.target.value)
               }
@@ -388,6 +375,7 @@ export default function AppointmentForm() {
           <div>
             <Body.Large className='mb-2' text={t('treatments')} />
             <TextField
+              value={data.treatment}
               sx={{
                 '& .MuiOutlinedInput-root': {
                   borderRadius: '10px',
@@ -403,6 +391,7 @@ export default function AppointmentForm() {
           <div>
             <Body.Large className='mb-2' text={t('feeding')} />
             <TextField
+              value={data.feed}
               sx={{
                 '& .MuiOutlinedInput-root': {
                   borderRadius: '10px',
@@ -462,17 +451,16 @@ export default function AppointmentForm() {
             />
           </div>
         </div>
-        <div className='flex justify-end mt-8'>
-          <Button
-            onClick={handleSubmit}
-            style={{
-              borderRadius: '10px',
-              height: '35px',
-              width: '20rem',
-              backgroundColor: '#239BCD',
-            }}
-          >
+        <div className='flex mt-8 gap-x-3'>
+          <Button className='bg-base-primary-400' onClick={handleSubmit}>
             {t('save-and-close')}
+          </Button>
+
+          <Button
+            className='bg-base-semantic-danger-500 hover:bg-base-semantic-danger-600'
+            // onClick={handleSubmit}
+          >
+            {t('end-appointment')}
           </Button>
         </div>
       </form>

@@ -95,48 +95,53 @@ function Body() {
 
   return (
     <TableBody>
-      {appointments.map(({ id, Pet, start_at, Veterinarian, services }) => {
-        return (
-          <TableRow
-            key={id}
-            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-          >
-            <TableCell align='right'>
-              <div className='flex flex-row items-center gap-x-3'>
-                <Image className='w-10 h-10 rounded-full' src={Pet.image} />
-                {Pet.name}
-              </div>
-            </TableCell>
+      {appointments.map(
+        ({ id, Pet, start_at, Veterinarian, services, observations }) => {
+          return (
+            <TableRow
+              key={id}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+              <TableCell align='right'>
+                <div className='flex flex-row items-center gap-x-3'>
+                  <Image className='w-10 h-10 rounded-full' src={Pet.image} />
+                  {Pet.name}
+                </div>
+              </TableCell>
 
-            <VeterinaryCell
-              role={user.role}
-              veterinarian={Veterinarian}
-              appointmentId={id}
-            />
+              <VeterinaryCell
+                role={user.role}
+                veterinarian={Veterinarian}
+                appointmentId={id}
+              />
 
-            <TableCell component='th' scope='row'>
-              {dayjs(start_at).add(4, 'hour').format('h:mm A')}
-            </TableCell>
+              <TableCell component='th' scope='row'>
+                {dayjs(start_at).add(4, 'hour').format('h:mm A')}
+              </TableCell>
 
-            <TableCell component='th' scope='row'>
-              <ul>
-                {services.map((service) => {
-                  return <li key={service}>{service}</li>
-                })}
-              </ul>
-            </TableCell>
+              <TableCell component='th' scope='row'>
+                <ul>
+                  {services.map((service) => {
+                    return <li key={service}>{service}</li>
+                  })}
+                </ul>
+              </TableCell>
 
-            <TableCell component='th' scope='row'>
-              <IconButton
-                disabled={role !== Role.VETERINARIAN}
-                onClick={() => navigate(id)}
-              >
-                <FileOpenOutlined />
-              </IconButton>
-            </TableCell>
-          </TableRow>
-        )
-      })}
+              <TableCell component='th' scope='row'>
+                <IconButton
+                  disabled={
+                    role !== Role.VETERINARIAN ||
+                    !dayjs(start_at).isSame(dayjs(), 'day')
+                  }
+                  onClick={() => navigate(id)}
+                >
+                  <FileOpenOutlined />
+                </IconButton>
+              </TableCell>
+            </TableRow>
+          )
+        }
+      )}
     </TableBody>
   )
 }
@@ -245,15 +250,3 @@ function VeterinaryCell(props: {
     </TableCell>
   )
 }
-
-/*
-TODO: Create form
-1. Diagnosticos
-2. Tratamientos y procesos administrados
-3. Medicamentos recetados
-4. Resultados de pruebas medicas texto
-5. Peso
-6. Vacunas
-6.1 Recurrencia
-
-*/

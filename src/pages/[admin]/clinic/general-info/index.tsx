@@ -117,7 +117,10 @@ function ClinicHeader() {
 
   return (
     <section className='flex flex-row gap-x-[10px]'>
-      <Image src={image} className='w-1/5 rounded-lg' />
+      <Image
+        src={image}
+        className='w-[350px] h-[200px] object-fill rounded-lg'
+      />
 
       <article className='flex flex-col justify-between'>
         <Headline.Medium className='text-black' text={name} />
@@ -372,7 +375,7 @@ function ProfileModalSection() {
   const onSubmit = async (data: UpdateClinicForm) => {
     try {
       if (picture) {
-        await mutateImageAsync({picture}),
+        await mutateImageAsync({ picture }),
           toast.success(`Image ${picture.name} - was saved succesfully`)
       }
     } catch (error) {
