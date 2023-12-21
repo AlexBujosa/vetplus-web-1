@@ -270,7 +270,7 @@ export const GET_CLINIC_COMMENTS = gql`
 `;
 
 export const UPDATE_APPOINTMENT_RESUMEN = gql`
-  mutation ($updateAppointmentResumenInput: updateAppointmentResumenInput!) {
+  mutation ($updateAppointmentResumenInput: UpdateAppointmentResumenInput!) {
     updateAppointmentResumen(
       updateAppointmentResumenInput: $updateAppointmentResumenInput
     ) {
