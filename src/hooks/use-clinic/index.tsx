@@ -10,38 +10,39 @@ import {
   RESPOND_APPOINTMENT,
   SAVE_CLINIC_IMAGE,
   UPDATE_CLINIC,
-} from "@/graphql/clinic";
-import { useAtom, useAtomValue } from "jotai";
-import { Employee, employeesAtom } from "./employeesAtom";
-import client from "@/utils/apolloClient";
+} from '@/graphql/clinic'
+import { useAtom, useAtomValue } from 'jotai'
+import { Employee, employeesAtom } from './employeesAtom'
+import client from '@/utils/apolloClient'
 import {
   Appointment,
   AppointmentState,
   AppointmentStatus,
   Clinic,
-} from "@/types/clinic";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { userAtom } from "../use-user/userAtom";
-import { Role } from "@/types/role";
+} from '@/types/clinic'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { userAtom } from '../use-user/userAtom'
+import { Role } from '@/types/role'
 
 export function useClinic() {
-  const [currentEmployees] = useAtom(employeesAtom);
-  const user = useAtomValue(userAtom);
+  const [currentEmployees] = useAtom(employeesAtom)
+  const user = useAtomValue(userAtom)
+  const queryClient = useQueryClient()
 
   const { data: clinic } = useQuery({
-    queryKey: ["clinic"],
+    queryKey: ['clinic'],
     queryFn: getMyClinic,
-  });
+  })
 
   const { data: employees } = useQuery({
-    queryKey: ["employees"],
+    queryKey: ['employees'],
     queryFn: getMyEmployees,
-  });
+  })
 
   const { data: allAppointments } = useQuery({
-    queryKey: ["appointments"],
+    queryKey: ['appointments'],
     queryFn: getAppointments,
-  });
+  })
 
   async function getVeterinaryAppointments(): Promise<
     Appointment[] | undefined
@@ -52,29 +53,29 @@ export function useClinic() {
       query: GET_APPOINTMENTS_PER_DATETIME,
       variables: {
         filterAppointmentByDateRangeInput: {
-          start_at: "2023-01-01T04:00:00.000Z",
-          end_at: "2030-01-01T04:00:00.000Z",
+          start_at: '2023-01-01T04:00:00.000Z',
+          end_at: '2030-01-01T04:00:00.000Z',
         },
       },
-    });
+    })
 
-    return getAppointmentPerRangeDateTime;
+    return getAppointmentPerRangeDateTime
   }
 
   async function getMyEmployees(): Promise<
     {
-      id_employee: string;
-      status: boolean;
-      Employee: Employee;
+      id_employee: string
+      status: boolean
+      Employee: Employee
     }[]
   > {
     const {
       data: { getMyEmployees },
     } = await client.query<any>({
       query: GET_MY_EMPLOYEES,
-    });
+    })
 
-    return getMyEmployees.ClinicEmployees;
+    return getMyEmployees.ClinicEmployees
   }
 
   async function getMyClients() {
@@ -82,20 +83,20 @@ export function useClinic() {
       data: { getAllClients },
     } = await client.query<any>({
       query: GET_ALL_CLIENTS,
-    });
-    return getAllClients;
+    })
+    return getAllClients
   }
 
   function findEmployeeByEmail(email: string): Employee | undefined {
-    if (!currentEmployees) return undefined;
+    if (!currentEmployees) return undefined
 
     const selectedEmployee = currentEmployees.find(
       ({ email: employeeEmail }) => {
-        return employeeEmail === email;
+        return employeeEmail === email
       }
-    );
+    )
 
-    return selectedEmployee;
+    return selectedEmployee
   }
 
   async function getMyClinic() {
@@ -103,28 +104,28 @@ export function useClinic() {
       data: { getMyClinic },
     } = await client.query<{ getMyClinic: Clinic }>({
       query: GET_MY_CLINIC,
-    });
+    })
 
-    return getMyClinic;
+    return getMyClinic
   }
 
   async function sendInvitationToClinic(email: string) {
     // @ts-ignore
-    const { id: clinicId } = clinic;
+    const { id: clinicId } = clinic
 
     const variables = {
       inviteToClinicInput: {
         id: clinicId,
         email,
-        employee_invitation_status: "PENDING",
+        employee_invitation_status: 'PENDING',
       },
-    };
+    }
     const request = await client.mutate({
       mutation: INVITE_TO_CLINIC,
       variables,
-    });
+    })
 
-    return request;
+    return request
   }
 
   async function updateClinic(payload: UpdateClinicForm) {
@@ -135,22 +136,22 @@ export function useClinic() {
       variables: {
         updateClinicInput: { ...payload },
       },
-    });
+    })
 
-    return updateClinic;
+    return updateClinic
   }
 
   async function getAppointments(): Promise<Appointment[] | undefined> {
-    if (!user) return;
+    if (!user) return
 
     if (user.role === Role.VETERINARIAN) {
-      return await getVeterinaryAppointments();
+      return await getVeterinaryAppointments()
     }
 
     const {
       data: { getAppointmentDetailClinicOwner },
     } = await client.query<{
-      getAppointmentDetailClinicOwner: any[];
+      getAppointmentDetailClinicOwner: any[]
     }>({
       query: GET_APPOINTMENTS,
       variables: {
@@ -159,36 +160,36 @@ export function useClinic() {
           appointment_status: null,
         },
       },
-    });
+    })
 
-    return getAppointmentDetailClinicOwner;
+    return getAppointmentDetailClinicOwner
   }
 
   function getPendingAppointments(): Appointment[] | null {
-    if (!allAppointments) return null;
+    if (!allAppointments) return null
 
     return allAppointments.filter(
       ({
         state,
         appointment_status,
       }: {
-        state: AppointmentState;
-        appointment_status: AppointmentStatus;
+        state: AppointmentState
+        appointment_status: AppointmentStatus
       }) => {
         return (
           state === AppointmentState.PENDING &&
           appointment_status !== AppointmentStatus.ACCEPTED
-        );
+        )
       }
-    );
+    )
   }
 
   async function getVerifiedAppointments(): Promise<Appointment[] | undefined> {
-    const appointments = await getAppointments();
+    const appointments = await getAppointments()
 
     return appointments?.filter(({ appointment_status }) => {
-      return appointment_status === AppointmentStatus.ACCEPTED;
-    });
+      return appointment_status === AppointmentStatus.ACCEPTED
+    })
   }
 
   async function reassignAppointment(
@@ -205,22 +206,22 @@ export function useClinic() {
           id_veterinarian: veterinarianId,
         },
       },
-    });
+    })
 
-    return reassignAppoinment;
+    return reassignAppoinment
   }
 
   function getMyEmployeesForSelect():
     | { value: string; label: string }[]
     | null {
-    if (!employees) return null;
+    if (!employees) return null
 
     return employees.map(({ id_employee, Employee }) => {
       return {
         value: id_employee,
         label: `${Employee.names} ${Employee.surnames}`,
-      };
-    });
+      }
+    })
   }
 
   async function respondToAppointment(
@@ -240,22 +241,20 @@ export function useClinic() {
           // end_at: '2022-03-06T08:23:45.000Z',
         },
       },
-    });
+    })
 
-    return respondToAppointment;
+    return respondToAppointment
   }
 
   async function getMyClinicComments() {
     const {
       data: { getMyComments },
-    } = await client.query<any>({ query: GET_CLINIC_COMMENTS });
+    } = await client.query<any>({ query: GET_CLINIC_COMMENTS })
 
-    return getMyComments;
+    return getMyComments
   }
 
   async function saveClinicImage(file: File) {
-    const queryClient = useQueryClient();
-
     const {
       data: { saveClinicImage },
     } = await client.mutate({
@@ -267,13 +266,13 @@ export function useClinic() {
           old_image: clinic?.image,
         },
       },
-    });
+    })
 
     queryClient.invalidateQueries({
-      queryKey: ["clinic"],
-    });
+      queryKey: ['clinic'],
+    })
 
-    return saveClinicImage;
+    return saveClinicImage
   }
 
   return {
@@ -292,12 +291,12 @@ export function useClinic() {
     respondToAppointment,
     reassignAppointment,
     saveClinicImage,
-  };
+  }
 }
 
 export type UpdateClinicForm = {
-  name: string;
-  email: string;
-  telephone_number: string;
-  address: string;
-};
+  name: string
+  email: string
+  telephone_number: string
+  address: string
+}

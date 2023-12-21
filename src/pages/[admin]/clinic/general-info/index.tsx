@@ -1,4 +1,10 @@
-import { PropsWithChildren, useState, cloneElement, useCallback } from 'react'
+import {
+  PropsWithChildren,
+  useState,
+  cloneElement,
+  useCallback,
+  Key,
+} from 'react'
 import Image from '@/components/image'
 import { Body, Headline, Label, Title } from '@/components/typography'
 import {
@@ -53,7 +59,9 @@ export default function GeneralViewPage() {
         <Box sx={style}>
           <Modal
             title={t('edit-clinic')}
-            tabs={[t('profile'), t('schedule')]}
+            // tabs={[t('profile'), t('schedule')]}
+            // TODO: Add edit schedule tab
+            tabs={[t('profile')]}
             sections={[<ProfileModalSection />, <ScheduleModalSection />]}
           />
         </Box>
@@ -336,6 +344,18 @@ function ProfileModalSection() {
     queryFn: getMyClinic,
   })
 
+  const { mutateAsync, isPending: isLoading } = useMutation({
+    mutationFn: updateClinic,
+  })
+
+  const { saveClinicImage } = useClinic()
+
+  const { mutateAsync: mutateImageAsync, isPending: isLoadingImage } =
+    useMutation({
+      mutationFn: ({ picture }: { picture: Picture }) =>
+        saveClinicImage(picture),
+    })
+
   if (!data) return
 
   const { name, email, telephone_number, address } = data
@@ -347,16 +367,29 @@ function ProfileModalSection() {
     address,
   }
 
-  const { mutateAsync, isPending: isLoading } = useMutation({
-    mutationFn: updateClinic,
-  })
-
   const queryClient = useQueryClient()
 
   const onSubmit = async (data: UpdateClinicForm) => {
-    await mutateAsync({ ...data })
-    queryClient.invalidateQueries({ queryKey: ['clinic'] })
-    toast.success(t('updated-fields'))
+    try {
+      if (picture) {
+        await mutateImageAsync({picture}),
+          toast.success(`Image ${picture.name} - was saved succesfully`)
+      }
+    } catch (error) {
+      toast.error('Something bad happened at saving the image.')
+      console.error(error)
+    }
+
+    if (isEqual(formik.values, initialValues)) return
+
+    try {
+      await mutateAsync({ ...data })
+      queryClient.invalidateQueries({ queryKey: ['clinic'] })
+      toast.success(t('updated-fields'))
+    } catch (error) {
+      toast.error('Something bad happened at editing the data.')
+      console.error(error)
+    }
   }
 
   const formik = useFormik({
@@ -365,15 +398,17 @@ function ProfileModalSection() {
     onSubmit,
   })
 
-  const [myFiles, setMyFiles] = useState<any[]>([])
-  const { saveClinicImage } = useClinic()
+  type Picture = File & {
+    path: Key
+  }
+
+  const [picture, setPicture] = useState<Picture | null>(null)
 
   const onDrop = useCallback(
     ([file]: any) => {
-      setMyFiles([...myFiles, file])
-      saveClinicImage(file)
+      setPicture(file)
     },
-    [myFiles]
+    [picture]
   )
 
   const { isDragActive, getRootProps, getInputProps } = useDropzone({
@@ -381,23 +416,19 @@ function ProfileModalSection() {
     maxFiles: 1,
   })
 
-  const removeFile = (file: any) => () => {
-    const newFiles = [...myFiles]
-    newFiles.splice(newFiles.indexOf(file), 1)
-    setMyFiles(newFiles)
-  }
+  const removeFile = () => setPicture(null)
 
-  const files = myFiles.map((file) => (
-    <li className='flex flex-row justify-between' key={file.path}>
-      {file.path} - {file.size} bytes{' '}
+  const files = picture && (
+    <li className='flex flex-row justify-between' key={picture.path}>
+      {picture.name} - {picture.size} bytes{' '}
       <button
         className='px-2 py-1 text-white rounded-md bg-base-semantic-danger-500'
-        onClick={removeFile(file)}
+        onClick={removeFile}
       >
         {t('remove')}
       </button>
     </li>
-  ))
+  )
 
   return (
     <article className='py-5'>
@@ -413,12 +444,13 @@ function ProfileModalSection() {
         </div>
       </div>
 
-      {files.length !== 0 && (
+      {picture && (
         <aside className='mt-2'>
           <h4>Files</h4>
           <ul>{files}</ul>
         </aside>
       )}
+
       <form
         className='grid grid-cols-2 py-12 gap-x-12 gap-y-10'
         onSubmit={formik.handleSubmit}
@@ -472,8 +504,8 @@ function ProfileModalSection() {
           type='submit'
           className='w-full col-span-2'
           label={t('edit')}
-          loading={isLoading}
-          disabled={isEqual(formik.values, initialValues)}
+          loading={isLoading || isLoadingImage}
+          disabled={isEqual(formik.values, initialValues) && !picture}
         />
       </form>
     </article>
