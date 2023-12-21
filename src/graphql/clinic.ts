@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client'
 
 export const GET_MY_EMPLOYEES = gql`
   query GetMyEmployees {
@@ -24,7 +24,7 @@ export const GET_MY_EMPLOYEES = gql`
       }
     }
   }
-`;
+`
 
 export const GET_MY_CLINIC = gql`
   query {
@@ -55,7 +55,7 @@ export const GET_MY_CLINIC = gql`
       }
     }
   }
-`;
+`
 
 export const GET_ALL_EMPLOYEES = gql`
   query ($getAllEmployeeByClinicIdInput: GetAllEmployeeByClinicIdInput!) {
@@ -77,7 +77,7 @@ export const GET_ALL_EMPLOYEES = gql`
       }
     }
   }
-`;
+`
 
 export const GET_ALL_CLIENTS = gql`
   query {
@@ -114,7 +114,7 @@ export const GET_ALL_CLIENTS = gql`
       }
     }
   }
-`;
+`
 
 export const INVITE_TO_CLINIC = gql`
   mutation ($inviteToClinicInput: InviteToClinicInput!) {
@@ -122,7 +122,7 @@ export const INVITE_TO_CLINIC = gql`
       result
     }
   }
-`;
+`
 
 export const GET_MY_COMMENTS = gql`
   query ($genericByIdInput: GenericByIdInput!) {
@@ -141,7 +141,7 @@ export const GET_MY_COMMENTS = gql`
       }
     }
   }
-`;
+`
 
 export const UPDATE_CLINIC = gql`
   mutation ($updateClinicInput: UpdateClinicInput!) {
@@ -149,7 +149,7 @@ export const UPDATE_CLINIC = gql`
       result
     }
   }
-`;
+`
 
 export const GET_APPOINTMENTS = gql`
   query ($filterAppointmentBySSInput: FilterAppointmentBySSInput!) {
@@ -228,7 +228,7 @@ export const GET_APPOINTMENTS = gql`
       }
     }
   }
-`;
+`
 
 export const RESPOND_APPOINTMENT = gql`
   mutation ($updateAppointmentInput: UpdateAppointmentInput!) {
@@ -236,7 +236,7 @@ export const RESPOND_APPOINTMENT = gql`
       result
     }
   }
-`;
+`
 
 export const REASSIGN_APPOINTMENT = gql`
   mutation (
@@ -248,7 +248,7 @@ export const REASSIGN_APPOINTMENT = gql`
       result
     }
   }
-`;
+`
 
 export const GET_CLINIC_COMMENTS = gql`
   query {
@@ -267,7 +267,17 @@ export const GET_CLINIC_COMMENTS = gql`
       }
     }
   }
-`;
+`
+
+export const UPDATE_APPOINTMENT_RESUMEN = gql`
+  mutation ($updateAppointmentResumenInput: UpdateAppointmentResumenInput!) {
+    updateAppointmentResumen(
+      updateAppointmentResumenInput: $updateAppointmentResumenInput
+    ) {
+      result
+    }
+  }
+`
 
 export const GET_APPOINTMENTS_PER_DATETIME = gql`
   query (
@@ -354,7 +364,7 @@ export const GET_APPOINTMENTS_PER_DATETIME = gql`
       }
     }
   }
-`;
+`
 
 export const SAVE_CLINIC_IMAGE = gql`
   mutation ($saveClinicImageInput: UploadClinicImageInput!) {
@@ -363,4 +373,4 @@ export const SAVE_CLINIC_IMAGE = gql`
       image
     }
   }
-`;
+`

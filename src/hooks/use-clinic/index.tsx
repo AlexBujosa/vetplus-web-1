@@ -10,12 +10,14 @@ import {
   RESPOND_APPOINTMENT,
   SAVE_CLINIC_IMAGE,
   UPDATE_CLINIC,
+  UPDATE_APPOINTMENT_RESUMEN,
 } from '@/graphql/clinic'
 import { useAtom, useAtomValue } from 'jotai'
 import { Employee, employeesAtom } from './employeesAtom'
 import client from '@/utils/apolloClient'
 import {
   Appointment,
+  AppointmentForm,
   AppointmentState,
   AppointmentStatus,
   Clinic,
@@ -139,6 +141,19 @@ export function useClinic() {
     })
 
     return updateClinic
+  }
+
+  async function updateAppointmentResumen(payload: AppointmentForm) {
+    const {
+      data: { updateAppointmentResumen },
+    } = await client.mutate({
+      mutation: UPDATE_APPOINTMENT_RESUMEN,
+      variables: {
+        updateAppointmentResumenInput: { ...payload },
+      },
+    })
+
+    return updateAppointmentResumen
   }
 
   async function getAppointments(): Promise<Appointment[] | undefined> {
@@ -291,6 +306,7 @@ export function useClinic() {
     respondToAppointment,
     reassignAppointment,
     saveClinicImage,
+    updateAppointmentResumen,
   }
 }
 
