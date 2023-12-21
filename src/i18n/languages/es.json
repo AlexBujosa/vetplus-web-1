@@ -101,6 +101,18 @@
     "image": "Imágen",
     "drag-and-drop": "Arrastra una imagen o haz click dentro del recuadro para seleccionar el archivo.",
     "drop-here": "Arrastra el archivo aqui",
-    "remove": "Eliminar"
+    "remove": "Eliminar",
+    "clinic-history": "Clinic History",
+    "date-last-birth": "Fecha Último Parto",
+    "last-heat-date": "Fecha Último Celo",
+    "treatments": "Tratamientos",
+    "feeding": "Alimentación",
+    "ailments": "Padecimientos",
+    "brand": "Marca",
+    "batch": "Lote",
+    "product": "Producto",
+    "reproductive-history": "Historia reproductiva",
+    "last-desparasitant": "Última desparacitación",
+    "save-and-close": "Guardar y Cerrar"
   }
 }

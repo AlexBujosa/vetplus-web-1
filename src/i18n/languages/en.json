@@ -100,6 +100,17 @@
     "image": "Image",
     "drag-and-drop": "Drag 'n' drop some files here, or click to select files",
     "drop-here": "Drop the files here...",
-    "remove": "Remove"
+    "remove": "Remove",
+    "date-last-birth": "Last Birth Date",
+    "last-heat-date": "Last Heat Date",
+    "treatments": "Treatments",
+    "feeding": "Feeding",
+    "ailments": "Ailments",
+    "brand": "Brand",
+    "batch": "Batch",
+    "product": "Product",
+    "reproductive-history": "Reproductive history",
+    "last-deworming": "Last deworming",
+    "save-and-close": "Save and Close"
   }
 }
