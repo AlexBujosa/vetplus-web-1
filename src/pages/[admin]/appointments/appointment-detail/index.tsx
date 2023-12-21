@@ -31,6 +31,7 @@ import { Veterinarian } from '@/types/clinic'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 import { useState } from 'react'
+import { roleAtom } from '@/hooks/use-auth/roleAtom'
 
 const headers = ['pet', 'veterinary', 'services', 'appointment', 'attend']
 
@@ -86,6 +87,7 @@ function Header() {
 function Body() {
   const appointments = useAtomValue(appointmentsAtom)
   const user = useAtomValue(userAtom)
+  const role = useAtomValue(roleAtom)
 
   const navigate = useNavigate()
 
@@ -125,7 +127,10 @@ function Body() {
             </TableCell>
 
             <TableCell component='th' scope='row'>
-              <IconButton onClick={() => navigate(id)}>
+              <IconButton
+                disabled={role !== Role.VETERINARIAN}
+                onClick={() => navigate(id)}
+              >
                 <FileOpenOutlined />
               </IconButton>
             </TableCell>

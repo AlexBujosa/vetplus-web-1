@@ -102,7 +102,7 @@
     "drag-and-drop": "Arrastra una imagen o haz click dentro del recuadro para seleccionar el archivo.",
     "drop-here": "Arrastra el archivo aqui",
     "remove": "Eliminar",
-    "clinic-history": "Clinic History",
+    "clinic-history": "Historial Clínico",
     "date-last-birth": "Fecha Último Parto",
     "last-heat-date": "Fecha Último Celo",
     "treatments": "Tratamientos",
@@ -113,6 +113,7 @@
     "product": "Producto",
     "reproductive-history": "Historia reproductiva",
     "last-desparasitant": "Última desparacitación",
-    "save-and-close": "Guardar y Cerrar"
+    "save-and-close": "Guardar y Cerrar",
+    "vaccines": "Vacunas"
   }
 }

@@ -9,6 +9,7 @@ import { useClinic } from '@/hooks/use-clinic'
 import { useTranslation } from 'react-i18next'
 import Image from '@/components/image'
 import { Body, Title } from '@/components/typography'
+import { Profile } from '@/components/profile'
 
 interface FormData {
   suffering: string[]
@@ -201,34 +202,25 @@ export default function AppointmentForm() {
 
   return (
     <section className='w-auto'>
-      <Title.Medium text={t('clinic-history')} />
+      <Title.Large text={t('clinic-history')} />
 
       <form className='pt-6'>
         <div className='flex gap-16 mb-4 flex-2'>
           <div className='flex-col py-2'>
-            <p className='pb-1 font-semibold'>{t('owner')}</p>
-            <div className='flex gap-2'>
-              <Image
-                src={Owner.image}
-                className='w-10 h-10 rounded-full max-w-10'
-              />
-              <div className='pt-2'>{`${Owner.names} ${
-                Owner.surnames ?? ''
-              }`}</div>
-            </div>
+            <Body.Large className='mb-2' text={t('owner')} />
+            <Profile
+              image={Owner.image}
+              profile={`${Owner.names} ${Owner.surnames ?? ''}`}
+            />
           </div>
           <div className='flex-col py-2'>
-            <p className='pb-1 font-semibold'>{t('pet')}</p>
-            <div className='flex gap-2'>
-              <Image
-                src={Pet.image}
-                className='w-10 h-10 rounded-full max-w-10'
-              />
-              <div className='pt-2'>{Pet.name}</div>
-            </div>
+            <Body.Large className='mb-2' text={t('pet')} />
+            <Profile image={Pet.image} profile={Pet.name} />
           </div>
         </div>
-        <p className='py-4 font-bold'>{t('last-desparasitant')}</p>
+
+        <Title.Medium className='py-4' text={t('last-desparasitant')} />
+
         <div className='flex gap-16 mb-4'>
           <div>
             <Body.Large className='mb-2' text={t('date')} />
@@ -346,7 +338,7 @@ export default function AppointmentForm() {
             />
           </div>
           <div className='mb-4'>
-            <Body.Medium className='mb-2' text={t('batch')} />
+            <Body.Large className='mb-2' text={t('batch')} />
             <TextField
               sx={{
                 '& .MuiOutlinedInput-root': {
