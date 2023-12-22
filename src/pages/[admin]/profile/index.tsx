@@ -225,8 +225,15 @@ function ProfileForm(props: TabsProps) {
     validationSchema: schema,
   })
 
+  const queryClient = useQueryClient()
+
   async function onSubmit(data: EditUserForm) {
     await mutateAsync({ ...data })
+
+    queryClient.invalidateQueries({
+      queryKey: ['profile'],
+    })
+
     toast.success(t('updated-fields'))
   }
 
