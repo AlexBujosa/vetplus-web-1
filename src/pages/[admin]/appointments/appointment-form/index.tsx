@@ -455,13 +455,6 @@ export default function Form() {
           <Button className='bg-base-primary-400' onClick={handleSubmit}>
             {t('save-and-close')}
           </Button>
-
-          <Button
-            className='bg-base-semantic-danger-500 hover:bg-base-semantic-danger-600'
-            // onClick={handleSubmit}
-          >
-            {t('end-appointment')}
-          </Button>
         </div>
       </form>
     </section>

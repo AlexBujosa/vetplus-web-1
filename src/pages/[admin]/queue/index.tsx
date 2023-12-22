@@ -1,12 +1,5 @@
 import { Body, Title } from '@/components/typography'
-import {
-  Box,
-  Modal as MuiModal,
-  SelectChangeEvent,
-  Tab,
-  Tabs,
-  TextField,
-} from '@mui/material'
+import { Box, Modal as MuiModal, Tab, Tabs, TextField } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import CustomTabPanel from '@/components/molecules/custom-tab-panel'
 import { Profile } from '@/components/profile'
@@ -251,7 +244,7 @@ function NotificationDatetime(props: { datetime: Date }) {
   const ICON_SIZE = 20
 
   const iconStyles = { width: ICON_SIZE, height: ICON_SIZE }
-  const date = dayjs(datetime).toString()
+  const date = dayjs(datetime).add(4, 'hours').format('LLLL')
 
   return (
     <span className='flex flex-row gap-x-[10px] items-center'>
@@ -330,6 +323,8 @@ function NotificationModal(props: NotificationModalProps) {
 
   if (!appointment || !employees) return null
 
+  console.log({ appointment })
+
   return (
     <MuiModal open={open} onClose={handleClose}>
       <Box sx={style}>
@@ -364,20 +359,6 @@ function NotificationModal(props: NotificationModalProps) {
                     className='rounded-full h-[50px] w-[50px]'
                   />
                   <Body.Medium text={appointment.Pet.name} />
-                  {/* 
-                    {Object.entries(appointment.pet).map(
-                      ([key, value]) => {
-                        return (
-                          <span className='flex flex-col gap-y-[6px]'>
-                            <Body.Medium className='text-black' text={t(key)} />
-                            <Body.Small
-                              className='text-base-neutral-gray-800'
-                              text={value as string}
-                            />
-                          </span>
-                        )
-                      }
-                    )} */}
                 </div>
               </span>
               <span className='col-span-3'>
@@ -395,7 +376,9 @@ function NotificationModal(props: NotificationModalProps) {
 
                 <Body.Medium
                   className='text-base-neutral-gray-800'
-                  text={dayjs(appointment.start_at).format('dddd MMM HH:MM A')}
+                  text={dayjs(appointment.start_at)
+                    .add(4, 'hours')
+                    .format('LL')}
                 />
               </span>
 
@@ -404,13 +387,17 @@ function NotificationModal(props: NotificationModalProps) {
 
                 <Body.Medium
                   className='text-base-neutral-gray-800'
-                  text={dayjs(appointment.start_at).format('hh:mm A')}
+                  text={dayjs(appointment.start_at)
+                    .add(4, 'hours')
+                    .format('hh:mm A')}
                 />
 
                 {appointment.end_at && (
                   <Body.Medium
                     className='text-base-neutral-gray-800'
-                    text={dayjs(appointment.end_at).format('hh:mm A')}
+                    text={dayjs(appointment.end_at)
+                      .add(4, 'hours')
+                      .format('hh:mm A')}
                   />
                 )}
               </span>

@@ -130,8 +130,8 @@ function Body() {
               <TableCell component='th' scope='row'>
                 <IconButton
                   disabled={
-                    role !== Role.VETERINARIAN ||
-                    !dayjs(start_at).isSame(dayjs(), 'day')
+                    role !== Role.VETERINARIAN
+                    // !dayjs(start_at).isSame(dayjs(), 'day')
                   }
                   onClick={() => navigate(id)}
                 >
