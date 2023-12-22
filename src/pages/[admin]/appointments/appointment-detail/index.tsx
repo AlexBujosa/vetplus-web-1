@@ -27,11 +27,12 @@ import { Headline } from '@/components/typography'
 import { userAtom } from '@/hooks/use-user/userAtom'
 import { Profile } from '@/components/profile'
 import { Role } from '@/types/role'
-import { Veterinarian } from '@/types/clinic'
+import { Appointment, Veterinarian } from '@/types/clinic'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 import { useState } from 'react'
 import { roleAtom } from '@/hooks/use-auth/roleAtom'
+import { every, isNull } from 'lodash'
 
 const headers = ['pet', 'veterinary', 'services', 'appointment', 'attend']
 
@@ -91,12 +92,32 @@ function Body() {
 
   const navigate = useNavigate()
 
-  if (!appointments || !user) return null
+  const { getVerifiedAppointments } = useClinic()
+
+  const { data: allAppointments } = useQuery({
+    queryKey: ['verified-appointments'],
+    queryFn: getVerifiedAppointments,
+  })
+
+  if (!appointments || !user || !allAppointments) return null
+
+  const previousEmptyObservations: Appointment[] = allAppointments.filter(
+    ({ start_at, observations }) => {
+      const { __typename, ...rest } = observations
+
+      const isPrevious = dayjs(start_at).isBefore(appointments[0].start_at)
+
+      return every(rest, isNull) && isPrevious
+    }
+  )
+
+  const hasPreviousObservationsEmpty: boolean =
+    previousEmptyObservations.length > 0
 
   return (
-    <TableBody>
-      {appointments.map(
-        ({ id, Pet, start_at, Veterinarian, services, observations }) => {
+    <>
+      <TableBody>
+        {appointments.map(({ id, Pet, start_at, Veterinarian, services }) => {
           return (
             <TableRow
               key={id}
@@ -133,16 +154,25 @@ function Body() {
                     role !== Role.VETERINARIAN
                     // !dayjs(start_at).isSame(dayjs(), 'day')
                   }
-                  onClick={() => navigate(id)}
+                  onClick={() => {
+                    if (hasPreviousObservationsEmpty) {
+                      // handleClick()
+                      toast.error(`Tienes ${previousEmptyObservations.length} observaciones que llenar
+          pendientes`)
+                      return
+                    }
+
+                    navigate(id)
+                  }}
                 >
                   <FileOpenOutlined />
                 </IconButton>
               </TableCell>
             </TableRow>
           )
-        }
-      )}
-    </TableBody>
+        })}
+      </TableBody>
+    </>
   )
 }
 

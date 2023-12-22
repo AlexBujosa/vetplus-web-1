@@ -36,7 +36,7 @@ import { useFormik } from 'formik'
 import toast from 'react-hot-toast'
 import dayjs from 'dayjs'
 import { useDropzone } from 'react-dropzone'
-import isEqual from 'lodash.isequal'
+import { isEqual } from 'lodash'
 
 export default function GeneralViewPage() {
   const { t } = useTranslation()

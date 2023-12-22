@@ -323,8 +323,6 @@ function NotificationModal(props: NotificationModalProps) {
 
   if (!appointment || !employees) return null
 
-  console.log({ appointment })
-
   return (
     <MuiModal open={open} onClose={handleClose}>
       <Box sx={style}>
