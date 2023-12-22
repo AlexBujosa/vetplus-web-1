@@ -44,25 +44,7 @@ export type AppointmentForm = {
   id: string
   id_clinic: string
   id_owner: string
-  observations: {
-    suffering: string[]
-    treatment: string
-    feed: string
-    deworming: {
-      date: string
-      product: string
-    }
-    reproductiveTimeline: {
-      reproductiveHistory: string
-      dateLastHeat: string
-      dateLastBirth: string
-    }
-    vaccines: {
-      date: string
-      vaccineBrand: string
-      vaccineBatch: string
-    }
-  }
+  observations: Observation
 }
 
 export type Appointment = {
@@ -87,11 +69,25 @@ export type Appointment = {
 }
 
 type Observation = {
+  __typename: string
   suffering: string[]
   treatment: string
   feed: string
+  deworming: {
+    date: string
+    product: string
+  }
+  reproductiveTimeline: {
+    reproductiveHistory: string
+    dateLastHeat: string
+    dateLastBirth: string
+  }
+  vaccines: {
+    date: string
+    vaccineBrand: string
+    vaccineBatch: string
+  }
 }
-
 export enum AppointmentState {
   PENDING = 'PENDING',
   IN_PROGRESS = 'IN_PROGRESS',
