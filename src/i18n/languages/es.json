@@ -115,6 +115,8 @@
     "last-desparasitant": "Última desparacitación",
     "save-and-close": "Guardar y Cerrar",
     "vaccines": "Vacunas",
-    "end-appointment": "Finalizar Cita"
+    "end-appointment": "Finalizar Cita",
+    "pet-name": "Nombre de Mascota",
+    "appointment-date": "Fecha de Cita"
   }
 }
