@@ -7,7 +7,14 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { ApolloProvider } from '@apollo/client'
 import client from '@/utils/apolloClient.ts'
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchInterval: 1000,
+      refetchIntervalInBackground: true,
+    },
+  },
+})
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

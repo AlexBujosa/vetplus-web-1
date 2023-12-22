@@ -10,7 +10,7 @@ import Button from '@/components/button'
 import Select from '@/components/select'
 import Image from '@/components/image'
 import { useState } from 'react'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useClinic } from '@/hooks/use-clinic'
 import { AppointmentStatus, type Appointment } from '@/types/clinic'
 import dayjs, { Dayjs } from 'dayjs'
@@ -43,7 +43,7 @@ export default function QueuePage() {
         <TextField
           sx={{ mt: 1 }}
           className='w-[300px]'
-          placeholder={t('name')}
+          placeholder={t('pet-name')}
           variant='outlined'
           value={nameFilter}
           onChange={handleNameFilterChange}
@@ -52,7 +52,7 @@ export default function QueuePage() {
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DemoContainer components={['DatePicker']}>
             <DatePicker
-              label={t('date')}
+              label={t('appointment-date')}
               value={dateFilter}
               onChange={(newDate) => setDateFilter(newDate)}
               componentsProps={{
@@ -69,8 +69,6 @@ export default function QueuePage() {
     </>
   )
 }
-
-// TODO: If the formulary have not been filled, the user is alerted that have to fill out the form to end the appointment.
 
 function Card(props: SearchFilters) {
   const { t } = useTranslation()
@@ -286,6 +284,8 @@ function NotificationModal(props: NotificationModalProps) {
     },
   })
 
+  const queryClient = useQueryClient()
+
   const onSubmit = async ({
     status,
     veterinarianId,
@@ -299,7 +299,10 @@ function NotificationModal(props: NotificationModalProps) {
         veterinarianId,
       })
 
+      queryClient.invalidateQueries()
+
       toast.success(t('succesfull-appointment'))
+
       handleClose()
     } catch (error) {
       toast.error(t('something-wrong'))
@@ -324,16 +327,23 @@ function NotificationModal(props: NotificationModalProps) {
   if (!appointment || !employees) return null
 
   return (
-    <MuiModal open={open} onClose={handleClose}>
+    <MuiModal
+      open={open}
+      onClose={() => {
+        handleClose()
+        setVeterinarianId('')
+        formik.setFieldValue('veterinarianId', '')
+      }}
+    >
       <Box sx={style}>
-        <Modal title='Medicina preventiva'>
+        <Modal title={t('appointment')}>
           <form
             className='flex flex-col justify-between'
             onSubmit={formik.handleSubmit}
           >
             <div className='grid mt-5 mb-10 grid--cols-8 gap-y-10'>
               <span className='flex flex-col col-span-3 gap-y-[10px]'>
-                <Body.Large text={t('owner')} />
+                <Body.Large text={t('pet-owner')} />
 
                 <div className='flex flex-row items-center gap-x-5'>
                   <Image
@@ -367,6 +377,7 @@ function NotificationModal(props: NotificationModalProps) {
                   onChange={(e) => handleSelectChange(e)}
                   label={t('veterinary')}
                   options={employees}
+                  required
                 />
               </span>
               <span className='col-span-3'>
