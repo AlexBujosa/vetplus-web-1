@@ -9,7 +9,7 @@ import Modal from '@/components/molecules/modal'
 import Button from '@/components/button'
 import Select from '@/components/select'
 import Image from '@/components/image'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useClinic } from '@/hooks/use-clinic'
 import { AppointmentStatus, type Appointment } from '@/types/clinic'
@@ -113,7 +113,7 @@ function VerifiedAppointments(props: SearchFilters) {
     queryFn: getVerifiedAppointments,
   })
 
-  if (!verifiedAppointments)
+  if (!verifiedAppointments || verifiedAppointments.length === 0)
     return (
       <>
         <Body.Medium
@@ -125,7 +125,7 @@ function VerifiedAppointments(props: SearchFilters) {
 
   // Filter appointments based on name and date if filters are provided
   const filteredAppointments = verifiedAppointments
-    ?.filter((appointment) => {
+    .filter((appointment) => {
       const isNameMatch =
         !nameFilter ||
         appointment.Pet.name.toLowerCase().includes(nameFilter.toLowerCase())
@@ -134,6 +134,9 @@ function VerifiedAppointments(props: SearchFilters) {
       return isNameMatch && isDateMatch
     })
     .sort((a, b) => dayjs(b.start_at).valueOf() - dayjs(a.start_at).valueOf())
+    .filter(({ appointment_status }) => {
+      return appointment_status === AppointmentStatus.ACCEPTED
+    })
 
   return (
     <article className='overflow-y-scroll max-h-[600px]'>
@@ -173,9 +176,8 @@ function PendingAppointments(props: SearchFilters) {
       </>
     )
 
-  // Filter appointments based on name and date if filters are provided
-  const filteredAppointments = pendingAppointments
-    ?.filter((appointment) => {
+  let filteredAppointments = pendingAppointments
+    .filter((appointment) => {
       const isNameMatch =
         !nameFilter ||
         appointment.Pet.name.toLowerCase().includes(nameFilter.toLowerCase())
@@ -184,6 +186,9 @@ function PendingAppointments(props: SearchFilters) {
       return isNameMatch && isDateMatch
     })
     .sort((a, b) => dayjs(b.start_at).valueOf() - dayjs(a.start_at).valueOf())
+    .filter(({ appointment_status }) => {
+      return appointment_status !== AppointmentStatus.ACCEPTED
+    })
 
   return (
     <div className='overflow-y-scroll max-h-[600px]'>
@@ -201,6 +206,7 @@ function PendingAppointments(props: SearchFilters) {
         open={open}
         handleClose={handleClose}
         appointment={selectedAppointment}
+        setAppointment={setSelectedAppointment}
       />
     </div>
   )
@@ -259,14 +265,16 @@ interface NotificationModalProps {
   appointment: Appointment | undefined
   open: boolean
   handleClose: () => void
+  setAppointment: (prop?: Appointment) => void
 }
 
 function NotificationModal(props: NotificationModalProps) {
-  const { open, handleClose, appointment } = props
+  const { open, handleClose, appointment, setAppointment } = props
   const { t } = useTranslation()
 
   const { getMyEmployeesForSelect, respondToAppointment } = useClinic()
   const employees = getMyEmployeesForSelect()
+  const [veterinarianId, setVeterinarianId] = useState<string>('')
 
   const { mutateAsync } = useMutation({
     mutationFn: ({
@@ -286,22 +294,35 @@ function NotificationModal(props: NotificationModalProps) {
 
   const queryClient = useQueryClient()
 
-  const onSubmit = async ({
-    status,
-    veterinarianId,
-  }: {
-    status: AppointmentStatus
-    veterinarianId: string
-  }) => {
+  const onSubmit = async ({ status }: { status: AppointmentStatus }) => {
+    if (status === AppointmentStatus.ACCEPTED && veterinarianId === '') {
+      toast.error(t('required-veterinarian'))
+      return
+    }
+
     try {
       await mutateAsync({
         appointmentStatus: status,
         veterinarianId,
       })
 
+      setVeterinarianId('')
+
+      // @ts-ignore
+      setAppointment((prevAppointment) => {
+        return {
+          ...prevAppointment,
+          appointment_status: status,
+        }
+      })
+
       queryClient.invalidateQueries()
 
-      toast.success(t('succesfull-appointment'))
+      if (status === AppointmentStatus.ACCEPTED) {
+        toast.success(t('succesfull-appointment'))
+      } else {
+        toast.success(t('succesfull-denied-appointment'))
+      }
 
       handleClose()
     } catch (error) {
@@ -311,17 +332,19 @@ function NotificationModal(props: NotificationModalProps) {
 
   const formik = useFormik({
     initialValues: {
-      status: AppointmentStatus.ACCEPTED,
+      status: AppointmentStatus.DENIED,
       veterinarianId: '',
     },
     onSubmit,
   })
 
-  const [veterinarianId, setVeterinarianId] = useState<string>('')
+  console.log({ employees, veterinarianId })
+
+  console.log({ veterinarianId })
 
   const handleSelectChange = (e: any) => {
     setVeterinarianId(e.target.value)
-    formik.setFieldValue('veterinarianId', e.target?.value) // set formik value
+    formik.setFieldValue('veterinarianId', e.target?.value)
   }
 
   if (!appointment || !employees) return null
@@ -341,7 +364,7 @@ function NotificationModal(props: NotificationModalProps) {
             className='flex flex-col justify-between'
             onSubmit={formik.handleSubmit}
           >
-            <div className='grid mt-5 mb-10 grid--cols-8 gap-y-10'>
+            <div className='grid grid-cols-8 mt-5 mb-10 gap-y-10'>
               <span className='flex flex-col col-span-3 gap-y-[10px]'>
                 <Body.Large text={t('pet-owner')} />
 
@@ -377,7 +400,6 @@ function NotificationModal(props: NotificationModalProps) {
                   onChange={(e) => handleSelectChange(e)}
                   label={t('veterinary')}
                   options={employees}
-                  required
                 />
               </span>
               <span className='col-span-3'>
@@ -421,9 +443,11 @@ function NotificationModal(props: NotificationModalProps) {
                 icon={<Check />}
                 name='status'
                 type='submit'
-                value={AppointmentStatus.ACCEPTED}
                 label={t('accept')}
                 loading={formik.isSubmitting}
+                onClick={() =>
+                  formik.setFieldValue('status', AppointmentStatus.ACCEPTED)
+                }
                 disabled={formik.isSubmitting}
               />
               <Button
@@ -431,7 +455,9 @@ function NotificationModal(props: NotificationModalProps) {
                 name='status'
                 type='submit'
                 icon={<Close />}
-                value={AppointmentStatus.DENIED}
+                onClick={() =>
+                  formik.setFieldValue('status', AppointmentStatus.DENIED)
+                }
                 label={t('deny')}
                 loading={formik.isSubmitting}
                 disabled={formik.isSubmitting}

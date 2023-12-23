@@ -193,7 +193,7 @@ export function useClinic() {
       }) => {
         return (
           state === AppointmentState.PENDING &&
-          appointment_status !== AppointmentStatus.ACCEPTED
+          appointment_status !== AppointmentStatus.DENIED
         )
       }
     )

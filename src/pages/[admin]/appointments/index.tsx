@@ -266,7 +266,9 @@ function CalendarWeek() {
     queryFn: getVerifiedAppointments,
   })
 
-  if (isLoading || !allAppointments) return <>loading data...</>
+  if (isLoading) return <>loading data...</>
+
+  if (!allAppointments) return <>There are no appointments</>
 
   const filteredAppointments =
     role === Role.VETERINARIAN

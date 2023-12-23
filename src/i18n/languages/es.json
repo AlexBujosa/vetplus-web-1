@@ -117,6 +117,8 @@
     "vaccines": "Vacunas",
     "end-appointment": "Finalizar Cita",
     "pet-name": "Nombre de Mascota",
-    "appointment-date": "Fecha de Cita"
+    "appointment-date": "Fecha de Cita",
+    "required-veterinarian": "Debes seleccionar un veterinario antes de aceptar la cita.",
+    "succesfull-denied-appointment": "La cita fue rechazada satisfactoriamente"
   }
 }

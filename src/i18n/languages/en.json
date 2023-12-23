@@ -115,6 +115,8 @@
     "vaccines": "Vaccines",
     "end-appointment": "End Appointment",
     "pet-name": "Pet Name",
-    "appointment-date": "Appointment Date"
+    "appointment-date": "Appointment Date",
+    "required-veterinarian": "You must select a veterinarian before accepting the appointment.",
+    "succesfull-denied-appointment": "The appointment has been denied succesfully."
   }
 }
