@@ -251,8 +251,8 @@ export function useClinic() {
       variables: {
         updateAppointmentInput: {
           id: appointmentId,
-          appointment_status: status,
           id_veterinarian,
+          appointment_status: status,
           // end_at: '2022-03-06T08:23:45.000Z',
         },
       },
