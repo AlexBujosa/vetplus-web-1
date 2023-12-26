@@ -34,8 +34,6 @@ import { useState } from 'react'
 import { roleAtom } from '@/hooks/use-auth/roleAtom'
 import { every, isNull } from 'lodash'
 
-const headers = ['pet', 'veterinary', 'services', 'appointment', 'attend']
-
 export default function AppointmentDetail() {
   const appointments = useAtomValue(appointmentsAtom)
   const navigate = useNavigate()
@@ -73,6 +71,12 @@ export default function AppointmentDetail() {
 
 function Header() {
   const { t } = useTranslation()
+  const role = useAtomValue(roleAtom)
+
+  const headers =
+    role !== Role.VETERINARIAN
+      ? ['pet', 'veterinary', 'services', 'appointment', 'attend']
+      : ['pet', 'services', 'appointment', 'attend']
 
   return (
     <TableHead>
@@ -130,11 +134,13 @@ function Body() {
                 </div>
               </TableCell>
 
-              <VeterinaryCell
-                role={user.role}
-                veterinarian={Veterinarian}
-                appointmentId={id}
-              />
+              {role !== Role.VETERINARIAN && (
+                <VeterinaryCell
+                  role={user.role}
+                  veterinarian={Veterinarian}
+                  appointmentId={id}
+                />
+              )}
 
               <TableCell component='th' scope='row'>
                 {dayjs(start_at).add(4, 'hour').format('h:mm A')}
