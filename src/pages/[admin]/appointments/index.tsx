@@ -20,6 +20,7 @@ import { appointmentsAtom } from '@/hooks/use-clinic/appointmentsAtom'
 import { Role } from '@/types/role'
 import { roleAtom } from '@/hooks/use-auth/roleAtom'
 import { userAtom } from '@/hooks/use-user/userAtom'
+import toast from 'react-hot-toast'
 
 export default function AppointmentsPage() {
   const { t } = useTranslation()
@@ -46,7 +47,11 @@ function SideSection() {
 
   const { getVerifiedAppointments } = useClinic()
 
-  const { data: allAppointments } = useQuery({
+  const {
+    data: allAppointments,
+    isError,
+    error,
+  } = useQuery({
     queryKey: ['verified-appointments'],
     queryFn: getVerifiedAppointments,
   })
@@ -57,6 +62,10 @@ function SideSection() {
           return id_veterinarian === user?.id
         })
       : allAppointments
+
+  if (isError) {
+    toast.error(error.message)
+  }
 
   return (
     <aside className='col-span-2 border-r-2 border-r-base-neutral-gray-600'>

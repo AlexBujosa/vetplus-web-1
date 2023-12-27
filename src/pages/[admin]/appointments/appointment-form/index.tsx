@@ -1,37 +1,29 @@
-import { ChangeEvent, useState } from 'react'
-import { useQueryClient, useMutation } from '@tanstack/react-query'
-import { useParams } from 'react-router-dom'
-import { Appointment, AppointmentForm } from '@/types/clinic'
-import TextField from '@mui/material/TextField'
-import Button from '@/components/button'
-import { Autocomplete, FormControl, MenuItem, Select } from '@mui/material'
-import { useClinic } from '@/hooks/use-clinic'
-import { useTranslation } from 'react-i18next'
-import { Body, Title } from '@/components/typography'
+import React, { useState } from 'react'
+import { useFormik } from 'formik'
+import Input from '@/components/input'
 import { Profile } from '@/components/profile'
+import { IconButton, MenuItem, Select } from '@mui/material'
+import Button from '@/components/button'
+import { Badge } from '@/components/badge'
+import { Body, Title } from '@/components/typography'
+import { useTranslation } from 'react-i18next'
+import { useNavigate, useParams } from 'react-router-dom'
+import { KeyboardBackspace } from '@mui/icons-material'
+import { routes } from '@/config/routes'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo'
+import dayjs from 'dayjs'
+import { useClinic } from '@/hooks/use-clinic'
+import { useMutation } from '@tanstack/react-query'
+import { AppointmentForm } from '@/types/clinic'
 import toast from 'react-hot-toast'
-
-interface FormData {
-  suffering: string[]
-  treatment: string
-  feed: string
-  deworming: {
-    date: string
-    product: string
-  }
-  reproductiveTimeline: {
-    reproductiveHistory: string
-    dateLastHeat: string
-    dateLastBirth: string
-  }
-  vaccines: {
-    date: string
-    vaccineBrand: string
-    vaccineBatch: string
-  }
-}
+import { useAtomValue } from 'jotai'
+import { appointmentsAtom } from '@/hooks/use-clinic/appointmentsAtom'
 
 const options = [
+  '',
   'Alergias cutáneas',
   'Bronquitis',
   'Dermatitis',
@@ -46,417 +38,329 @@ const options = [
   'Traumatismos/lesiones',
 ]
 
+const initialValues = {
+  suffering: [],
+  treatment: '',
+  feed: '',
+  deworming: {
+    date: '',
+    product: '',
+  },
+  reproductiveTimeline: {
+    reproductiveHistory: '',
+    dateLastHeat: '',
+    dateLastBirth: '',
+  },
+  vaccines: {
+    date: '',
+    vaccineBrand: '',
+    vaccineBatch: '',
+  },
+}
+
 export default function Form() {
-  const { appointmentId } = useParams()
-  const queryClient = useQueryClient()
   const { t } = useTranslation()
+  const navigate = useNavigate()
+  const [suffering, setSuffering] = useState<string[]>([])
+  const { appointmentId } = useParams()
+  const appointments = useAtomValue(appointmentsAtom)
+
+  if (!appointments) return null
+
+  const appointment = appointments.find(({ id }) => id === appointmentId)
+
+  if (!appointment) return null
+
+  console.log(appointment.observations)
+
+  const addSuffering = (selectedSuffering: string) => {
+    setSuffering((prevSuffering) => [...prevSuffering, selectedSuffering])
+    formik.setFieldValue('suffering', [...suffering, selectedSuffering])
+  }
+
+  const removeSuffering = (removedSuffering: string) => {
+    setSuffering((prevSuffering) =>
+      prevSuffering.filter((item) => item !== removedSuffering)
+    )
+
+    formik.setFieldValue(
+      'suffering',
+      suffering.filter((item) => item !== removedSuffering)
+    )
+  }
+
+  const formik = useFormik({
+    initialValues,
+    onSubmit,
+  })
 
   const { updateAppointmentResumen } = useClinic()
 
   const { mutateAsync, isPending: isLoading } = useMutation({
-    mutationFn: (payload: AppointmentForm) => updateAppointmentResumen(payload),
+    mutationFn: (data: AppointmentForm) =>
+      updateAppointmentResumen(data, appointment),
   })
 
-  const handleChange = (event: any) => {
-    const { name, value } = event.target
-    setData({
-      ...data,
-      [name]: value,
-    })
-  }
-
-  const [appointmentResume, setAppointmentResume] = useState({})
-
-  const [selectedOptions, setSelectedOptions] = useState<string[]>([])
-
-  const handleDewormingChange = (field: 'date' | 'product', value: string) => {
-    setData((prevData) => ({
-      ...prevData,
-      deworming: {
-        ...prevData.deworming,
-        [field]: value,
-      },
-    }))
-  }
-
-  const handleVaccineChange = (
-    field: 'date' | 'vaccineBrand' | 'vaccineBatch',
-    value: string
-  ) => {
-    setData((prevData) => ({
-      ...prevData,
-      vaccines: {
-        ...prevData.vaccines,
-        [field]: value,
-      },
-    }))
-  }
-
-  const handleSufferingChange = (
-    event: ChangeEvent<any>,
-    newValue: string[]
-  ) => {
-    setSelectedOptions(newValue)
-    setData({
-      ...data,
-      suffering: newValue,
-    })
-  }
-
-  const appointments: Appointment[] | undefined = queryClient.getQueryData([
-    'appointments',
-  ])
-
-  if (!appointments) return null
-
-  const appointment = appointments.find(({ id }) => {
-    return id === appointmentId
-  })
-
-  if (!appointment) return null
-
-  const { id, id_clinic, id_owner, Owner, Pet, observations } = appointment
-
-  const { feed, treatment } = observations
-
-  const [data, setData] = useState<FormData>({
-    suffering: [],
-    treatment,
-    feed,
-    deworming: {
-      date: '',
-      product: '',
-    },
-    reproductiveTimeline: {
-      reproductiveHistory: 'Entero',
-      dateLastHeat: '',
-      dateLastBirth: '',
-    },
-    vaccines: {
-      date: '',
-      vaccineBrand: '',
-      vaccineBatch: '',
-    },
-  })
-
-  const handleSubmit = async (event: any) => {
-    event.preventDefault()
-
-    const {
-      suffering,
-      treatment,
-      feed,
-      deworming,
-      vaccines,
-      reproductiveTimeline,
-    } = data
-
-    const newAppointmentResume = {
-      id,
-      id_clinic,
-      id_owner,
-      observations: {
-        suffering,
-        treatment,
-        feed,
-        deworming,
-        vaccines,
-        reproductiveTimeline,
-      },
+  async function onSubmit(values: any) {
+    try {
+      const response = await mutateAsync({ ...values })
+      console.log({ values })
+      toast.success(t('updated-fields'))
+    } catch (error: any) {
+      toast.error(error.message)
     }
-
-    setAppointmentResume(newAppointmentResume)
-
-    const onSubmit = async () => {
-      try {
-        await mutateAsync({ ...newAppointmentResume })
-        queryClient.invalidateQueries({
-          queryKey: ['appointments'],
-        })
-        toast.success(t('updated-fields'))
-      } catch (e) {
-        toast.error('Something bad happened at updating the appointment data')
-        console.error(e)
-      }
-    }
-    onSubmit()
   }
 
   return (
-    <section className='w-auto'>
-      <Title.Large text={t('clinic-history')} />
+    <>
+      <section className='flex items-center gap-x-3'>
+        <IconButton
+          className='w-fit'
+          onClick={() =>
+            navigate(routes.admin.pages['appointment-detail'].href)
+          }
+        >
+          <KeyboardBackspace />
+        </IconButton>
+        <Title.Medium text={t('go-back')} />
+      </section>
 
-      <form className='pt-6'>
-        <div className='flex gap-16 mb-4 flex-2'>
-          <div className='flex-col py-2'>
-            <Body.Large className='mb-2' text={t('owner')} />
-            <Profile
-              image={Owner.image}
-              profile={`${Owner.names} ${Owner.surnames ?? ''}`}
-            />
-          </div>
-          <div className='flex-col py-2'>
-            <Body.Large className='mb-2' text={t('pet')} />
-            <Profile image={Pet.image} profile={Pet.name} />
-          </div>
-        </div>
+      <div className='p-6 bg-white rounded-lg shadow-elevation-1'>
+        <Title.Medium
+          text='Historial Clínico'
+          className='text-lg font-medium leading-6 text-gray-900'
+        />
 
-        <Title.Medium className='py-4' text={t('last-desparasitant')} />
-
-        <div className='flex gap-16 mb-4'>
-          <div>
-            <Body.Large className='mb-2' text={t('date')} />
-            <TextField
-              type='date'
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: '10px',
-                  height: '35px',
-                  width: '20rem',
-                },
-              }}
-              value={data.deworming.date}
-              onChange={(e) => handleDewormingChange('date', e.target.value)}
-            />
-          </div>
-          <div>
-            <Body.Large className='mb-2' text={t('product')} />
-            <TextField
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: '10px',
-                  height: '35px',
-                  width: '20rem',
-                },
-              }}
-              value={data.deworming.product}
-              onChange={(e) => handleDewormingChange('product', e.target.value)}
-            />
-          </div>
-          <div>
-            <Body.Large className='mb-2' text={t('reproductive-history')} />
-
-            <FormControl
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: '10px',
-                  height: '35px',
-                  width: '15rem',
-                },
-              }}
-            >
-              <Select
-                value={data.reproductiveTimeline.reproductiveHistory}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: '10px',
-                    height: '10px',
-                    width: '15rem',
-                  },
-                }}
-                onChange={(e) => {
-                  setData({
-                    ...data,
-                    reproductiveTimeline: {
-                      ...data.reproductiveTimeline,
-                      reproductiveHistory: e.target.value as string,
-                    },
-                  })
-                }}
-              >
-                <MenuItem
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      height: '15px',
-                      width: '15rem',
-                    },
-                  }}
-                  value='Entero'
-                >
-                  Entero
-                </MenuItem>
-                <MenuItem
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      height: '15px',
-                      width: '15rem',
-                    },
-                  }}
-                  value='Esterilizado'
-                >
-                  Esterilizado
-                </MenuItem>
-              </Select>
-            </FormControl>
-          </div>
-        </div>
-        <p className='mb-4 font-bold'>{t('vaccines')}</p>
-        <div className='flex gap-16'>
-          <div className='mb-4'>
-            <Body.Large className='mb-2' text={t('date')} />
-            <TextField
-              type='date'
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: '10px',
-                  height: '35px',
-                  width: '20rem',
-                },
-              }}
-              value={data.vaccines.date}
-              onChange={(e) => handleVaccineChange('date', e.target.value)}
-            />
-          </div>
-          <div className='mb-4'>
-            <Body.Large className='mb-2' text={t('brand')} />
-            <TextField
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: '10px',
-                  height: '35px',
-                  width: '20rem',
-                },
-              }}
-              value={data.vaccines.vaccineBrand}
-              onChange={(e) =>
-                handleVaccineChange('vaccineBrand', e.target.value)
-              }
-            />
-          </div>
-          <div className='mb-4'>
-            <Body.Large className='mb-2' text={t('batch')} />
-            <TextField
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: '10px',
-                  height: '35px',
-                  width: '20rem',
-                },
-              }}
-              value={data.vaccines.vaccineBatch}
-              onChange={(e) =>
-                handleVaccineChange('vaccineBatch', e.target.value)
-              }
-            />
-          </div>
-        </div>
-        <div className='py-4'>
-          <Body.Large className='mb-2' text={t('ailments')} />
-          <Autocomplete
-            multiple
-            options={options}
-            value={selectedOptions}
-            onChange={handleSufferingChange}
-            getOptionLabel={(option) => option}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                placeholder='Select options'
-                variant='outlined'
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: '10px',
-                    width: '40rem',
-                  },
-                }}
+        <form onSubmit={formik.handleSubmit} className='grid grid-cols-3 gap-6'>
+          <section className='flex col-span-3 gap-x-12 w-fit'>
+            <div className='flex flex-col gap-y-3'>
+              <Body.Large
+                text={t('owner')}
+                className='text-sm font-medium text-gray-700'
               />
-            )}
-            renderOption={(props, option, { selected }) => (
-              <li
-                {...props}
-                style={{ backgroundColor: selected ? 'lightblue' : 'white' }}
+              <div className='flex items-center'>
+                <Profile
+                  profile={`${appointment?.Owner.names} ${
+                    appointment?.Owner.surnames ?? ''
+                  }`}
+                  image={appointment?.Owner.image}
+                />
+              </div>
+            </div>
+            <div className='flex flex-col gap-y-3'>
+              <Body.Large text={t('pet')} />
+              <div className='flex items-center'>
+                <Profile
+                  image={appointment?.Pet.image}
+                  profile={appointment?.Pet.name ?? ''}
+                />
+              </div>
+            </div>
+          </section>
+
+          <div className='mt-4'>
+            <Body.Large text={t('last-deworming')} />
+            <div className='flex mt-1'>
+              <div className='w-full pr-1'>
+                <Body.Medium text={t('date')} />
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DemoContainer components={['DatePicker']}>
+                    <DatePicker
+                      format='DD-MM-YYYY'
+                      value={formik.values.deworming.date}
+                      onChange={(date) =>
+                        formik.setFieldValue(
+                          'deworming.date',
+                          dayjs(date).format('YYYY-MM-DD')
+                        )
+                      }
+                      componentsProps={{
+                        actionBar: {
+                          actions: ['clear'],
+                        },
+                      }}
+                    />
+                  </DemoContainer>
+                </LocalizationProvider>
+              </div>
+
+              <div className='w-full pl-1'>
+                <Body.Medium text={t('product')} />
+                <Input
+                  name='deworming.product'
+                  value={formik.values.deworming.product}
+                  onChange={formik.handleChange}
+                  placeholder='Producto 1'
+                  variant='outlined'
+                />
+              </div>
+            </div>
+          </div>
+          <div className='mt-4'>
+            <Body.Large text={t('vaccines')} />
+
+            <div className='flex mt-1'>
+              <div className='w-full pr-1'>
+                <Body.Large text={t('date')} />
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DemoContainer components={['DatePicker']}>
+                    <DatePicker
+                      format='DD-MM-YYYY'
+                      value={formik.values.vaccines.date}
+                      onChange={(date) =>
+                        formik.setFieldValue(
+                          'vaccines.date',
+                          dayjs(date).format('YYYY-MM-DD')
+                        )
+                      }
+                      componentsProps={{
+                        actionBar: {
+                          actions: ['clear'],
+                        },
+                      }}
+                    />
+                  </DemoContainer>
+                </LocalizationProvider>
+              </div>
+              <div className='w-full pl-1'>
+                <Body.Large text={t('product')} />
+                <Input
+                  name='vaccines.vaccineBrand'
+                  value={formik.values.vaccines.vaccineBrand}
+                  onChange={formik.handleChange}
+                  variant='outlined'
+                  placeholder='Nombre de vacuna'
+                />
+
+                <Body.Large text={t('batch')} />
+                <Input
+                  name='vaccines.vaccineBatch'
+                  value={formik.values.vaccines.vaccineBatch}
+                  onChange={formik.handleChange}
+                  variant='outlined'
+                  placeholder='Lote de vacuna'
+                />
+              </div>
+            </div>
+          </div>
+          <div className='mt-4'>
+            <Body.Large text={t('suffering')} />
+            <div className='flex flex-col flex-wrap gap-2 mt-1'>
+              <section className='flex gap-x-2'>
+                {suffering.map((item) => (
+                  <Badge
+                    key={item}
+                    className='select-none h-fit bg-base-primary-100 hover:bg-base-primary-200'
+                    label={item}
+                    onClick={() => removeSuffering(item)}
+                  />
+                ))}
+              </section>
+
+              <Select
+                value={suffering}
+                label='Padecimientos'
+                onChange={(event) => {
+                  const selectedValue = event.target.value as string
+                  addSuffering(selectedValue)
+                }}
               >
-                {option}
-              </li>
-            )}
+                {options.map((option) => {
+                  return (
+                    <MenuItem key={option} value={option}>
+                      {option}
+                    </MenuItem>
+                  )
+                })}
+              </Select>
+            </div>
+          </div>
+          <div className='grid grid-cols-1 gap-4 mt-4'>
+            <div>
+              <Body.Large text={t('treatments')} />
+              <Input
+                variant='outlined'
+                name='treatment'
+                value={formik.values.treatment}
+                onChange={formik.handleChange}
+                placeholder='Uso de champús.'
+              />
+            </div>
+            <div className='mt-4'>
+              <Body.Large text={t('feeding')} />
+              <Input
+                variant='outlined'
+                name='feed'
+                value={formik.values.feed}
+                onChange={formik.handleChange}
+                placeholder='Proporciona heno de alta calidad como base de la dieta para conejos y roedores.'
+              />
+            </div>
+          </div>
+          <div className='grid grid-cols-1 gap-4 mt-4'>
+            <div>
+              <Body.Large text={t('date-last-birth')} />
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={['DatePicker']}>
+                  <DatePicker
+                    format='DD-MM-YYYY'
+                    value={formik.values.reproductiveTimeline.dateLastBirth}
+                    onChange={(date) =>
+                      formik.setFieldValue(
+                        'reproductiveTimeline.dateLastBirth',
+                        dayjs(date).format('YYYY-MM-DD')
+                      )
+                    }
+                    componentsProps={{
+                      actionBar: {
+                        actions: ['clear'],
+                      },
+                    }}
+                  />
+                </DemoContainer>
+              </LocalizationProvider>
+            </div>
+            <div className='mt-4'>
+              <Body.Large text={t('last-heat-date')} />
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={['DatePicker']}>
+                  <DatePicker
+                    format='DD-MM-YYYY'
+                    value={formik.values.reproductiveTimeline.dateLastHeat}
+                    onChange={(date) =>
+                      formik.setFieldValue(
+                        'reproductiveTimeline.dateLastHeat',
+                        dayjs(date).format('YYYY-MM-DD')
+                      )
+                    }
+                    componentsProps={{
+                      actionBar: {
+                        actions: ['clear'],
+                      },
+                    }}
+                  />
+                </DemoContainer>
+              </LocalizationProvider>
+            </div>
+          </div>
+
+          <div>
+            <Body.Large text={t('reproductive-history')} />
+            <Select defaultValue='' label='Padecimientos'>
+              <MenuItem value=''>N/A</MenuItem>
+              <MenuItem value='Entero'>Entero</MenuItem>
+              <MenuItem value='Esterilizado'>Esterilizado</MenuItem>
+            </Select>
+          </div>
+
+          <Button
+            type='submit'
+            className='col-span-2 text-white bg-base-primary-600'
+            label='Guardar y Cerrar'
+            loading={isLoading}
           />
-        </div>
-        <div className='flex gap-16 py-4'>
-          <div>
-            <Body.Large className='mb-2' text={t('treatments')} />
-            <TextField
-              value={data.treatment}
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: '10px',
-                  height: '55px',
-                  width: '25rem',
-                },
-              }}
-              onChange={(e) => {
-                setData({ ...data, treatment: e.target.value })
-              }}
-            />
-          </div>
-          <div>
-            <Body.Large className='mb-2' text={t('feeding')} />
-            <TextField
-              value={data.feed}
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: '10px',
-                  height: '55px',
-                  width: '25rem',
-                },
-              }}
-              onChange={(e) => {
-                setData({ ...data, feed: e.target.value })
-              }}
-            />
-          </div>
-        </div>
-        <div className='flex gap-16 pt-8'>
-          <div>
-            <Body.Large className='mb-2' text={t('date-last-birth')} />
-            <TextField
-              type='date'
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: '10px',
-                  height: '35px',
-                  width: '20rem',
-                },
-              }}
-              onChange={(e) => {
-                setData({
-                  ...data,
-                  reproductiveTimeline: {
-                    ...data.reproductiveTimeline,
-                    dateLastBirth: e.target.value,
-                  },
-                })
-              }}
-            />
-          </div>
-          <div>
-            <Body.Large className='mb-2' text={t('last-heat-date')} />
-            <TextField
-              type='date'
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: '10px',
-                  height: '35px',
-                  width: '20rem',
-                },
-              }}
-              onChange={(e) => {
-                setData({
-                  ...data,
-                  reproductiveTimeline: {
-                    ...data.reproductiveTimeline,
-                    dateLastHeat: e.target.value,
-                  },
-                })
-              }}
-            />
-          </div>
-        </div>
-        <div className='flex mt-8 gap-x-3'>
-          <Button className='bg-base-primary-400' onClick={handleSubmit}>
-            {t('save-and-close')}
-          </Button>
-        </div>
-      </form>
-    </section>
+        </form>
+      </div>
+    </>
   )
 }

@@ -143,13 +143,25 @@ export function useClinic() {
     return updateClinic
   }
 
-  async function updateAppointmentResumen(payload: AppointmentForm) {
+  async function updateAppointmentResumen(
+    payload: AppointmentForm,
+    appointment: Appointment
+  ) {
+    const { id: appointmentId, id_clinic, id_owner } = appointment
+
     const {
       data: { updateAppointmentResumen },
     } = await client.mutate({
       mutation: UPDATE_APPOINTMENT_RESUMEN,
       variables: {
-        updateAppointmentResumenInput: { ...payload },
+        updateAppointmentResumenInput: {
+          observations: {
+            ...payload,
+          },
+          id: appointmentId,
+          id_clinic,
+          id_owner,
+        },
       },
     })
 

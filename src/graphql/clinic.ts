@@ -1,27 +1,5 @@
 import { gql } from '@apollo/client'
 
-const observationsFragment = gql`
-  fragment observationsAttributes on AppointmentObservation {
-    suffering
-    treatment
-    feed
-    deworming {
-      date
-      product
-    }
-    vaccines {
-      date
-      vaccineBrand
-      vaccineBatch
-    }
-    reproductiveTimeline {
-      reproductiveHistory
-      dateLastHeat
-      dateLastBirth
-    }
-  }
-`
-
 export const GET_MY_EMPLOYEES = gql`
   query GetMyEmployees {
     getMyEmployees {
@@ -189,7 +167,23 @@ export const GET_APPOINTMENTS = gql`
       appointment_status
       state
       observations {
-        ...observationsAttributes
+        suffering
+        treatment
+        feed
+        deworming {
+          date
+          product
+        }
+        vaccines {
+          date
+          vaccineBrand
+          vaccineBatch
+        }
+        reproductiveTimeline {
+          reproductiveHistory
+          dateLastHeat
+          dateLastBirth
+        }
       }
       created_at
       updated_at
@@ -253,7 +247,6 @@ export const GET_APPOINTMENTS = gql`
       }
     }
   }
-  ${observationsFragment}
 `
 
 export const RESPOND_APPOINTMENT = gql`
@@ -321,7 +314,23 @@ export const GET_APPOINTMENTS_PER_DATETIME = gql`
       services
       id_clinic
       observations {
-        ...observationsAttributes
+        suffering
+        treatment
+        feed
+        deworming {
+          date
+          product
+        }
+        vaccines {
+          date
+          vaccineBatch
+          vaccineBrand
+        }
+        reproductiveTimeline {
+          reproductiveHistory
+          dateLastHeat
+          dateLastBirth
+        }
       }
       appointment_status
       state
@@ -388,7 +397,6 @@ export const GET_APPOINTMENTS_PER_DATETIME = gql`
       }
     }
   }
-  ${observationsFragment}
 `
 
 export const SAVE_CLINIC_IMAGE = gql`

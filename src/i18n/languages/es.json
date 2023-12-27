@@ -118,7 +118,9 @@
     "end-appointment": "Finalizar Cita",
     "pet-name": "Nombre de Mascota",
     "appointment-date": "Fecha de Cita",
+    "last-deworming": "Ultima desparacitación",
     "required-veterinarian": "Debes seleccionar un veterinario antes de aceptar la cita.",
-    "succesfull-denied-appointment": "La cita fue rechazada satisfactoriamente"
+    "succesfull-denied-appointment": "La cita fue rechazada satisfactoriamente",
+    "suffering": "Padecimientos"
   }
 }
