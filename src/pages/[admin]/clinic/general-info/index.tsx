@@ -546,8 +546,9 @@ function ProfileModalSection() {
           value={selectedServices}
           onChange={(e) => {
             setSelectedServices(e.target.value)
-            formik.setFieldValue('services', selectedServices)
+            formik.setFieldValue('services', e.target.value)
           }}
+          className='col-span-2'
           label={t('services')}
           name='services'
           input={<OutlinedInput label='Multiple Select' />}
