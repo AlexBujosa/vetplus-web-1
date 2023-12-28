@@ -75,7 +75,7 @@ function Header() {
 
   const headers =
     role !== Role.VETERINARIAN
-      ? ['pet', 'veterinary', 'services', 'appointment', 'attend']
+      ? ['pet', 'veterinary', 'services', 'appointment']
       : ['pet', 'services', 'appointment', 'attend']
 
   return (
@@ -154,26 +154,27 @@ function Body() {
                 </ul>
               </TableCell>
 
-              <TableCell component='th' scope='row'>
-                <IconButton
-                  disabled={
-                    role !== Role.VETERINARIAN
-                    // !dayjs(start_at).isSame(dayjs(), 'day')
-                  }
-                  onClick={() => {
-                    if (hasPreviousObservationsEmpty) {
-                      // handleClick()
-                      toast.error(`Tienes ${previousEmptyObservations.length} observaciones que llenar
+              {role === Role.VETERINARIAN && (
+                <TableCell component='th' scope='row'>
+                  <IconButton
+                    // disabled={
+                    //   // !dayjs(start_at).isSame(dayjs(), 'day')
+                    // }
+                    onClick={() => {
+                      if (hasPreviousObservationsEmpty) {
+                        // handleClick()
+                        toast.error(`Tienes ${previousEmptyObservations.length} observaciones que llenar
           pendientes`)
-                      return
-                    }
+                        return
+                      }
 
-                    navigate(id)
-                  }}
-                >
-                  <FileOpenOutlined />
-                </IconButton>
-              </TableCell>
+                      navigate(id)
+                    }}
+                  >
+                    <FileOpenOutlined />
+                  </IconButton>
+                </TableCell>
+              )}
             </TableRow>
           )
         })}

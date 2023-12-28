@@ -206,6 +206,7 @@ export default function Form() {
                           actions: ['clear'],
                         },
                       }}
+                      maxDate={dayjs()}
                     />
                   </DemoContainer>
                 </LocalizationProvider>
@@ -245,6 +246,7 @@ export default function Form() {
                           actions: ['clear'],
                         },
                       }}
+                      maxDate={dayjs()}
                     />
                   </DemoContainer>
                 </LocalizationProvider>
@@ -343,6 +345,7 @@ export default function Form() {
                         actions: ['clear'],
                       },
                     }}
+                    maxDate={dayjs()}
                   />
                 </DemoContainer>
               </LocalizationProvider>
@@ -365,6 +368,7 @@ export default function Form() {
                         actions: ['clear'],
                       },
                     }}
+                    maxDate={dayjs()}
                   />
                 </DemoContainer>
               </LocalizationProvider>
