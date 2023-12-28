@@ -38,9 +38,14 @@ import toast from 'react-hot-toast'
 import dayjs from 'dayjs'
 import { useDropzone } from 'react-dropzone'
 import { isEqual } from 'lodash'
-import { LocalizationProvider, TimeField } from '@mui/x-date-pickers'
+import {
+  DatePicker,
+  LocalizationProvider,
+  TimeField,
+} from '@mui/x-date-pickers'
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { Badge } from '@/components/badge'
 
 export default function GeneralViewPage() {
   const { t } = useTranslation()
@@ -519,28 +524,47 @@ function ProfileModalSection() {
 
 function ScheduleModalSection() {
   const { t } = useTranslation()
+  const queryClient = useQueryClient()
+  const { getMyClinic, updateClinicSchedule } = useClinic()
 
-  const workingDays = [
-    { day: 'Monday', endTime: '17:00:00', startTime: '09:00:00' },
-    { day: 'Tuesday', endTime: '17:00:00', startTime: '09:00:00' },
-    { day: 'Wenesday', endTime: '17:00:00', startTime: '09:00:00' },
-    { day: 'Thrusday', endTime: '17:00:00', startTime: '09:00:00' },
-    { day: 'Friday', endTime: '17:00:00', startTime: '09:00:00' },
-    { day: 'Saturday', endTime: '17:00:00', startTime: '09:00:00' },
-  ]
+  const { data: clinic } = useQuery({
+    queryKey: ['clinic'],
+    queryFn: getMyClinic,
+  })
 
-  const nonWorkingDays = [
-    '2023-12-24',
-    '2023-12-25',
-    '2023-12-31',
-    '2024-01-06',
-  ]
+  const { mutateAsync, isPending: isLoading } = useMutation({
+    mutationFn: updateClinicSchedule,
+  })
 
-  const onSubmit = async (values: any) => {
-    console.log({ values })
+  if (!clinic) return null
+
+  const onSubmit = async (values: {
+    workingDays: { day: string; startTime: string; endTime: string }[]
+    nonWorkingDays: string[]
+  }) => {
+    try {
+      await mutateAsync(values)
+      toast.success(t('updated-fields'))
+      queryClient.invalidateQueries()
+    } catch (error: any) {
+      toast.error(error.message)
+    }
   }
 
-  const initialValues = {}
+  const [nonWorkingDays, setNonWorkingDays] = useState<string[]>(
+    clinic.schedule.nonWorkingDays
+  )
+
+  const initialValues = {
+    workingDays: clinic.schedule.workingDays.map(
+      ({ day, startTime, endTime }) => ({
+        day,
+        startTime,
+        endTime,
+      })
+    ),
+    nonWorkingDays: clinic.schedule.nonWorkingDays,
+  }
 
   const formik = useFormik({
     initialValues,
@@ -551,47 +575,117 @@ function ScheduleModalSection() {
     <form onSubmit={formik.handleSubmit} className='grid grid-cols-2'>
       <section>
         <Typography variant='h6' gutterBottom>
-          Working Days and Hours
+          {t('working-days')}
         </Typography>
 
         <List>
-          {workingDays.map((day) => (
-            <ListItem key={day.day}>
-              <ListItemText className='w-8' primary={day.day} />
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer components={['TimeField', 'TimeField']}>
-                  <TimeField
-                    sx={{ width: 10 }}
-                    label='From'
-                    defaultValue={dayjs('2022-04-17T15:30')}
+          {formik.values.workingDays.map((day, index) => {
+            return (
+              <ListItem key={day.day}>
+                <ListItemText className='w-8' primary={day.day} />
+
+                <span className='flex gap-x-3'>
+                  <input
+                    className='p-2 border-2 border-base-primary-100'
+                    value={formik.values.workingDays[index].startTime}
+                    onChange={(event) => {
+                      const { value } = event.target
+                      formik.setFieldValue(
+                        `workingDays[${index}].startTime`,
+                        value
+                      )
+                    }}
+                    type='time'
                   />
-                  <TimeField
-                    sx={{ width: 10 }}
-                    label='To'
-                    defaultValue={dayjs('2022-04-17T15:30')}
+
+                  <input
+                    className='p-2 border-2 border-base-primary-100'
+                    value={formik.values.workingDays[index].endTime}
+                    onChange={(event) => {
+                      const { value } = event.target
+                      formik.setFieldValue(
+                        `workingDays[${index}].endTime`,
+                        value
+                      )
+                    }}
+                    type='time'
                   />
-                </DemoContainer>
-              </LocalizationProvider>
-            </ListItem>
-          ))}
+                </span>
+              </ListItem>
+            )
+          })}
         </List>
       </section>
 
       <section>
         <Typography variant='h6' gutterBottom>
-          Non-Working Days
+          {t('non-working-days')}
         </Typography>
 
-        <List>
-          {nonWorkingDays.map((date) => (
-            <ListItem key={date}>
-              <ListItemText primary={date} />
-            </ListItem>
-          ))}
+        <List className='flex flex-col'>
+          <section className='grid grid-cols-6 gap-2 w-100'>
+            {nonWorkingDays.map((date: string) => (
+              <Badge
+                className='font-bold text-white cursor-pointer select-none bg-base-primary-500 hover:bg-base-primary-600'
+                key={date}
+                label={date}
+                onClick={() => {
+                  setNonWorkingDays((prevNonWorkingDays) =>
+                    prevNonWorkingDays.filter((item) => item !== date)
+                  )
+
+                  formik.setFieldValue(
+                    'nonWorkingDays',
+                    nonWorkingDays.filter((item) => item !== date)
+                  )
+                }}
+              />
+            ))}
+          </section>
+
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DemoContainer components={['DatePicker']}>
+              <DatePicker
+                format='DD-MM-YYYY'
+                onChange={(newDate) => {
+                  if (!newDate) return
+
+                  const date = newDate.format('YYYY-MM-DD')
+
+                  if (nonWorkingDays.some((d) => d === date)) {
+                    toast.error('The non working date already exists.')
+                    return
+                  }
+
+                  setNonWorkingDays((prevNonWorkingDays) => [
+                    ...prevNonWorkingDays,
+                    date,
+                  ])
+
+                  formik.setFieldValue('nonWorkingDays', [
+                    ...nonWorkingDays,
+                    date,
+                  ])
+                }}
+                componentsProps={{
+                  actionBar: {
+                    actions: ['clear'],
+                  },
+                }}
+                minDate={dayjs()}
+              />
+            </DemoContainer>
+          </LocalizationProvider>
         </List>
       </section>
 
-      <Button type='submit' size='small' label={t('save-and-close')} />
+      <Button
+        type='submit'
+        size='small'
+        label={t('edit')}
+        loading={isLoading}
+        disabled={isEqual(formik.values, initialValues)}
+      />
     </form>
   )
 }

@@ -143,6 +143,22 @@ export function useClinic() {
     return updateClinic
   }
 
+  async function updateClinicSchedule(payload: {
+    nonWorkingDays?: string[]
+    workingDays?: { day: string; startTime: string; endTime: string }[]
+  }) {
+    const {
+      data: { updateClinic },
+    } = await client.mutate({
+      mutation: UPDATE_CLINIC,
+      variables: {
+        updateClinicInput: { schedule: { ...payload } },
+      },
+    })
+
+    return updateClinic
+  }
+
   async function updateAppointmentResumen(
     payload: AppointmentForm,
     appointment: Appointment
@@ -315,6 +331,7 @@ export function useClinic() {
     findEmployeeByEmail,
     sendInvitationToClinic,
     updateClinic,
+    updateClinicSchedule,
     respondToAppointment,
     reassignAppointment,
     saveClinicImage,

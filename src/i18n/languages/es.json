@@ -121,6 +121,8 @@
     "last-deworming": "Ultima desparacitación",
     "required-veterinarian": "Debes seleccionar un veterinario antes de aceptar la cita.",
     "succesfull-denied-appointment": "La cita fue rechazada satisfactoriamente",
-    "suffering": "Padecimientos"
+    "suffering": "Padecimientos",
+    "working-days": "Dias laborables",
+    "non-working-days": "Dias no laborables"
   }
 }
