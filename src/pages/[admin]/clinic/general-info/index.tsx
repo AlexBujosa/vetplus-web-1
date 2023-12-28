@@ -14,6 +14,7 @@ import {
   LocationOnOutlined,
   MedicationOutlined,
   Star,
+  CancelOutlined,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import Button from '@/components/button'
@@ -26,6 +27,11 @@ import {
   ListItem,
   ListItemText,
   Typography,
+  Select,
+  OutlinedInput,
+  Chip,
+  MenuItem,
+  Stack,
 } from '@mui/material'
 import Modal from '@/components/molecules/modal'
 import Input from '@/components/input'
@@ -163,8 +169,15 @@ function GeneralDescription() {
   // @ts-ignore
   const { email, telephone_number, schedule }: Clinic = data
 
-  const scheduleString = `
-    Lunes a Viernes: ${schedule.workingDays[0].startTime} - ${schedule.workingDays[0].endTime}\n No laborables: ${schedule.nonWorkingDays}`
+  const { workingDays, nonWorkingDays } = schedule || {}
+
+  const workingDaysString =
+    workingDays && workingDays.length !== 0
+      ? `Lunes a Viernes: ${workingDays[0]?.startTime} - ${workingDays[0]?.endTime}`
+      : ''
+  const nonWorkingDaysString = `No laborables: ${nonWorkingDays || ''}`
+  const scheduleString = `${workingDaysString}\n${nonWorkingDaysString}`
+
   const values = [
     { label: t('email'), value: email ?? 'N/A' },
     { label: t('telephone-number'), value: telephone_number ?? 'N/A' },
@@ -347,7 +360,7 @@ const schema = yup.object({
 function ProfileModalSection() {
   const { t } = useTranslation()
 
-  const { getMyClinic, updateClinic } = useClinic()
+  const { getMyClinic, updateClinic, clinicServices } = useClinic()
 
   const { data } = useQuery({
     queryKey: ['clinic'],
@@ -370,11 +383,16 @@ function ProfileModalSection() {
 
   const { name, email, telephone_number, address } = data
 
+  const [selectedServices, setSelectedServices] = useState<string[]>(
+    data.services ?? []
+  )
+
   const initialValues: UpdateClinicForm = {
     name,
     email,
     telephone_number,
     address,
+    services: data.services,
   }
 
   const queryClient = useQueryClient()
@@ -390,11 +408,18 @@ function ProfileModalSection() {
       console.error(error)
     }
 
-    if (isEqual(formik.values, initialValues)) return
+    if (
+      isEqual(formik.values, initialValues) &&
+      isEqual(data.services, selectedServices)
+    )
+      return
 
     try {
       await mutateAsync({ ...data })
-      queryClient.invalidateQueries({ queryKey: ['clinic'] })
+
+      console.log(formik.values.services)
+
+      queryClient.invalidateQueries()
       toast.success(t('updated-fields'))
     } catch (error) {
       toast.error('Something bad happened at editing the data.')
@@ -406,6 +431,12 @@ function ProfileModalSection() {
     initialValues,
     validationSchema: schema,
     onSubmit,
+  })
+
+  console.log({
+    services: data.services,
+    selectedServices,
+    formik: formik.values.services,
   })
 
   type Picture = File & {
@@ -510,12 +541,58 @@ function ProfileModalSection() {
           helperText={formik.touched.address && formik.errors.address}
         />
 
+        <Select
+          multiple
+          value={selectedServices}
+          onChange={(e) => {
+            setSelectedServices(e.target.value)
+            formik.setFieldValue('services', selectedServices)
+          }}
+          label={t('services')}
+          name='services'
+          input={<OutlinedInput label='Multiple Select' />}
+          renderValue={(selected) => (
+            <Stack gap={1} direction='row' flexWrap='wrap'>
+              {selected.map((value) => (
+                <Chip
+                  key={value}
+                  label={value}
+                  onDelete={() => {
+                    setSelectedServices(
+                      selectedServices.filter((item) => item !== value)
+                    )
+                    formik.setFieldValue(
+                      'services',
+                      selectedServices.filter((item) => item !== value)
+                    )
+                  }}
+                  deleteIcon={
+                    <CancelOutlined
+                      onMouseDown={(event) => event.stopPropagation()}
+                    />
+                  }
+                />
+              ))}
+            </Stack>
+          )}
+        >
+          {clinicServices.map((name) => (
+            <MenuItem key={name} value={name}>
+              {name}
+            </MenuItem>
+          ))}
+        </Select>
+
         <Button
           type='submit'
           className='w-full col-span-2'
           label={t('edit')}
           loading={isLoading || isLoadingImage}
-          disabled={isEqual(formik.values, initialValues) && !picture}
+          disabled={
+            isEqual(formik.values, initialValues) &&
+            isEqual(data.services, selectedServices) &&
+            !picture
+          }
         />
       </form>
     </article>
@@ -552,18 +629,28 @@ function ScheduleModalSection() {
   }
 
   const [nonWorkingDays, setNonWorkingDays] = useState<string[]>(
-    clinic.schedule.nonWorkingDays
+    clinic.schedule?.nonWorkingDays ?? []
   )
 
   const initialValues = {
-    workingDays: clinic.schedule.workingDays.map(
-      ({ day, startTime, endTime }) => ({
-        day,
-        startTime,
-        endTime,
-      })
-    ),
-    nonWorkingDays: clinic.schedule.nonWorkingDays,
+    workingDays:
+      !clinic.schedule ||
+      !clinic.schedule.workingDays ||
+      clinic.schedule.workingDays.length === 0
+        ? [
+            { day: 'Monday', endTime: '17:00:00', startTime: '07:00:00' },
+            { day: 'Tuesday', endTime: '17:00:00', startTime: '07:00:00' },
+            { day: 'Wednesday', endTime: '17:00:00', startTime: '07:00:00' },
+            { day: 'Thursday', endTime: '17:00:00', startTime: '07:00:00' },
+            { day: 'Friday', endTime: '17:00:00', startTime: '07:00:00' },
+            { day: 'Saturday', endTime: '12:00:00', startTime: '07:00:00' },
+          ]
+        : clinic.schedule.workingDays.map(({ day, startTime, endTime }) => ({
+            day,
+            startTime,
+            endTime,
+          })),
+    nonWorkingDays: clinic.schedule?.nonWorkingDays ?? [],
   }
 
   const formik = useFormik({
@@ -684,7 +771,10 @@ function ScheduleModalSection() {
         size='small'
         label={t('edit')}
         loading={isLoading}
-        disabled={isEqual(formik.values, initialValues)}
+        disabled={
+          isEqual(formik.values, initialValues) &&
+          isEqual(formik.values, clinic.schedule)
+        }
       />
     </form>
   )

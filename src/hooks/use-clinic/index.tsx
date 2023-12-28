@@ -31,6 +31,13 @@ export function useClinic() {
   const user = useAtomValue(userAtom)
   const queryClient = useQueryClient()
 
+  const clinicServices = [
+    'Peluqueria',
+    'Dentales',
+    'Consulta y Examen Rutinario',
+    'Consulta Dermatologica',
+  ]
+
   const { data: clinic } = useQuery({
     queryKey: ['clinic'],
     queryFn: getMyClinic,
@@ -45,7 +52,6 @@ export function useClinic() {
     queryKey: ['appointments'],
     queryFn: getAppointments,
   })
-
   async function getVeterinaryAppointments(): Promise<
     Appointment[] | undefined
   > {
@@ -319,6 +325,7 @@ export function useClinic() {
   }
 
   return {
+    clinicServices,
     getMyClinic,
     getMyEmployees,
     getMyClients,
@@ -344,4 +351,5 @@ export type UpdateClinicForm = {
   email: string
   telephone_number: string
   address: string
+  services: string[]
 }
