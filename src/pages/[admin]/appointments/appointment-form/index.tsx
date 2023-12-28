@@ -16,10 +16,10 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo'
 import dayjs from 'dayjs'
 import { useClinic } from '@/hooks/use-clinic'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { AppointmentForm } from '@/types/clinic'
 import toast from 'react-hot-toast'
-import { useAtomValue } from 'jotai'
+import { useAtom } from 'jotai'
 import { appointmentsAtom } from '@/hooks/use-clinic/appointmentsAtom'
 
 const options = [
@@ -38,40 +38,18 @@ const options = [
   'Traumatismos/lesiones',
 ]
 
-const initialValues = {
-  suffering: [],
-  treatment: '',
-  feed: '',
-  deworming: {
-    date: '',
-    product: '',
-  },
-  reproductiveTimeline: {
-    reproductiveHistory: '',
-    dateLastHeat: '',
-    dateLastBirth: '',
-  },
-  vaccines: {
-    date: '',
-    vaccineBrand: '',
-    vaccineBatch: '',
-  },
-}
-
 export default function Form() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const [suffering, setSuffering] = useState<string[]>([])
   const { appointmentId } = useParams()
-  const appointments = useAtomValue(appointmentsAtom)
+  const [appointments, setAppointments] = useAtom(appointmentsAtom)
+  const queryClient = useQueryClient()
 
   if (!appointments) return null
 
   const appointment = appointments.find(({ id }) => id === appointmentId)
 
   if (!appointment) return null
-
-  console.log(appointment.observations)
 
   const addSuffering = (selectedSuffering: string) => {
     setSuffering((prevSuffering) => [...prevSuffering, selectedSuffering])
@@ -89,6 +67,37 @@ export default function Form() {
     )
   }
 
+  const { treatment, feed, deworming, reproductiveTimeline, vaccines } =
+    appointment.observations
+
+  const [suffering, setSuffering] = useState<string[]>(
+    appointment.observations.suffering ?? []
+  )
+
+  const [reproductiveHistory, setReproductiveHistory] = useState<string>(
+    appointment.observations.reproductiveTimeline.reproductiveHistory ?? ''
+  )
+
+  const initialValues = {
+    suffering: appointment.observations.suffering,
+    treatment,
+    feed,
+    deworming: {
+      date: dayjs(deworming.date),
+      product: deworming.product,
+    },
+    reproductiveTimeline: {
+      reproductiveHistory: reproductiveTimeline.reproductiveHistory,
+      dateLastHeat: dayjs(reproductiveTimeline.dateLastHeat),
+      dateLastBirth: dayjs(reproductiveTimeline.dateLastBirth),
+    },
+    vaccines: {
+      date: dayjs(vaccines.date),
+      vaccineBrand: vaccines.vaccineBrand,
+      vaccineBatch: vaccines.vaccineBatch,
+    },
+  }
+
   const formik = useFormik({
     initialValues,
     onSubmit,
@@ -103,9 +112,27 @@ export default function Form() {
 
   async function onSubmit(values: any) {
     try {
-      const response = await mutateAsync({ ...values })
-      console.log({ values })
+      await mutateAsync({ ...values })
+
+      if (!appointment || !appointments) return
+
+      const updatedAppointment = appointment
+
+      const updatedAppointments = appointments
+
+      const newAppointmentIndex = appointments.findIndex((appointment) => {
+        return appointment.id === updatedAppointment.id
+      })
+
+      if (newAppointmentIndex === -1) return
+
+      const newAppointment = updatedAppointments[newAppointmentIndex]
+      newAppointment.observations = values
+
+      setAppointments(updatedAppointments)
+
       toast.success(t('updated-fields'))
+      queryClient.invalidateQueries()
     } catch (error: any) {
       toast.error(error.message)
     }
@@ -346,8 +373,21 @@ export default function Form() {
 
           <div>
             <Body.Large text={t('reproductive-history')} />
-            <Select defaultValue='' label='Padecimientos'>
-              <MenuItem value=''>N/A</MenuItem>
+            <Select
+              value={reproductiveHistory}
+              name='reproductive-history'
+              label='reproductive-history'
+              onChange={(event) => {
+                const selectedValue = event.target.value as string
+                setReproductiveHistory(selectedValue)
+                formik.setFieldValue(
+                  'reproductiveTimeline.reproductiveHistory',
+                  selectedValue
+                )
+              }}
+              defaultValue='N/A'
+            >
+              <MenuItem value='N/A'>N/A</MenuItem>
               <MenuItem value='Entero'>Entero</MenuItem>
               <MenuItem value='Esterilizado'>Esterilizado</MenuItem>
             </Select>

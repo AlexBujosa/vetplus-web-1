@@ -338,10 +338,6 @@ function NotificationModal(props: NotificationModalProps) {
     onSubmit,
   })
 
-  console.log({ employees, veterinarianId })
-
-  console.log({ veterinarianId })
-
   const handleSelectChange = (e: any) => {
     setVeterinarianId(e.target.value)
     formik.setFieldValue('veterinarianId', e.target?.value)
