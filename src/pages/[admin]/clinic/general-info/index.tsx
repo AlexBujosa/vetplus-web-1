@@ -19,15 +19,16 @@ import { useTranslation } from 'react-i18next'
 import Button from '@/components/button'
 import { t } from 'i18next'
 import cn from '@/utils/cn'
-import { Modal as MuiModal, Box } from '@mui/material'
+import {
+  Modal as MuiModal,
+  Box,
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+} from '@mui/material'
 import Modal from '@/components/molecules/modal'
 import Input from '@/components/input'
-import {
-  LocalizationProvider,
-  DateCalendar,
-  TimePicker,
-} from '@mui/x-date-pickers'
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { UpdateClinicForm, useClinic } from '@/hooks/use-clinic'
 import { Clinic } from '@/types/clinic'
@@ -37,6 +38,9 @@ import toast from 'react-hot-toast'
 import dayjs from 'dayjs'
 import { useDropzone } from 'react-dropzone'
 import { isEqual } from 'lodash'
+import { LocalizationProvider, TimeField } from '@mui/x-date-pickers'
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 export default function GeneralViewPage() {
   const { t } = useTranslation()
@@ -59,9 +63,7 @@ export default function GeneralViewPage() {
         <Box sx={style}>
           <Modal
             title={t('edit-clinic')}
-            // tabs={[t('profile'), t('schedule')]}
-            // TODO: Add edit schedule tab
-            tabs={[t('profile')]}
+            tabs={[t('profile'), t('schedule')]}
             sections={[<ProfileModalSection />, <ScheduleModalSection />]}
           />
         </Box>
@@ -327,7 +329,7 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: '40%',
+  width: '70%',
 }
 
 const schema = yup.object({
@@ -517,70 +519,80 @@ function ProfileModalSection() {
 
 function ScheduleModalSection() {
   const { t } = useTranslation()
-  // const [, setDayFrom] = useState<string>()
-  // const [dayUntil, setDayUntil] = useState<string>()
 
-  // const handleDayFromChange = (event: SelectChangeEvent) => {
-  //   setDayFrom(event.target.value as string)
-  // }
+  const workingDays = [
+    { day: 'Monday', endTime: '17:00:00', startTime: '09:00:00' },
+    { day: 'Tuesday', endTime: '17:00:00', startTime: '09:00:00' },
+    { day: 'Wenesday', endTime: '17:00:00', startTime: '09:00:00' },
+    { day: 'Thrusday', endTime: '17:00:00', startTime: '09:00:00' },
+    { day: 'Friday', endTime: '17:00:00', startTime: '09:00:00' },
+    { day: 'Saturday', endTime: '17:00:00', startTime: '09:00:00' },
+  ]
 
-  // const handleDayUntilChange = (event: SelectChangeEvent) => {
-  //   setDayUntil(event.target.value as string)
-  // }
+  const nonWorkingDays = [
+    '2023-12-24',
+    '2023-12-25',
+    '2023-12-31',
+    '2024-01-06',
+  ]
 
-  // const days = [
-  //   {
-  //     label: t('monday'),
-  //   },
-  //   {
-  //     label: t('tuesday'),
-  //   },
-  //   {
-  //     label: t('wednesday'),
-  //   },
-  //   {
-  //     label: t('thursday'),
-  //   },
-  //   {
-  //     label: t('friday'),
-  //   },
-  //   {
-  //     label: t('friday'),
-  //   },
-  //   {
-  //     label: t('saturday'),
-  //   },
-  //   {
-  //     label: t('sunday'),
-  //   },
-  // ]
+  const onSubmit = async (values: any) => {
+    console.log({ values })
+  }
+
+  const initialValues = {}
+
+  const formik = useFormik({
+    initialValues,
+    onSubmit,
+  })
 
   return (
-    <article className='grid grid-cols-2'>
-      <div className='grid grid-cols-2'>
-        <Body.Large text={t('days')} className='col-span-2' />
-        {/* <Select value={dayFrom} onChange={handleDayFromChange} options={days} /> */}
-        {/* <Select
-          value={dayUntil}
-          // onChange={handleDayUntilChange}
-          options={days}
-        /> */}
+    <form onSubmit={formik.handleSubmit} className='grid grid-cols-2'>
+      <section>
+        <Typography variant='h6' gutterBottom>
+          Working Days and Hours
+        </Typography>
 
-        <Body.Large text={t('hour')} className='col-span-2' />
+        <List>
+          {workingDays.map((day) => (
+            <ListItem key={day.day}>
+              <ListItemText className='w-8' primary={day.day} />
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={['TimeField', 'TimeField']}>
+                  <TimeField
+                    sx={{ width: 10 }}
+                    label='From'
+                    defaultValue={dayjs('2022-04-17T15:30')}
+                  />
+                  <TimeField
+                    sx={{ width: 10 }}
+                    label='To'
+                    defaultValue={dayjs('2022-04-17T15:30')}
+                  />
+                </DemoContainer>
+              </LocalizationProvider>
+            </ListItem>
+          ))}
+        </List>
+      </section>
 
-        {/* <Input variant='outlined' name={t('hour')} label={t('hour')} />
-        <Input variant='outlined' name={t('hour')} label={t('hour')} /> */}
+      <section>
+        <Typography variant='h6' gutterBottom>
+          Non-Working Days
+        </Typography>
 
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <TimePicker />
-          <TimePicker />
-        </LocalizationProvider>
-      </div>
+        <List>
+          {nonWorkingDays.map((date) => (
+            <ListItem key={date}>
+              <ListItemText primary={date} />
+            </ListItem>
+          ))}
+        </List>
+      </section>
 
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DateCalendar />
-      </LocalizationProvider>
-    </article>
+      <Button type='submit' size='small' label={t('save-and-close')} />
+    </form>
   )
 }
 

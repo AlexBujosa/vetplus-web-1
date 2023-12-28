@@ -75,26 +75,26 @@ export default function Form() {
   )
 
   const [reproductiveHistory, setReproductiveHistory] = useState<string>(
-    appointment.observations.reproductiveTimeline.reproductiveHistory ?? ''
+    appointment.observations.reproductiveTimeline?.reproductiveHistory ?? ''
   )
 
   const initialValues = {
-    suffering: appointment.observations.suffering,
-    treatment,
-    feed,
+    suffering: appointment.observations.suffering ?? [],
+    treatment: treatment ?? '',
+    feed: feed ?? '',
     deworming: {
-      date: dayjs(deworming.date),
-      product: deworming.product,
+      date: dayjs(deworming?.date ?? ''),
+      product: deworming?.product ?? '',
     },
     reproductiveTimeline: {
-      reproductiveHistory: reproductiveTimeline.reproductiveHistory,
-      dateLastHeat: dayjs(reproductiveTimeline.dateLastHeat),
-      dateLastBirth: dayjs(reproductiveTimeline.dateLastBirth),
+      reproductiveHistory: reproductiveTimeline?.reproductiveHistory ?? '',
+      dateLastHeat: dayjs(reproductiveTimeline?.dateLastHeat ?? ''),
+      dateLastBirth: dayjs(reproductiveTimeline?.dateLastBirth ?? ''),
     },
     vaccines: {
-      date: dayjs(vaccines.date),
-      vaccineBrand: vaccines.vaccineBrand,
-      vaccineBatch: vaccines.vaccineBatch,
+      date: dayjs(vaccines?.date ?? ''),
+      vaccineBrand: vaccines?.vaccineBrand ?? '',
+      vaccineBatch: vaccines?.vaccineBatch ?? '',
     },
   }
 
