@@ -67,11 +67,14 @@ export default function ClientsPage() {
         Pet,
         AppointmentOwner,
       } = User
+
+      const fullName = surnames ? `${names} ${surnames}` : names
+
       const values = [
-        <Profile profile={`${names} ${surnames}`} image={image} />,
+        <Profile profile={fullName} image={image} />,
         <Body.Medium className='text-base-neutral-gray-900' text={email} />,
         <div className='flex items-start'>
-        <Pets pets={Pet}/>
+          <Pets pets={Pet} />
         </div>,
         <Body.Medium
           className='text-base-neutral-gray-900'
