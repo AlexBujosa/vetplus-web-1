@@ -54,7 +54,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { Badge } from '@/components/badge'
 
 export default function GeneralViewPage() {
-  const { t } = useTranslation()
+
 
   return (
     <>
@@ -129,7 +129,7 @@ function ClinicHeader() {
           </div>
           
         <div className='flex gap-x-1 items-center'>  
-          <Star className='text-yellow-500' />
+          <Star className='text-base-orange-500' />
           <Label.Large
             text={String((total_points / total_users).toPrecision(2)) ?? '0'}
           />
@@ -192,7 +192,7 @@ function GeneralDescription() {
       <div className='grid grid-cols-2 grid-rows-auto gap-y-10 gap-x-32 px-[30px] py-[38px]'>
         {values.map(({ label, value }) => {
           return (
-            <div key={label} className='flex items-center gap-x-[20px]'>
+            <div key={label} className='flex items-start gap-x-[20px]'>
               <Title.Small className='text-black' text={label} />
               <Body.Medium
                 className='text-base-neutral-gray-800'
