@@ -16,11 +16,7 @@ import {
 } from '@mui/material'
 import dayjs from 'dayjs'
 import Image from '@/components/image'
-import {
-  FileOpenOutlined,
-  KeyboardBackspace,
-  Save
-} from '@mui/icons-material'
+import { FileOpenOutlined, KeyboardBackspace, Save } from '@mui/icons-material'
 import Button from '@/components/button'
 import Select from '@/components/select'
 import { useClinic } from '@/hooks/use-clinic'
@@ -34,6 +30,7 @@ import toast from 'react-hot-toast'
 import { useState } from 'react'
 import { roleAtom } from '@/hooks/use-auth/roleAtom'
 import { every, isNull } from 'lodash'
+import cn from '@/utils/cn'
 
 export default function AppointmentDetail() {
   const appointments = useAtomValue(appointmentsAtom)
@@ -53,20 +50,20 @@ export default function AppointmentDetail() {
         <Headline.Medium text={t('appointments')} />
 
         {appointments && (
-          <article className='px-5 py-2 border rounded-md bg-white border-base-neutral-gray-600'>
+          <article className='px-5 py-2 bg-white border rounded-md border-base-neutral-gray-600'>
             {dayjs(appointments[0].start_at).add(4, 'hour').format('LLLL')}
           </article>
         )}
       </div>
-       <div className='bg-white rounded-lg shadow-elevation-1'>   
-      <TableContainer>
-        <Table sx={{ minWidth: 650 }} aria-label='simple table'>
-          <Header />
+      <div className='bg-white rounded-lg shadow-elevation-1'>
+        <TableContainer>
+          <Table sx={{ minWidth: 650 }} aria-label='simple table'>
+            <Header />
 
-          <Body />
-        </Table>
-      </TableContainer>
-       </div> 
+            <Body />
+          </Table>
+        </TableContainer>
+      </div>
     </>
   )
 }
@@ -84,7 +81,11 @@ function Header() {
     <TableHead>
       <TableRow>
         {headers.map((header) => {
-          return <TableCell key={header} sx={{ width: 1/4 }}>{t(header)}</TableCell>
+          return (
+            <TableCell key={header} sx={{ width: 1 / 4 }}>
+              {t(header)}
+            </TableCell>
+          )
         })}
       </TableRow>
     </TableHead>
@@ -127,9 +128,9 @@ function Body() {
           return (
             <TableRow
               key={id}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 }}}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
-              <TableCell align='right' >
+              <TableCell align='right'>
                 <div className='flex flex-row items-center gap-x-3'>
                   <Image className='w-10 h-10 rounded-full' src={Pet.image} />
                   {Pet.name}
@@ -144,11 +145,11 @@ function Body() {
                 />
               )}
 
-              <TableCell component='th' scope='row' >
+              <TableCell component='th' scope='row'>
                 {dayjs(start_at).add(4, 'hour').format('h:mm A')}
               </TableCell>
 
-              <TableCell component='th' scope='row' >
+              <TableCell component='th' scope='row'>
                 <ul>
                   {services.map((service) => {
                     return <li key={service}>{service}</li>
@@ -157,7 +158,7 @@ function Body() {
               </TableCell>
 
               {role === Role.VETERINARIAN && (
-                <TableCell component='th' scope='row' >
+                <TableCell component='th' scope='row'>
                   <IconButton
                     // disabled={
                     //   // !dayjs(start_at).isSame(dayjs(), 'day')
@@ -220,7 +221,7 @@ function VeterinaryCell(props: {
   if (!appointments) return
 
   return (
-    <TableCell component='th' scope='row' >
+    <TableCell component='th' scope='row'>
       {role === 'CLINIC_OWNER' && employees ? (
         <div className='flex flex-row items-center gap-x-2'>
           <Select
@@ -276,7 +277,11 @@ function VeterinaryCell(props: {
                 queryClient.invalidateQueries()
               }}
             >
-              <Save className='!fill-base-primary-500'/>
+              <Save
+                className={cn(
+                  veterinarianId !== veterinarian.id && '!fill-base-primary-500'
+                )}
+              />
             </IconButton>
           )}
         </div>
