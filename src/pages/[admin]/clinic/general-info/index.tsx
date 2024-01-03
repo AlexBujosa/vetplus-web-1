@@ -15,6 +15,7 @@ import {
   MedicationOutlined,
   Star,
   CancelOutlined,
+  CloudUploadOutlined
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import Button from '@/components/button'
@@ -52,7 +53,6 @@ import {
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { Badge } from '@/components/badge'
-
 export default function GeneralViewPage() {
   const { t } = useTranslation()
 
@@ -62,6 +62,7 @@ export default function GeneralViewPage() {
 
   return (
     <>
+    <div className='flex w-full justify-between'>
       <ClinicHeader />
       <Button
         onClick={handleOpen}
@@ -79,6 +80,7 @@ export default function GeneralViewPage() {
           />
         </Box>
       </MuiModal>
+      </div>
 
       <section className='grid grid-cols-3 grid-rows-1 gap-x-8'>
         <GeneralDescription />
@@ -135,20 +137,22 @@ function ClinicHeader() {
         className='w-[350px] h-[200px] object-fill rounded-lg'
       />
 
-      <article className='flex flex-col justify-between'>
-        <Headline.Medium className='text-black' text={name} />
+       <article className='flex flex-col justify-start'>
+        <Headline.Medium className='text-black mb-3' text={name} />
 
-        <div className='grid items-center grid-cols-6 grid-rows-2 text-base-neutral-gray-800'>
+        <div className='text-base-neutral-gray-800'>
+          <div className='flex gap-x-1 items-center'>
           <LocationOnOutlined />
-
-          <Title.Small className='col-span-5' text={address} />
-
-          <Star className='text-yellow-500' />
-
+          <Title.Small text={address} />
+          </div>
+          
+        <div className='flex gap-x-1 items-center'>  
+          <Star className='text-base-orange-500' />
           <Label.Large
-            className='col-span-5'
             text={String((total_points / total_users).toPrecision(2)) ?? '0'}
           />
+          </div>
+        
         </div>
       </article>
     </section>
@@ -189,7 +193,7 @@ function GeneralDescription() {
       <div className='grid grid-cols-2 grid-rows-auto gap-y-10 gap-x-32 px-[30px] py-[38px]'>
         {values.map(({ label, value }) => {
           return (
-            <div key={label} className='flex items-center gap-x-[20px]'>
+            <div key={label} className='flex items-start gap-x-[20px]'>
               <Title.Small className='text-black' text={label} />
               <Body.Medium
                 className='text-base-neutral-gray-800'
@@ -251,7 +255,7 @@ function CommentsAndReview() {
 
   return (
     <SectionCard
-      className='p-0 max-h-[300px] overflow-y-scroll'
+      className='p-0 max-h-[400px] overflow-y-scroll'
       title={t('comments')}
     >
       {comments.map((comment: GetMyComment) => {
@@ -477,11 +481,19 @@ function ProfileModalSection() {
 
       <div {...getRootProps({ className: 'dropzone' })}>
         <div
-          className='flex flex-col items-center justify-center h-16 text-gray-500 border-2 border-gray-500 border-dashed bg-gray-50'
+          className='flex flex-col items-center justify-center h-52 text-gray-500 border-2 border-gray-500 border-dashed bg-gray-50 mt-2'
           {...getRootProps()}
         >
           <input {...getInputProps()} />
-          {isDragActive ? <p>{t('drop-here')}</p> : <p>{t('drag-and-drop')}</p>}
+          {isDragActive ? 
+          <div className='flex flex-col items-center'>
+            <CloudUploadOutlined className='!fill-base-primary-500' sx={{fontSize:'30px'}}/>
+            {t('drop-here')}</div> 
+            : 
+            <div className='flex flex-col items-center'>
+              <CloudUploadOutlined  className='!fill-base-primary-500' sx={{fontSize:'60px'}}/>
+              {t('drag-and-drop')}
+            </div>}
         </div>
       </div>
 

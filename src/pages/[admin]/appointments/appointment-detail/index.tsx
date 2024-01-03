@@ -16,11 +16,8 @@ import {
 } from '@mui/material'
 import dayjs from 'dayjs'
 import Image from '@/components/image'
-import {
-  FileOpenOutlined,
-  KeyboardBackspace,
-  SyncAltOutlined,
-} from '@mui/icons-material'
+import { FileOpenOutlined, KeyboardBackspace, Save } from '@mui/icons-material'
+import Button from '@/components/button'
 import Select from '@/components/select'
 import { useClinic } from '@/hooks/use-clinic'
 import { Headline } from '@/components/typography'
@@ -33,6 +30,7 @@ import toast from 'react-hot-toast'
 import { useState } from 'react'
 import { roleAtom } from '@/hooks/use-auth/roleAtom'
 import { every, isNull } from 'lodash'
+import cn from '@/utils/cn'
 
 export default function AppointmentDetail() {
   const appointments = useAtomValue(appointmentsAtom)
@@ -52,19 +50,20 @@ export default function AppointmentDetail() {
         <Headline.Medium text={t('appointments')} />
 
         {appointments && (
-          <article className='px-5 py-2 border rounded-md border-base-neutral-gray-600'>
+          <article className='px-5 py-2 bg-white border rounded-md border-base-neutral-gray-600'>
             {dayjs(appointments[0].start_at).add(4, 'hour').format('LLLL')}
           </article>
         )}
       </div>
+      <div className='bg-white rounded-lg shadow-elevation-1'>
+        <TableContainer>
+          <Table sx={{ minWidth: 650 }} aria-label='simple table'>
+            <Header />
 
-      <TableContainer>
-        <Table sx={{ minWidth: 650 }} aria-label='simple table'>
-          <Header />
-
-          <Body />
-        </Table>
-      </TableContainer>
+            <Body />
+          </Table>
+        </TableContainer>
+      </div>
     </>
   )
 }
@@ -82,7 +81,11 @@ function Header() {
     <TableHead>
       <TableRow>
         {headers.map((header) => {
-          return <TableCell key={header}>{t(header)}</TableCell>
+          return (
+            <TableCell key={header} sx={{ width: 1 / 4 }}>
+              {t(header)}
+            </TableCell>
+          )
         })}
       </TableRow>
     </TableHead>
@@ -274,7 +277,11 @@ function VeterinaryCell(props: {
                 queryClient.invalidateQueries()
               }}
             >
-              <SyncAltOutlined />
+              <Save
+                className={cn(
+                  veterinarianId !== veterinarian.id && '!fill-base-primary-500'
+                )}
+              />
             </IconButton>
           )}
         </div>

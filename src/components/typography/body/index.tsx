@@ -48,7 +48,7 @@ export function Medium(props: Props) {
 
   return (
     <p
-      className={cn('font-body font-medium text-xs leading-4', className)}
+      className={cn('font-body font-medium text-sm leading-4', className)}
       {...rest}
     >
       {text}
@@ -61,7 +61,7 @@ export function Small(props: Props) {
 
   return (
     <p
-      className={cn('font-body font-medium text-[11px] leading-4', className)}
+      className={cn('font-body font-medium text-[12px] leading-4', className)}
       {...rest}
     >
       {text}

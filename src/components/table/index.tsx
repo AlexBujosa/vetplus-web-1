@@ -6,7 +6,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
 } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 
@@ -26,7 +25,7 @@ export default function Table(props: Props) {
 
   if (!rows || rows.length === 0) {
     return (
-      <TableContainer component={Paper}>
+      <TableContainer className='bg-white rounded-lg shadow-elevation-1'>
         <MuiTable sx={{ minWidth: 650 }}>
           <TableHeader columns={columns} />
         </MuiTable>
@@ -35,7 +34,7 @@ export default function Table(props: Props) {
   }
 
   return (
-    <TableContainer component={Paper}>
+    <TableContainer className='bg-white rounded-lg shadow-elevation-1'>
       <MuiTable sx={{ minWidth: 650 }}>
         <TableHeader columns={columns} />
         <Body rows={rows} navigate={navigate} />
@@ -77,7 +76,7 @@ function Body(props: { rows: Row[]; navigate: any }) {
           sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
         >
           {row.values.map((value, index) => (
-            <TableCell key={index}>{value}</TableCell>
+            <TableCell key={index} align="left">{value}</TableCell>
           ))}
         </TableRow>
       ))}
