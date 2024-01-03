@@ -15,6 +15,7 @@ import {
   MedicationOutlined,
   Star,
   CancelOutlined,
+  CloudUploadOutlined
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import Button from '@/components/button'
@@ -52,13 +53,34 @@ import {
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { Badge } from '@/components/badge'
-
 export default function GeneralViewPage() {
+  const { t } = useTranslation()
 
+  const [open, setOpen] = useState(false)
+  const handleOpen = () => setOpen(true)
+  const handleClose = () => setOpen(false)
 
   return (
     <>
+    <div className='flex w-full justify-between'>
       <ClinicHeader />
+      <Button
+        onClick={handleOpen}
+        className='self-end'
+        icon={<Edit />}
+        label={t('edit')}
+      />
+
+      <MuiModal open={open} onClose={handleClose}>
+        <Box sx={style}>
+          <Modal
+            title={t('edit-clinic')}
+            tabs={[t('profile'), t('schedule')]}
+            sections={[<ProfileModalSection />, <ScheduleModalSection />]}
+          />
+        </Box>
+      </MuiModal>
+      </div>
 
       <section className='grid grid-cols-3 grid-rows-1 gap-x-8'>
         <GeneralDescription />
@@ -107,19 +129,15 @@ function ClinicHeader() {
   // @ts-ignore
   const { image, name, address, ClinicSummaryScore }: Clinic = data
   const { total_points, total_users } = ClinicSummaryScore
-  const [open, setOpen] = useState(false)
-  const handleOpen = () => setOpen(true)
-  const handleClose = () => setOpen(false)
- 
+
   return (
-    <section className='flex w-full justify-between'>
-      <div className='flex gap-x-[10px]'>
+    <section className='flex flex-row gap-x-[10px]'>
       <Image
         src={image}
         className='w-[350px] h-[200px] object-fill rounded-lg'
       />
 
-      <article className='flex flex-col justify-start'>
+       <article className='flex flex-col justify-start'>
         <Headline.Medium className='text-black mb-3' text={name} />
 
         <div className='text-base-neutral-gray-800'>
@@ -137,23 +155,6 @@ function ClinicHeader() {
         
         </div>
       </article>
-      </div>
-         <Button
-        onClick={handleOpen}
-        className='self-end'
-        icon={<Edit />}
-        label={t('edit')}
-      />
-
-      <MuiModal open={open} onClose={handleClose}>
-        <Box sx={style}>
-          <Modal
-            title={t('edit-clinic')}
-            tabs={[t('profile'), t('schedule')]}
-            sections={[<ProfileModalSection />, <ScheduleModalSection />]}
-          />
-        </Box>
-      </MuiModal>
     </section>
   )
 }
@@ -480,11 +481,19 @@ function ProfileModalSection() {
 
       <div {...getRootProps({ className: 'dropzone' })}>
         <div
-          className='flex flex-col items-center justify-center h-16 text-gray-500 border-2 border-gray-500 border-dashed bg-gray-50'
+          className='flex flex-col items-center justify-center h-52 text-gray-500 border-2 border-gray-500 border-dashed bg-gray-50 mt-2'
           {...getRootProps()}
         >
           <input {...getInputProps()} />
-          {isDragActive ? <p>{t('drop-here')}</p> : <p>{t('drag-and-drop')}</p>}
+          {isDragActive ? 
+          <div className='flex flex-col items-center'>
+            <CloudUploadOutlined className='!fill-base-primary-500' sx={{fontSize:'30px'}}/>
+            {t('drop-here')}</div> 
+            : 
+            <div className='flex flex-col items-center'>
+              <CloudUploadOutlined  className='!fill-base-primary-500' sx={{fontSize:'60px'}}/>
+              {t('drag-and-drop')}
+            </div>}
         </div>
       </div>
 
