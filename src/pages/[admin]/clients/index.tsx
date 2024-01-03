@@ -33,8 +33,6 @@ export default function ClientsPage() {
     t('last-appointment'),
   ]
 
-  if (!clients) return <>There is no clients</>
-
   const rows = isLoading ? TableLoadingRows() : ClientsRowValues(clients)
 
   function TableLoadingRows(): Row[] {
