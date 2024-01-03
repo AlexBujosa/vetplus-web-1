@@ -56,29 +56,9 @@ import { Badge } from '@/components/badge'
 export default function GeneralViewPage() {
   const { t } = useTranslation()
 
-  const [open, setOpen] = useState(false)
-  const handleOpen = () => setOpen(true)
-  const handleClose = () => setOpen(false)
-
   return (
     <>
       <ClinicHeader />
-      <Button
-        onClick={handleOpen}
-        className='self-end'
-        icon={<Edit />}
-        label={t('edit')}
-      />
-
-      <MuiModal open={open} onClose={handleClose}>
-        <Box sx={style}>
-          <Modal
-            title={t('edit-clinic')}
-            tabs={[t('profile'), t('schedule')]}
-            sections={[<ProfileModalSection />, <ScheduleModalSection />]}
-          />
-        </Box>
-      </MuiModal>
 
       <section className='grid grid-cols-3 grid-rows-1 gap-x-8'>
         <GeneralDescription />
@@ -127,30 +107,53 @@ function ClinicHeader() {
   // @ts-ignore
   const { image, name, address, ClinicSummaryScore }: Clinic = data
   const { total_points, total_users } = ClinicSummaryScore
-
+  const [open, setOpen] = useState(false)
+  const handleOpen = () => setOpen(true)
+  const handleClose = () => setOpen(false)
+ 
   return (
-    <section className='flex flex-row gap-x-[10px]'>
+    <section className='flex w-full justify-between'>
+      <div className='flex gap-x-[10px]'>
       <Image
         src={image}
         className='w-[350px] h-[200px] object-fill rounded-lg'
       />
 
-      <article className='flex flex-col justify-between'>
-        <Headline.Medium className='text-black' text={name} />
+      <article className='flex flex-col justify-start'>
+        <Headline.Medium className='text-black mb-3' text={name} />
 
-        <div className='grid items-center grid-cols-6 grid-rows-2 text-base-neutral-gray-800'>
+        <div className='text-base-neutral-gray-800'>
+          <div className='flex gap-x-1 items-center'>
           <LocationOnOutlined />
-
-          <Title.Small className='col-span-5' text={address} />
-
+          <Title.Small text={address} />
+          </div>
+          
+        <div className='flex gap-x-1 items-center'>  
           <Star className='text-yellow-500' />
-
           <Label.Large
-            className='col-span-5'
             text={String((total_points / total_users).toPrecision(2)) ?? '0'}
           />
+          </div>
+        
         </div>
       </article>
+      </div>
+         <Button
+        onClick={handleOpen}
+        className='self-end'
+        icon={<Edit />}
+        label={t('edit')}
+      />
+
+      <MuiModal open={open} onClose={handleClose}>
+        <Box sx={style}>
+          <Modal
+            title={t('edit-clinic')}
+            tabs={[t('profile'), t('schedule')]}
+            sections={[<ProfileModalSection />, <ScheduleModalSection />]}
+          />
+        </Box>
+      </MuiModal>
     </section>
   )
 }
@@ -251,7 +254,7 @@ function CommentsAndReview() {
 
   return (
     <SectionCard
-      className='p-0 max-h-[300px] overflow-y-scroll'
+      className='p-0 max-h-[400px] overflow-y-scroll'
       title={t('comments')}
     >
       {comments.map((comment: GetMyComment) => {

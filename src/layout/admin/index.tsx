@@ -9,7 +9,7 @@ export default function Layout() {
       <Sidebar />
       <div className='flex-grow'>
         <Header />
-        <div className='flex flex-col gap-y-[30px] p-[35px] h-full bg-base-neutral-gray-200'>
+        <div className='flex flex-col gap-y-[50px] p-[35px] h-full bg-base-neutral-gray-200'>
           <Outlet />
           <Toaster position='top-right' />
         </div>
