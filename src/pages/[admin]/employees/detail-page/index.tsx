@@ -30,7 +30,7 @@ export default function EmployeesDetailPage() {
   if (!clinicEmployee) return null
 
   return (
-    <main className='flex flex-col gap-y-[60px]'>
+    <main className='flex flex-col gap-y-[40px]'>
       <EmployeeHeader employee={clinicEmployee.Employee} />
       <GeneralDescription
         employee={clinicEmployee.Employee}
@@ -76,7 +76,7 @@ function ProfileWithRole({ image }: { image: string }) {
         loading={!image}
       />
 
-      <span className='flex flex-row gap-x-[6px] p-[10px] border border-base-neutral-gray-500 text-base-neutral-gray-800'>
+      <span className='flex flex-row gap-x-[6px] p-[10px] border rounded-lg border-base-neutral-gray-500 bg-base-neutral-white text-base-neutral-gray-800 items-center'>
         <PersonOutlined />
         <Body.Large text={t('employee')} />
       </span>
@@ -114,24 +114,23 @@ function GeneralDescription({
   }
 
   return (
-    <section className='shadow-elevation-1'>
-      <div className='px-[30px] py-[15px] border border-b-base-neutral-gray-500'>
-        <Title.Medium
+      <div className='col-span-2 grid bg-white rounded-lg shadow-elevation-1'>
+        <div className='px-[30px] py-[15px] border-b border-b-neutral-gray-500 h-fit'>
+          <Title.Medium
           className='font-semibold'
           text={t('general-description')}
         />
-      </div>
-
-      <div className='grid grid-cols-2 grid-rows-3 p-[30px]'>
-        {Object.keys(data).map((key) => (
+        </div>
+        <div className='grid grid-cols-2 grid-rows-auto gap-y-10 gap-x-32 px-[30px] py-[38px]'>
+           {Object.keys(data).map((key) => (
           <div className='flex flex-row items-center gap-x-[30px]' key={key}>
             <Body.Large className='text-black' text={key} />
 
             {data[key]}
           </div>
         ))}
+        </div>
       </div>
-    </section>
   )
 }
 
