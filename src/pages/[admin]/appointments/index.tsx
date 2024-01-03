@@ -29,7 +29,7 @@ export default function AppointmentsPage() {
     <>
       <Title.Large text={t('appointments')} />
 
-      <main className='grid w-full h-full grid-cols-12'>
+      <main className='grid w-full h-full grid-cols-12 border rounded-lg border-base-neutral-gray-500 bg-base-neutral-white text-base-neutral-black px-5'>
         <SideSection />
         <CalendarSection />
       </main>
@@ -69,10 +69,10 @@ function SideSection() {
 
   return (
     <aside className='col-span-2 border-r-2 border-r-base-neutral-gray-600'>
-      <div className='w-full h-full'>
-        <div className='mt-9'>
+      <div className='w-full h-full pr-3'>
+        <div className='mt-5'>
           <header className='flex flex-row items-center justify-between'>
-            <p className='font-bold text-gray-500'>
+            <p className='font-semibold text-base text-base-neutral-black'>
               {dayjs(new Date(dayjs().year(), currentMonthIdx)).format(
                 'MMMM YYYY'
               )}
@@ -83,21 +83,21 @@ function SideSection() {
                 className='text-base-primary-500'
                 intent='tertiary'
                 onClick={handlePrevMonth}
-                icon={<ChevronLeft />}
+                icon={<ChevronLeft sx={{ width: 20 }}/>}
               />
               <Button
                 className='text-base-primary-500'
                 intent='tertiary'
                 onClick={handleNextMonth}
-                icon={<ChevronRight />}
+                icon={<ChevronRight sx={{ width: 20 }} />}
               />
             </aside>
           </header>
-          <div className='grid grid-cols-7 grid-rows-6'>
+          <div className='grid grid-cols-7 grid-rows-6 gap-x-0.5 text-base-neutral-black'>
             {currentMonth[0].map((day, i) => (
               <span
                 key={i}
-                className='py-1 text-sm text-center select-none text-base-primary-600'
+                className='py-1 text-sm text-center select-none'
               >
                 {dayjs(day).format('dd').charAt(0)}
               </span>
@@ -120,10 +120,10 @@ function SideSection() {
                       key={idx}
                       onClick={() => handleDateClick(day)}
                       className={`w-full rounded-full hover:bg-base-neutral-gray-500 ${
-                        isToday && 'bg-blue-500 hover:bg-blue-600 text-white'
+                        isToday && 'bg-base-primary-500 hover:bg-base-primary-600 text-white'
                       } ${
                         hasAppointment &&
-                        'bg-red-500 text-white hover:bg-red-400'
+                        'bg-base-primary-50 border-solid border-2 border-base-primary-400 text-base-primary-500 hover:bg-base-primary-400 hover:text-white'
                       }`}
                     >
                       <span className='text-sm'>{dayjs(day).format('D')}</span>
@@ -226,7 +226,7 @@ function CalendarHeader() {
   const appointmentsCount = allAppointments?.length ?? 0
 
   return (
-    <header className='flex flex-row items-center w-full px-4 py-2 mb-6 gap-x-2'>
+    <header className='flex flex-row items-center w-full px-4 pb-2 pt-5 mb-6 gap-x-2'>
       <Button
         className='px-6 font-medium text-black border border-base-neutral-gray-600'
         intent='outline'
@@ -287,10 +287,11 @@ function CalendarWeek() {
       : allAppointments
 
   return (
-    <div className='grid flex-1 grid-cols-7'>
+    <div className='grid flex-1' style={{ gridTemplateColumns: '60px repeat(6, 1fr)' }}>
       <aside className='flex flex-col'>
         <div className='h-[60px]' />
         {intervals.map(({ time }, index) => {
+       
           return (
             <span key={index} className='flex items-start justify-end h-[60px]'>
               <Body.Small
@@ -362,7 +363,7 @@ function CalendarWeek() {
                       navigate('/appointment-detail')
                     }}
                   >
-                    <TimeBadge className='bg-base-primary-50'>
+                    <TimeBadge className='bg-base-primary-50 '>
                       <Label.Medium
                         className='text-base-primary-700'
                         text={time}
