@@ -37,6 +37,8 @@ export default function AppointmentDetail() {
   const navigate = useNavigate()
   const { t } = useTranslation()
 
+  console.log({ appointments })
+
   return (
     <>
       <div className='flex flex-row items-center gap-x-8'>
@@ -225,8 +227,6 @@ function VeterinaryCell(props: {
   })
 
   if (!appointment) return
-
-  // TODO: If the appointment is finished, you cannot update the veterinarian
 
   return (
     <TableCell component='th' scope='row'>

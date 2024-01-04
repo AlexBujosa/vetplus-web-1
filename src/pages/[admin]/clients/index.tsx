@@ -18,7 +18,6 @@ import dayjs from 'dayjs'
 import { useState } from 'react'
 
 export default function ClientsPage() {
-  // TODO: Add filter by client name
   const { t } = useTranslation()
   const { getMyClients } = useClinic()
 

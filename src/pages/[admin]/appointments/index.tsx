@@ -21,6 +21,7 @@ import { Role } from '@/types/role'
 import { roleAtom } from '@/hooks/use-auth/roleAtom'
 import { userAtom } from '@/hooks/use-user/userAtom'
 import toast from 'react-hot-toast'
+import { AppointmentState } from '@/types/clinic'
 
 export default function AppointmentsPage() {
   const { t } = useTranslation()
@@ -29,7 +30,7 @@ export default function AppointmentsPage() {
     <>
       <Title.Large text={t('appointments')} />
 
-      <main className='grid w-full h-full grid-cols-12 border rounded-lg border-base-neutral-gray-500 bg-base-neutral-white text-base-neutral-black px-5'>
+      <main className='grid w-full h-full grid-cols-12 px-5 border rounded-lg border-base-neutral-gray-500 bg-base-neutral-white text-base-neutral-black'>
         <SideSection />
         <CalendarSection />
       </main>
@@ -72,7 +73,7 @@ function SideSection() {
       <div className='w-full h-full pr-3'>
         <div className='mt-5'>
           <header className='flex flex-row items-center justify-between'>
-            <p className='font-semibold text-base text-base-neutral-black'>
+            <p className='text-base font-semibold text-base-neutral-black'>
               {dayjs(new Date(dayjs().year(), currentMonthIdx)).format(
                 'MMMM YYYY'
               )}
@@ -83,7 +84,7 @@ function SideSection() {
                 className='text-base-primary-500'
                 intent='tertiary'
                 onClick={handlePrevMonth}
-                icon={<ChevronLeft sx={{ width: 20 }}/>}
+                icon={<ChevronLeft sx={{ width: 20 }} />}
               />
               <Button
                 className='text-base-primary-500'
@@ -95,10 +96,7 @@ function SideSection() {
           </header>
           <div className='grid grid-cols-7 grid-rows-6 gap-x-0.5 text-base-neutral-black'>
             {currentMonth[0].map((day, i) => (
-              <span
-                key={i}
-                className='py-1 text-sm text-center select-none'
-              >
+              <span key={i} className='py-1 text-sm text-center select-none'>
                 {dayjs(day).format('dd').charAt(0)}
               </span>
             ))}
@@ -120,7 +118,8 @@ function SideSection() {
                       key={idx}
                       onClick={() => handleDateClick(day)}
                       className={`w-full rounded-full hover:bg-base-neutral-gray-500 ${
-                        isToday && 'bg-base-primary-500 hover:bg-base-primary-600 text-white'
+                        isToday &&
+                        'bg-base-primary-500 hover:bg-base-primary-600 text-white'
                       } ${
                         hasAppointment &&
                         'bg-base-primary-50 border-solid border-2 border-base-primary-400 text-base-primary-500 hover:bg-base-primary-400 hover:text-white'
@@ -212,6 +211,7 @@ function CalendarSection() {
 
 function CalendarHeader() {
   const { t } = useTranslation()
+  const role = useAtomValue(roleAtom)
 
   const { handleReset, handleNextWeek, handlePrevWeek, getDateString } =
     useCalendar()
@@ -223,10 +223,17 @@ function CalendarHeader() {
     queryFn: getVerifiedAppointments,
   })
 
-  const appointmentsCount = allAppointments?.length ?? 0
+  const appointmentsCount: string =
+    role === Role.CLINIC_OWNER
+      ? `${allAppointments?.length} ${t('appointments')}`
+      : `${
+          allAppointments?.filter(({ state }) => {
+            return state !== AppointmentState.FINISHED
+          }).length
+        } ${t('pending-appointments')}`
 
   return (
-    <header className='flex flex-row items-center w-full px-4 pb-2 pt-5 mb-6 gap-x-2'>
+    <header className='flex flex-row items-center w-full px-4 pt-5 pb-2 mb-6 gap-x-2'>
       <Button
         className='px-6 font-medium text-black border border-base-neutral-gray-600'
         intent='outline'
@@ -252,7 +259,7 @@ function CalendarHeader() {
 
       <Label.ExtraLarge
         className='ml-auto font-bold text-base-primary-600'
-        text={`${appointmentsCount} ${t('appointments')}`}
+        text={appointmentsCount}
       />
     </header>
   )
@@ -287,11 +294,13 @@ function CalendarWeek() {
       : allAppointments
 
   return (
-    <div className='grid flex-1' style={{ gridTemplateColumns: '60px repeat(6, 1fr)' }}>
+    <div
+      className='grid flex-1'
+      style={{ gridTemplateColumns: '60px repeat(6, 1fr)' }}
+    >
       <aside className='flex flex-col'>
         <div className='h-[60px]' />
         {intervals.map(({ time }, index) => {
-       
           return (
             <span key={index} className='flex items-start justify-end h-[60px]'>
               <Body.Small
@@ -363,14 +372,24 @@ function CalendarWeek() {
                       navigate('/appointment-detail')
                     }}
                   >
-                    <TimeBadge className='bg-base-primary-50 '>
+                    <TimeBadge
+                      className={cn(
+                        'bg-base-primary-50',
+                        appointmentsInInterval.length === 1
+                          ? appointmentsInInterval[0].state ===
+                              AppointmentState.FINISHED && 'line-through'
+                          : appointmentsInInterval.every(({ state }) => {
+                              return state === AppointmentState.FINISHED
+                            }) && 'line-through'
+                      )}
+                    >
                       <Label.Medium
                         className='text-base-primary-700'
                         text={time}
                       />
 
                       <Body.Small
-                        className='text-base-primary-700'
+                        className={'text-base-primary-700'}
                         text={
                           !appointmentsInInterval
                             ? `${appointmentsCount} ${t('appointments')}`

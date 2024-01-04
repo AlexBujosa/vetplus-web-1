@@ -348,7 +348,6 @@ function NotificationModal(props: NotificationModalProps) {
     formik.setFieldValue('veterinarianId', e.target?.value)
   }
 
-  // TODO: Set default veterinarian on Pending Appointment Creation.
   // TODO: FIX, on cancell appointment make the veterinarian field as not required.
 
   if (!appointment || !employees) return null

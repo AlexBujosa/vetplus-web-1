@@ -15,7 +15,7 @@ import {
   MedicationOutlined,
   Star,
   CancelOutlined,
-  CloudUploadOutlined
+  CloudUploadOutlined,
 } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import Button from '@/components/button'
@@ -62,24 +62,24 @@ export default function GeneralViewPage() {
 
   return (
     <>
-    <div className='flex w-full justify-between'>
-      <ClinicHeader />
-      <Button
-        onClick={handleOpen}
-        className='self-end'
-        icon={<Edit />}
-        label={t('edit')}
-      />
+      <div className='flex justify-between w-full'>
+        <ClinicHeader />
+        <Button
+          onClick={handleOpen}
+          className='self-end'
+          icon={<Edit />}
+          label={t('edit')}
+        />
 
-      <MuiModal open={open} onClose={handleClose}>
-        <Box sx={style}>
-          <Modal
-            title={t('edit-clinic')}
-            tabs={[t('profile'), t('schedule')]}
-            sections={[<ProfileModalSection />, <ScheduleModalSection />]}
-          />
-        </Box>
-      </MuiModal>
+        <MuiModal open={open} onClose={handleClose}>
+          <Box sx={style}>
+            <Modal
+              title={t('edit-clinic')}
+              tabs={[t('profile'), t('schedule')]}
+              sections={[<ProfileModalSection />, <ScheduleModalSection />]}
+            />
+          </Box>
+        </MuiModal>
       </div>
 
       <section className='grid grid-cols-3 grid-rows-1 gap-x-8'>
@@ -137,22 +137,21 @@ function ClinicHeader() {
         className='w-[350px] h-[200px] object-fill rounded-lg'
       />
 
-       <article className='flex flex-col justify-start'>
-        <Headline.Medium className='text-black mb-3' text={name} />
+      <article className='flex flex-col justify-start'>
+        <Headline.Medium className='mb-3 text-black' text={name} />
 
         <div className='text-base-neutral-gray-800'>
-          <div className='flex gap-x-1 items-center'>
-          <LocationOnOutlined />
-          <Title.Small text={address} />
+          <div className='flex items-center gap-x-1'>
+            <LocationOnOutlined />
+            <Title.Small text={address} />
           </div>
-          
-        <div className='flex gap-x-1 items-center'>  
-          <Star className='text-base-orange-500' />
-          <Label.Large
-            text={String((total_points / total_users).toPrecision(2)) ?? '0'}
-          />
+
+          <div className='flex items-center gap-x-1'>
+            <Star className='text-base-orange-500' />
+            <Label.Large
+              text={String((total_points / total_users).toPrecision(2)) ?? '0'}
+            />
           </div>
-        
         </div>
       </article>
     </section>
@@ -421,8 +420,6 @@ function ProfileModalSection() {
     try {
       await mutateAsync({ ...data })
 
-      console.log(formik.values.services)
-
       queryClient.invalidateQueries()
       toast.success(t('updated-fields'))
     } catch (error) {
@@ -435,12 +432,6 @@ function ProfileModalSection() {
     initialValues,
     validationSchema: schema,
     onSubmit,
-  })
-
-  console.log({
-    services: data.services,
-    selectedServices,
-    formik: formik.values.services,
   })
 
   type Picture = File & {
@@ -481,19 +472,27 @@ function ProfileModalSection() {
 
       <div {...getRootProps({ className: 'dropzone' })}>
         <div
-          className='flex flex-col items-center justify-center h-52 text-gray-500 border-2 border-gray-500 border-dashed bg-gray-50 mt-2'
+          className='flex flex-col items-center justify-center mt-2 text-gray-500 border-2 border-gray-500 border-dashed h-52 bg-gray-50'
           {...getRootProps()}
         >
           <input {...getInputProps()} />
-          {isDragActive ? 
-          <div className='flex flex-col items-center'>
-            <CloudUploadOutlined className='!fill-base-primary-500' sx={{fontSize:'30px'}}/>
-            {t('drop-here')}</div> 
-            : 
+          {isDragActive ? (
             <div className='flex flex-col items-center'>
-              <CloudUploadOutlined  className='!fill-base-primary-500' sx={{fontSize:'60px'}}/>
+              <CloudUploadOutlined
+                className='!fill-base-primary-500'
+                sx={{ fontSize: '30px' }}
+              />
+              {t('drop-here')}
+            </div>
+          ) : (
+            <div className='flex flex-col items-center'>
+              <CloudUploadOutlined
+                className='!fill-base-primary-500'
+                sx={{ fontSize: '60px' }}
+              />
               {t('drag-and-drop')}
-            </div>}
+            </div>
+          )}
         </div>
       </div>
 
