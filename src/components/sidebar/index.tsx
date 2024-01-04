@@ -22,6 +22,7 @@ export default function Sidebar() {
   const [open, setOpen] = useState(false)
   const handleOpen = () => setOpen(true)
   const handleClose = () => setOpen(false)
+  const { t } = useTranslation()
 
   return (
     <aside className='bg-white border-r border-r-base-neutral-gray-500 w-full max-w-[240px]'>
@@ -44,7 +45,7 @@ export default function Sidebar() {
 
       <MuiModal open={open} onClose={handleClose}>
         <Box sx={style}>
-          <Modal title='Vetplus a tu ritmo' sections={[<HelpLinks />]} />
+          <Modal title={t('help')} sections={[<HelpLinks />]} />
         </Box>
       </MuiModal>
     </aside>
