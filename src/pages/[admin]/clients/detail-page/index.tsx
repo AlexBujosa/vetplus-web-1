@@ -34,6 +34,10 @@ function ClientHeader({ client }: { client: any }) {
   const navigate = useNavigate()
   const { t } = useTranslation()
 
+  const fullName = client.surnames
+    ? `${client.names} ${client.surnames}`
+    : client.names
+
   return (
     <section className='flex flex-col mb-10 gap-y-7'>
       <div className='flex flex-row gap-x-[20px]'>
@@ -41,7 +45,7 @@ function ClientHeader({ client }: { client: any }) {
           onClick={() => navigate(routes.admin.pages.clients.href)}
           children={<KeyboardBackspace className='text-black' />}
         />
-        <Headline.Medium text={`${client.names} ${client.surnames}`} />
+        <Headline.Medium text={fullName} />
       </div>
 
       <div className='flex flex-row items-center justify-between gap-x-5'>
@@ -65,23 +69,23 @@ function GeneralDescription({ client }: { client: any }) {
   }
 
   return (
-    <div className='col-span-2 grid bg-white rounded-lg shadow-elevation-1'>
-        <div className='px-[30px] py-[15px] border-b border-b-neutral-gray-500 h-fit'>
-          <Title.Medium
+    <div className='grid col-span-2 bg-white rounded-lg shadow-elevation-1'>
+      <div className='px-[30px] py-[15px] border-b border-b-neutral-gray-500 h-fit'>
+        <Title.Medium
           className='font-semibold'
           text={t('general-description')}
         />
-        </div>
-        <div className='grid grid-cols-2 grid-rows-auto gap-y-10 gap-x-32 px-[30px] py-[38px]'>
-           {Object.keys(data).map((key) => (
+      </div>
+      <div className='grid grid-cols-2 grid-rows-auto gap-y-10 gap-x-32 px-[30px] py-[38px]'>
+        {Object.keys(data).map((key) => (
           <div className='flex flex-row items-center gap-x-[30px]' key={key}>
             <Body.Large className='text-black' text={key} />
 
             {data[key]}
           </div>
         ))}
-        </div>
       </div>
+    </div>
   )
 }
 
