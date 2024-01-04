@@ -24,7 +24,7 @@ import { Headline } from '@/components/typography'
 import { userAtom } from '@/hooks/use-user/userAtom'
 import { Profile } from '@/components/profile'
 import { Role } from '@/types/role'
-import { Appointment, Veterinarian } from '@/types/clinic'
+import { Appointment, AppointmentState, Veterinarian } from '@/types/clinic'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 import { useState } from 'react'
@@ -220,11 +220,19 @@ function VeterinaryCell(props: {
 
   if (!appointments) return
 
+  const appointment = appointments.find(({ id }) => {
+    return id === appointmentId
+  })
+
+  if (!appointment) return
+
   // TODO: If the appointment is finished, you cannot update the veterinarian
 
   return (
     <TableCell component='th' scope='row'>
-      {role === 'CLINIC_OWNER' && employees ? (
+      {role === 'CLINIC_OWNER' &&
+      employees &&
+      appointment.state !== AppointmentState.FINISHED ? (
         <div className='flex flex-row items-center gap-x-2'>
           <Select
             label={t('veterinary')}
