@@ -30,6 +30,11 @@ const initialValues = {
 export default function EmployeesPage() {
   const { t } = useTranslation()
   const { sendInvitationToClinic } = useClinic()
+  const [name, setName] = useState<string>('')
+
+  const handleNameFilterChange = (event: any) => {
+    setName(event.target.value)
+  }
 
   const [open, setOpen] = useState(false)
   const handleOpen = () => setOpen(true)
@@ -65,6 +70,8 @@ export default function EmployeesPage() {
           className='w-[300px] bg-white text-base-neutral-gray-700 shadow-elevation-1'
           variant='outlined'
           placeholder={t('search-employees')}
+          value={name}
+          onChange={handleNameFilterChange}
           InputProps={{
             startAdornment: (
               <InputAdornment position='start'>
@@ -83,7 +90,7 @@ export default function EmployeesPage() {
         />
       </div>
 
-      <EmployeesTable />
+      <EmployeesTable nameFilter={name} />
 
       <MuiModal open={open} onClose={handleClose}>
         <Box sx={style}>
@@ -115,7 +122,8 @@ export default function EmployeesPage() {
   )
 }
 
-function EmployeesTable() {
+function EmployeesTable(props: { nameFilter: string }) {
+  const { nameFilter } = props
   const { t } = useTranslation()
 
   const columns = [
@@ -138,7 +146,7 @@ function EmployeesTable() {
     rows = TableLoadingRows()
   } else {
     // @ts-ignore
-    rows = EmployeesRowsValues(data ?? [])
+    rows = EmployeesRowsValues(data ?? [], nameFilter)
   }
 
   function TableLoadingRows(): Row[] {
@@ -153,36 +161,51 @@ function EmployeesTable() {
   return <Table columns={columns} rows={rows} />
 }
 
-function EmployeesRowsValues(employees: Employee[]): Row[] {
-  return employees.map((employee) => {
-    // @ts-ignore
-    const { Employee, status } = employee
+function EmployeesRowsValues(
+  employees: Employee[],
+  nameFilter: string
+): Row[] | undefined {
+  return employees
+    .filter((employee) => {
+      return (
+        nameFilter === '' ||
+        employee.Employee.names
+          .toLowerCase()
+          .includes(nameFilter.toLowerCase()) ||
+        employee.Employee.surnames
+          .toLocaleLowerCase()
+          .includes(nameFilter.toLocaleLowerCase())
+      )
+    })
+    .map((employee) => {
+      // @ts-ignore
+      const { Employee, status } = employee
 
-    const {
-      names,
-      surnames,
-      email,
-      VeterinarianSummaryScore,
-      VeterinariaSpecialties,
-      image,
-    } = Employee
+      const {
+        names,
+        surnames,
+        email,
+        VeterinarianSummaryScore,
+        VeterinariaSpecialties,
+        image,
+      } = Employee
 
-    const values = [
-      <Profile profile={`${names} ${surnames}`} image={image} />,
-      <Body.Medium className='text-base-neutral-gray-900' text={email} />,
-      <StatusBadge status={status} />,
-      <Badge
-        className='text-base-primary-600 bg-base-primary-50'
-        label={VeterinariaSpecialties?.specialties ?? 'Sin especialidad'}
-      />,
-      <StarsReview review={calculateStars(VeterinarianSummaryScore)} />,
-    ]
+      const values = [
+        <Profile profile={`${names} ${surnames}`} image={image} />,
+        <Body.Medium className='text-base-neutral-gray-900' text={email} />,
+        <StatusBadge status={status} />,
+        <Badge
+          className='text-base-primary-600 bg-base-primary-50'
+          label={VeterinariaSpecialties?.specialties ?? 'Sin especialidad'}
+        />,
+        <StarsReview review={calculateStars(VeterinarianSummaryScore)} />,
+      ]
 
-    return {
-      key: email,
-      values,
-    }
-  })
+      return {
+        key: email,
+        values,
+      }
+    })
 }
 
 const style = {
