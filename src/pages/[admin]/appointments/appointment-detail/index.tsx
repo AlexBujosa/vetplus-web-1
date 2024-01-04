@@ -220,6 +220,8 @@ function VeterinaryCell(props: {
 
   if (!appointments) return
 
+  // TODO: If the appointment is finished, you cannot update the veterinarian
+
   return (
     <TableCell component='th' scope='row'>
       {role === 'CLINIC_OWNER' && employees ? (

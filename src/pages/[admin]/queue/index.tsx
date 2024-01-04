@@ -20,6 +20,8 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import { useAtom } from 'jotai'
+import { queueAtom } from '@/hooks/use-queue/queueAtom'
 
 interface SearchFilters {
   nameFilter?: string
@@ -274,7 +276,6 @@ function NotificationModal(props: NotificationModalProps) {
 
   const { getMyEmployeesForSelect, respondToAppointment } = useClinic()
   const employees = getMyEmployeesForSelect()
-  const [veterinarianId, setVeterinarianId] = useState<string>('')
 
   const { mutateAsync } = useMutation({
     mutationFn: ({
@@ -330,10 +331,14 @@ function NotificationModal(props: NotificationModalProps) {
     }
   }
 
+  const [veterinarianId, setVeterinarianId] = useAtom(
+    queueAtom(appointment?.Veterinarian.id ?? '')
+  )
+
   const formik = useFormik({
     initialValues: {
       status: AppointmentStatus.DENIED,
-      veterinarianId: '',
+      veterinarianId,
     },
     onSubmit,
   })
@@ -343,20 +348,13 @@ function NotificationModal(props: NotificationModalProps) {
     formik.setFieldValue('veterinarianId', e.target?.value)
   }
 
-  if (!appointment || !employees) return null
-
   // TODO: Set default veterinarian on Pending Appointment Creation.
   // TODO: FIX, on cancell appointment make the veterinarian field as not required.
 
+  if (!appointment || !employees) return null
+
   return (
-    <MuiModal
-      open={open}
-      onClose={() => {
-        handleClose()
-        setVeterinarianId('')
-        formik.setFieldValue('veterinarianId', '')
-      }}
-    >
+    <MuiModal open={open} onClose={handleClose}>
       <Box sx={style}>
         <Modal title={t('appointment')}>
           <form

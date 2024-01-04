@@ -161,10 +161,7 @@ function EmployeesTable(props: { nameFilter: string }) {
   return <Table columns={columns} rows={rows} />
 }
 
-function EmployeesRowsValues(
-  employees: Employee[],
-  nameFilter: string
-): Row[] | undefined {
+function EmployeesRowsValues(employees: Employee[], nameFilter: string): Row[] {
   return employees
     .filter((employee) => {
       return (

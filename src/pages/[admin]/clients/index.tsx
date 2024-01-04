@@ -17,6 +17,7 @@ import { AppointmentOwner, Pet } from '@/types/constant/admin/clients'
 import dayjs from 'dayjs'
 
 export default function ClientsPage() {
+  // TODO: Add filter by client name
   const { t } = useTranslation()
   const { getMyClients } = useClinic()
 
