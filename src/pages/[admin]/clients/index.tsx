@@ -15,6 +15,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Profile } from '@/components/profile'
 import { AppointmentOwner, Pet } from '@/types/constant/admin/clients'
 import dayjs from 'dayjs'
+import { useState } from 'react'
 
 export default function ClientsPage() {
   // TODO: Add filter by client name
@@ -33,6 +34,12 @@ export default function ClientsPage() {
     t('telephone-number'),
     t('last-appointment'),
   ]
+
+  const [clientName, setClientName] = useState<string>('')
+
+  const handleNameFilterChange = (event: any) => {
+    setClientName(event.target.value)
+  }
 
   const rows = isLoading ? TableLoadingRows() : ClientsRowValues(clients)
 
@@ -57,45 +64,57 @@ export default function ClientsPage() {
   }
 
   function ClientsRowValues(clients: GetAllClient[]): Row[] {
-    return clients.map((client) => {
-      const { User } = client
-      const {
-        names,
-        surnames,
-        email,
-        image,
-        telephone_number,
-        Pet,
-        AppointmentOwner,
-      } = User
+    return clients
+      .filter(({ User }) => {
+        return (
+          clientName === '' ||
+          (User.names &&
+            User.names.toLowerCase().includes(clientName.toLowerCase())) ||
+          (User.surnames &&
+            User.surnames
+              .toLocaleLowerCase()
+              .includes(clientName.toLocaleLowerCase()))
+        )
+      })
+      .map((client) => {
+        const { User } = client
+        const {
+          names,
+          surnames,
+          email,
+          image,
+          telephone_number,
+          Pet,
+          AppointmentOwner,
+        } = User
 
-      const fullName = surnames ? `${names} ${surnames}` : names
+        const fullName = surnames ? `${names} ${surnames}` : names
 
-      const values = [
-        <Profile profile={fullName} image={image} />,
-        <Body.Medium className='text-base-neutral-gray-900' text={email} />,
-        <div className='flex items-start'>
-          <Pets pets={Pet} />
-        </div>,
-        <Body.Medium
-          className='text-base-neutral-gray-900'
-          text={telephone_number ?? 'N/A'}
-        />,
-        <Body.Medium
-          className='text-base-neutral-gray-900'
-          text={
-            AppointmentOwner.length > 0
-              ? dayjs(AppointmentOwner[0].start_at).format('LLLL')
-              : 'N/A'
-          }
-        />,
-      ]
+        const values = [
+          <Profile profile={fullName} image={image} />,
+          <Body.Medium className='text-base-neutral-gray-900' text={email} />,
+          <div className='flex items-start'>
+            <Pets pets={Pet} />
+          </div>,
+          <Body.Medium
+            className='text-base-neutral-gray-900'
+            text={telephone_number ?? 'N/A'}
+          />,
+          <Body.Medium
+            className='text-base-neutral-gray-900'
+            text={
+              AppointmentOwner.length > 0
+                ? dayjs(AppointmentOwner[0].start_at).format('LLLL')
+                : 'N/A'
+            }
+          />,
+        ]
 
-      return {
-        key: email,
-        values,
-      }
-    })
+        return {
+          key: email,
+          values,
+        }
+      })
   }
 
   return (
@@ -104,6 +123,8 @@ export default function ClientsPage() {
 
       <Input
         className='w-[300px] bg-white text-base-neutral-gray-700 shadow-elevation-1'
+        value={clientName}
+        onChange={handleNameFilterChange}
         variant='outlined'
         placeholder={t('search-clients')}
         InputProps={{
