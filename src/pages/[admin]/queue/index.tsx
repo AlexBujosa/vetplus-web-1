@@ -80,16 +80,16 @@ function Card(props: SearchFilters) {
   }
 
   const sections = [
-    <VerifiedAppointments {...props} />,
     <PendingAppointments {...props} />,
+    <VerifiedAppointments {...props} />,
   ]
 
   return (
     <article className='bg-white shadow-elevation-1'>
       <section>
         <Tabs value={value} onChange={handleChange}>
-          <Tab label={t('verified')} />
           <Tab label={t('pending')} />
+          <Tab label={t('verified')} />
         </Tabs>
       </section>
 
@@ -345,6 +345,9 @@ function NotificationModal(props: NotificationModalProps) {
 
   if (!appointment || !employees) return null
 
+  // TODO: Set default veterinarian on Pending Appointment Creation.
+  // TODO: FIX, on cancell appointment make the veterinarian field as not required.
+
   return (
     <MuiModal
       open={open}
@@ -388,6 +391,7 @@ function NotificationModal(props: NotificationModalProps) {
                   <Body.Medium text={appointment.Pet.name} />
                 </div>
               </span>
+
               <span className='col-span-3'>
                 <Select
                   className='w-[250px]'
@@ -408,7 +412,6 @@ function NotificationModal(props: NotificationModalProps) {
                     .format('LL')}
                 />
               </span>
-
               <span className='col-span-2'>
                 <Body.Large text={t('time')} />
 
