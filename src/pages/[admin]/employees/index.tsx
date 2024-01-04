@@ -47,7 +47,7 @@ export default function EmployeesPage() {
       handleClose()
     } catch (error: any) {
       toast.error(
-        error.response.errors[0].message === 'EMAIL_NOT_FOUND'
+        error.message === 'EMAIL_NOT_FOUND'
           ? t('email-not-found')
           : t('something-wrong')
       )
