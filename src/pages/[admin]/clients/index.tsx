@@ -65,14 +65,14 @@ export default function ClientsPage() {
   function ClientsRowValues(clients: GetAllClient[]): Row[] {
     return clients
       .filter(({ User }) => {
+        const { names, surnames } = User
+
+        if (!names || !surnames) return false
+
         return (
           clientName === '' ||
-          (User.names &&
-            User.names.toLowerCase().includes(clientName.toLowerCase())) ||
-          (User.surnames &&
-            User.surnames
-              .toLocaleLowerCase()
-              .includes(clientName.toLocaleLowerCase()))
+          names.toLowerCase().includes(clientName.toLowerCase()) ||
+          surnames.toLocaleLowerCase().includes(clientName.toLocaleLowerCase())
         )
       })
       .map((client) => {

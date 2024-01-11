@@ -169,9 +169,9 @@ function EmployeesRowsValues(employees: Employee[], nameFilter: string): Row[] {
 
       if (!Employee) return false
 
-      const { names, surnames, email } = Employee
+      const { names, surnames } = Employee
 
-      if (!names || !surnames || !email) return false
+      if (!names || !surnames) return false
 
       return (
         nameFilter === '' ||
