@@ -24,7 +24,9 @@ import { isEqual } from 'lodash'
 import sdq from 'sdq'
 
 yup.addMethod(yup.string, 'isDocument', function (errorMessage) {
-  return this.test(`test-document`, errorMessage, function (value: string) {
+  // @ts-ignore
+  return this.test(`test-document`, errorMessage, (value: string) => {
+    // @ts-ignore
     const { path, createError } = this
     return sdq.isCedula(value) || createError({ path, message: errorMessage })
   })
