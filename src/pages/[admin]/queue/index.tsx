@@ -395,16 +395,6 @@ function NotificationModal(props: NotificationModalProps) {
               </span>
 
               <span className='col-span-3'>
-                <Select
-                  className='w-[250px]'
-                  name='veterinarianId'
-                  value={veterinarianId}
-                  onChange={(e) => handleSelectChange(e)}
-                  label={t('veterinary')}
-                  options={employees}
-                />
-              </span>
-              <span className='col-span-3'>
                 <Body.Large text={t('appointment')} />
 
                 <Body.Medium
@@ -414,7 +404,7 @@ function NotificationModal(props: NotificationModalProps) {
                     .format('LL')}
                 />
               </span>
-              <span className='col-span-2'>
+              <span className='col-span-3'>
                 <Body.Large text={t('time')} />
 
                 <Body.Medium
@@ -432,6 +422,16 @@ function NotificationModal(props: NotificationModalProps) {
                       .format('hh:mm A')}
                   />
                 )}
+              </span>
+              <span className='col-span-3'>
+                <Select
+                  className='w-[250px]'
+                  name='veterinarianId'
+                  value={veterinarianId}
+                  onChange={(e) => handleSelectChange(e)}
+                  label={t('veterinary')}
+                  options={employees}
+                />
               </span>
             </div>
 
