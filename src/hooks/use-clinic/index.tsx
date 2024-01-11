@@ -26,6 +26,7 @@ import {
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { userAtom } from '../use-user/userAtom'
 import { Role } from '@/types/role'
+import _ from 'lodash'
 
 export function useClinic() {
   const [currentEmployees] = useAtom(employeesAtom)
@@ -156,7 +157,13 @@ export function useClinic() {
     nonWorkingDays?: string[]
     workingDays?: { day: string; startTime: string; endTime: string }[]
   }) {
-    console.log({ payload })
+    const modifiedJson = _.cloneDeep(payload)
+
+    _.forEach(modifiedJson.workingDays, (day) => {
+      day.startTime = _.replace(day.startTime, /:\d{2}$/, '')
+      day.endTime = _.replace(day.endTime, /:\d{2}$/, '')
+    })
+
     const {
       data: { updateClinic },
     } = await client.mutate({
