@@ -45,14 +45,15 @@ import toast from 'react-hot-toast'
 import dayjs from 'dayjs'
 import { useDropzone } from 'react-dropzone'
 import { isEqual } from 'lodash'
-import {
-  DatePicker,
-  LocalizationProvider,
-  TimeField,
-} from '@mui/x-date-pickers'
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { Badge } from '@/components/badge'
+
+export type Picture = File & {
+  path: Key
+}
+
 export default function GeneralViewPage() {
   const { t } = useTranslation()
 
@@ -434,10 +435,6 @@ function ProfileModalSection() {
     onSubmit,
   })
 
-  type Picture = File & {
-    path: Key
-  }
-
   const [picture, setPicture] = useState<Picture | null>(null)
 
   const onDrop = useCallback(
@@ -556,6 +553,7 @@ function ProfileModalSection() {
           multiple
           value={selectedServices}
           onChange={(e) => {
+            // @ts-expect-error
             setSelectedServices(e.target.value)
             formik.setFieldValue('services', e.target.value)
           }}
@@ -657,7 +655,8 @@ function ScheduleModalSection() {
             { day: 'Friday', endTime: '17:00:00', startTime: '07:00:00' },
             { day: 'Saturday', endTime: '12:00:00', startTime: '07:00:00' },
           ]
-        : clinic.schedule.workingDays.map(({ day, startTime, endTime }) => ({
+        : // @ts-expect-error
+          clinic.schedule.workingDays.map(({ day, startTime, endTime }) => ({
             day,
             startTime,
             endTime,

@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import Button from '@/components/button'
 import ProfileImage from '@/components/profile-image'
 import StatusBadge from '@/components/status-badge'
 import { Body, Headline, Title } from '@/components/typography'
-import { PersonOutlined, Edit } from '@mui/icons-material'
+import { PersonOutlined, Edit, CloudUploadOutlined } from '@mui/icons-material'
 import { Box, Modal, Tab, Tabs } from '@mui/material'
 import { userAtom } from '@/hooks/use-user/userAtom'
 import { roleAtom } from '@/hooks/use-auth/roleAtom'
@@ -18,6 +18,9 @@ import Input from '@/components/input'
 import CustomTabPanel from '@/components/molecules/custom-tab-panel'
 import Select from '@/components/select'
 import toast from 'react-hot-toast'
+import { useDropzone } from 'react-dropzone'
+import { Picture } from '../clinic/general-info'
+import { isEqual } from 'lodash'
 
 export default function ProfilePage() {
   return (
@@ -204,7 +207,7 @@ function ProfileForm(props: TabsProps) {
     queryFn: getUserProfile,
   })
 
-  const { names, surnames, document, address, telephone_number } = user
+  const { names, surnames, document, address, telephone_number, image } = user
 
   const initialValues: EditUserForm = {
     names,
@@ -212,6 +215,7 @@ function ProfileForm(props: TabsProps) {
     document,
     address,
     telephone_number,
+    image,
   }
 
   const { updateUser } = useUser()
@@ -227,19 +231,98 @@ function ProfileForm(props: TabsProps) {
   })
 
   const queryClient = useQueryClient()
+  const { saveUserImage } = useUser()
+  const [picture, setPicture] = useState<Picture | null>(null)
+
+  const {
+    data: mutateResponse,
+    mutateAsync: mutateImageAsync,
+    isPending: isLoadingImage,
+  } = useMutation({
+    mutationFn: ({ picture }: { picture: Picture }) => saveUserImage(picture),
+  })
 
   async function onSubmit(data: EditUserForm) {
-    await mutateAsync({ ...data })
+    if (picture) {
+      toast.promise(mutateImageAsync({ picture }), {
+        success: `Image ${picture.name} - was saved succesfully`,
+        error: t('something-wrong'),
+        loading: 'Loading data...',
+      })
+    }
+
+    toast.promise(mutateAsync({ ...data, image: mutateResponse.image }), {
+      success: t('updated-fields'),
+      error: t('something-wrong'),
+      loading: 'Loading data...',
+    })
 
     queryClient.invalidateQueries({
       queryKey: ['profile'],
     })
-
-    toast.success(t('updated-fields'))
   }
+
+  const onDrop = useCallback(
+    ([file]: any) => {
+      setPicture(file)
+    },
+    [picture]
+  )
+
+  const { isDragActive, getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    maxFiles: 1,
+  })
+
+  const removeFile = () => setPicture(null)
+
+  const files = picture && (
+    <li className='flex flex-row justify-between' key={picture.path}>
+      {picture.name} - {picture.size} bytes{' '}
+      <button
+        className='px-2 py-1 text-white rounded-md bg-base-semantic-danger-500'
+        onClick={removeFile}
+      >
+        {t('remove')}
+      </button>
+    </li>
+  )
 
   return (
     <CustomTabPanel value={value} index={0}>
+      <div {...getRootProps({ className: 'dropzone' })}>
+        <div
+          className='flex flex-col items-center justify-center mt-2 text-gray-500 border-2 border-gray-500 border-dashed h-52 bg-gray-50'
+          {...getRootProps()}
+        >
+          <input {...getInputProps()} />
+          {isDragActive ? (
+            <div className='flex flex-col items-center'>
+              <CloudUploadOutlined
+                className='!fill-base-primary-500'
+                sx={{ fontSize: '30px' }}
+              />
+              {t('drop-here')}
+            </div>
+          ) : (
+            <div className='flex flex-col items-center'>
+              <CloudUploadOutlined
+                className='!fill-base-primary-500'
+                sx={{ fontSize: '60px' }}
+              />
+              {t('drag-and-drop')}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {picture && (
+        <aside className='mt-2'>
+          <h4>Files</h4>
+          <ul>{files}</ul>
+        </aside>
+      )}
+
       <form
         className='grid grid-cols-2 gap-x-3 my-[45px] gap-y-[45px]'
         onSubmit={formik.handleSubmit}
@@ -304,7 +387,8 @@ function ProfileForm(props: TabsProps) {
           type='submit'
           className='w-full col-span-2'
           label={t('edit')}
-          loading={isLoading}
+          disabled={isEqual(formik.values, initialValues) && !picture}
+          loading={isLoading || isLoadingImage}
         />
       </form>
     </CustomTabPanel>

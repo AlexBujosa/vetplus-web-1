@@ -1,10 +1,18 @@
-import { GET_MY_PROFILE, REGISTER_SPECIALTY, UPDATE_USER } from '@/graphql/user'
+import {
+  GET_MY_PROFILE,
+  REGISTER_SPECIALTY,
+  SAVE_USER_IMAGE,
+  UPDATE_USER,
+} from '@/graphql/user'
 import { useAtom } from 'jotai'
 import { userAtom } from './userAtom'
 import client from '@/utils/apolloClient'
+import { Picture } from '@/pages/[admin]/clinic/general-info'
+import { useQueryClient } from '@tanstack/react-query'
 
 export default function useUser() {
-  const [, setUser] = useAtom(userAtom)
+  const [user, setUser] = useAtom(userAtom)
+  const queryClient = useQueryClient()
 
   async function getUserProfile() {
     const {
@@ -42,7 +50,30 @@ export default function useUser() {
     return registerSpecialty
   }
 
-  return { getUserProfile, updateUser, updateSpecialty }
+  async function saveUserImage(image: Picture) {
+    console.log(user?.image)
+    const {
+      data: { saveUserImage },
+    } = await client.mutate({
+      mutation: SAVE_USER_IMAGE,
+      variables: {
+        saveUserImageInput: {
+          image,
+          old_image: user?.image,
+        },
+      },
+    })
+
+    queryClient.invalidateQueries({
+      queryKey: ['profile'],
+    })
+
+    console.log({ user, saveUserImage })
+
+    return saveUserImage
+  }
+
+  return { getUserProfile, updateUser, updateSpecialty, saveUserImage }
 }
 
 export type EditUserForm = {
@@ -51,4 +82,5 @@ export type EditUserForm = {
   document: string
   address: string
   telephone_number: string
+  image: string
 }

@@ -38,3 +38,12 @@ export const REGISTER_SPECIALTY = gql`
     }
   }
 `
+
+export const SAVE_USER_IMAGE = gql`
+  mutation ($saveUserImageInput: SaveUserImageInput!) {
+    saveUserImage(saveUserImageInput: $saveUserImageInput) {
+      result
+      image
+    }
+  }
+`
