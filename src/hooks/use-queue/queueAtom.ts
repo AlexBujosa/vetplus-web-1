@@ -1,4 +1,3 @@
-import { atom } from 'jotai'
-import { atomFamily } from 'jotai/utils'
+import { atomWithReset } from 'jotai/utils'
 
-export const queueAtom = atomFamily((param: string) => atom<string>(param))
+export const queueAtom = atomWithReset('')

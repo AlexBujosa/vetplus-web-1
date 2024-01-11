@@ -22,6 +22,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { useAtom } from 'jotai'
 import { queueAtom } from '@/hooks/use-queue/queueAtom'
+import { useResetAtom } from 'jotai/utils'
 
 interface SearchFilters {
   nameFilter?: string
@@ -273,6 +274,8 @@ interface NotificationModalProps {
 function NotificationModal(props: NotificationModalProps) {
   const { open, handleClose, appointment, setAppointment } = props
   const { t } = useTranslation()
+  const [veterinarianId, setVeterinarianId] = useAtom(queueAtom)
+  const resetVeterinarian = useResetAtom(queueAtom)
 
   const { getMyEmployeesForSelect, respondToAppointment } = useClinic()
   const employees = getMyEmployeesForSelect()
@@ -316,7 +319,7 @@ function NotificationModal(props: NotificationModalProps) {
       }
     )
 
-    setVeterinarianId('')
+    resetVeterinarian()
 
     // @ts-ignore
     setAppointment((prevAppointment) => {
@@ -330,8 +333,6 @@ function NotificationModal(props: NotificationModalProps) {
 
     handleClose()
   }
-
-  const [veterinarianId, setVeterinarianId] = useAtom(queueAtom(''))
 
   const formik = useFormik({
     initialValues: {
@@ -351,7 +352,13 @@ function NotificationModal(props: NotificationModalProps) {
   if (!appointment || !employees) return null
 
   return (
-    <MuiModal open={open} onClose={handleClose}>
+    <MuiModal
+      open={open}
+      onClose={() => {
+        resetVeterinarian()
+        handleClose()
+      }}
+    >
       <Box sx={style}>
         <Modal title={t('appointment')}>
           <form
