@@ -658,6 +658,7 @@ function ScheduleModalSection() {
       toast.success(t('updated-fields'))
       queryClient.invalidateQueries()
     } catch (error: any) {
+      console.log(error.message)
       toast.error(error.message)
     }
   }
@@ -672,12 +673,12 @@ function ScheduleModalSection() {
       !clinic.schedule.workingDays ||
       clinic.schedule.workingDays.length === 0
         ? [
-            { day: 'Monday', endTime: '17:00:00', startTime: '07:00:00' },
-            { day: 'Tuesday', endTime: '17:00:00', startTime: '07:00:00' },
-            { day: 'Wednesday', endTime: '17:00:00', startTime: '07:00:00' },
-            { day: 'Thursday', endTime: '17:00:00', startTime: '07:00:00' },
-            { day: 'Friday', endTime: '17:00:00', startTime: '07:00:00' },
-            { day: 'Saturday', endTime: '12:00:00', startTime: '07:00:00' },
+            { day: 'Monday', endTime: '17:00', startTime: '08:00' },
+            { day: 'Tuesday', endTime: '17:00', startTime: '08:00' },
+            { day: 'Wednesday', endTime: '17:00', startTime: '08:00' },
+            { day: 'Thursday', endTime: '17:00', startTime: '08:00' },
+            { day: 'Friday', endTime: '17:00', startTime: '08:00' },
+            { day: 'Saturday', endTime: '12:00', startTime: '08:00' },
           ]
         : // @ts-expect-error
           clinic.schedule.workingDays.map(({ day, startTime, endTime }) => ({

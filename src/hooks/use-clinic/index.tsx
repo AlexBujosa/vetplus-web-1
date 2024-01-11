@@ -156,6 +156,7 @@ export function useClinic() {
     nonWorkingDays?: string[]
     workingDays?: { day: string; startTime: string; endTime: string }[]
   }) {
+    console.log({ payload })
     const {
       data: { updateClinic },
     } = await client.mutate({
@@ -167,6 +168,8 @@ export function useClinic() {
         },
       },
     })
+
+    console.log({ updateClinic })
 
     return updateClinic
   }
