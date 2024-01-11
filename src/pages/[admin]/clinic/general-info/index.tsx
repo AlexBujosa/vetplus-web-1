@@ -54,6 +54,12 @@ export type Picture = File & {
   path: Key
 }
 
+type Day = {
+  day: string
+  startTime: string
+  endTime: string
+}
+
 export default function GeneralViewPage() {
   const { t } = useTranslation()
 
@@ -173,19 +179,17 @@ function GeneralDescription() {
   // @ts-ignore
   const { email, telephone_number, schedule }: Clinic = data
 
-  const { workingDays, nonWorkingDays } = schedule || {}
-
-  const workingDaysString =
-    workingDays && workingDays.length !== 0
-      ? `Lunes a Viernes: ${workingDays[0]?.startTime} - ${workingDays[0]?.endTime}`
-      : ''
-  const nonWorkingDaysString = `No laborables: ${nonWorkingDays || ''}`
-  const scheduleString = `${workingDaysString}\n${nonWorkingDaysString}`
+  const {
+    workingDays,
+    nonWorkingDays,
+  }: {
+    workingDays: Day[]
+    nonWorkingDays: string[]
+  } = schedule || {}
 
   const values = [
     { label: t('email'), value: email ?? 'N/A' },
     { label: t('telephone-number'), value: telephone_number ?? 'N/A' },
-    { label: t('schedule'), value: scheduleString ?? 'N/A' },
   ]
 
   return (
@@ -202,6 +206,26 @@ function GeneralDescription() {
             </div>
           )
         })}
+
+        <Title.Small text={t('working-days')} />
+
+        <ul>
+          {workingDays.map(({ day, startTime, endTime }: Day) => {
+            return (
+              <li key={day}>
+                {day}: {startTime} - {endTime}
+              </li>
+            )
+          })}
+        </ul>
+
+        <Title.Small text={t('non-working-days')} />
+
+        <ul>
+          {nonWorkingDays.map((day) => {
+            return <li key={day}>{day}</li>
+          })}
+        </ul>
       </div>
     </SectionCard>
   )
