@@ -51,7 +51,6 @@ export default function useUser() {
   }
 
   async function saveUserImage(image: Picture) {
-    console.log(user?.image)
     const {
       data: { saveUserImage },
     } = await client.mutate({
@@ -67,8 +66,6 @@ export default function useUser() {
     queryClient.invalidateQueries({
       queryKey: ['profile'],
     })
-
-    console.log({ user, saveUserImage })
 
     return saveUserImage
   }

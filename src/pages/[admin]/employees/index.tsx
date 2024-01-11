@@ -164,14 +164,19 @@ function EmployeesTable(props: { nameFilter: string }) {
 function EmployeesRowsValues(employees: Employee[], nameFilter: string): Row[] {
   return employees
     .filter((employee) => {
+      // @ts-ignore
+      const { Employee }: { Employee: Employee } = employee
+
+      if (!Employee) return false
+
+      const { names, surnames, email } = Employee
+
+      if (!names || !surnames || !email) return false
+
       return (
         nameFilter === '' ||
-        employee.Employee.names
-          .toLowerCase()
-          .includes(nameFilter.toLowerCase()) ||
-        employee.Employee.surnames
-          .toLocaleLowerCase()
-          .includes(nameFilter.toLocaleLowerCase())
+        names.toLowerCase().includes(nameFilter.toLowerCase()) ||
+        surnames.toLowerCase().includes(nameFilter.toLowerCase())
       )
     })
     .map((employee) => {
