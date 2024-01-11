@@ -272,9 +272,13 @@ export function useClinic() {
     if (!employees) return null
 
     return employees.map(({ id_employee, Employee }) => {
+      const { names, surnames } = Employee
+
+      const fullName = surnames ? `${names} ${surnames}` : names
+
       return {
         value: id_employee,
-        label: `${Employee.names} ${Employee.surnames}`,
+        label: fullName,
       }
     })
   }
