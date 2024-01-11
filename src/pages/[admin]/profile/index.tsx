@@ -21,6 +21,14 @@ import toast from 'react-hot-toast'
 import { useDropzone } from 'react-dropzone'
 import { Picture } from '../clinic/general-info'
 import { isEqual } from 'lodash'
+import sdq from 'sdq'
+
+yup.addMethod(yup.string, 'isDocument', function (errorMessage) {
+  return this.test(`test-document`, errorMessage, function (value: string) {
+    const { path, createError } = this
+    return sdq.isCedula(value) || createError({ path, message: errorMessage })
+  })
+})
 
 export default function ProfilePage() {
   return (
@@ -99,13 +107,20 @@ function GeneralDescription() {
     queryFn: getUserProfile,
   })
 
-  const { email, telephone_number, address, status, VeterinariaSpecialties } =
-    user
+  const {
+    email,
+    telephone_number,
+    address,
+    status,
+    document,
+    VeterinariaSpecialties,
+  } = user
   const { t } = useTranslation()
 
   const data: Record<string, JSX.Element> = {
     [t('email')]: <Typography text={email} />,
     [t('telephone-number')]: <Typography text={telephone_number} />,
+    [t('document')]: <Typography text={document} />,
     [t('address')]: <Typography text={address} />,
     [t('status')]: <StatusBadge status={status} />,
   }
@@ -142,7 +157,8 @@ const schema = yup.object({
   surnames: yup.string().required(),
   document: yup
     .string()
-    .matches(/^[0-9]{11}$/, 'La cedula debe tener 11 digitos'),
+    .matches(/^[0-9]{11}$/, 'La cedula debe tener 11 digitos')
+    .isDocument('Invalid document'),
   address: yup.string().required(),
   telephone_number: yup.string().required(),
   // image: yup.string(),
@@ -234,13 +250,10 @@ function ProfileForm(props: TabsProps) {
   const { saveUserImage } = useUser()
   const [picture, setPicture] = useState<Picture | null>(null)
 
-  const {
-    data: mutateResponse,
-    mutateAsync: mutateImageAsync,
-    isPending: isLoadingImage,
-  } = useMutation({
-    mutationFn: ({ picture }: { picture: Picture }) => saveUserImage(picture),
-  })
+  const { mutateAsync: mutateImageAsync, isPending: isLoadingImage } =
+    useMutation({
+      mutationFn: ({ picture }: { picture: Picture }) => saveUserImage(picture),
+    })
 
   async function onSubmit(data: EditUserForm) {
     if (picture) {
@@ -251,7 +264,9 @@ function ProfileForm(props: TabsProps) {
       })
     }
 
-    toast.promise(mutateAsync({ ...data, image: mutateResponse.image }), {
+    console.log({ data })
+
+    toast.promise(mutateAsync({ ...data }), {
       success: t('updated-fields'),
       error: t('something-wrong'),
       loading: 'Loading data...',
