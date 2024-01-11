@@ -160,6 +160,7 @@ const schema = yup.object({
   document: yup
     .string()
     .matches(/^[0-9]{11}$/, 'La cedula debe tener 11 digitos')
+    // @ts-ignore
     .isDocument('Invalid document'),
   address: yup.string().required(),
   telephone_number: yup.string().required(),
