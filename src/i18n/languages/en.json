@@ -8,6 +8,7 @@
     "dashboard": "Dashboard",
     "clients": "Clients",
     "appointment": "Appointment",
+    "appointment-details": "Appointment Details",
     "appointments": "Appointments",
     "employees": "Employees",
     "configuration": "Configuration",
@@ -111,6 +112,7 @@
     "product": "Product",
     "reproductive-history": "Reproductive history",
     "last-deworming": "Last deworming",
+    "deworming": "Deworming",
     "save-and-close": "Save and Close",
     "vaccines": "Vaccines",
     "end-appointment": "End Appointment",
@@ -121,6 +123,9 @@
     "suffering": "Suffering",
     "working-days": "Working days",
     "non-working-days": "Non Working days",
-    "help": "Help"
+    "help": "Help",
+    "years": "Years",
+    "start-at": "Start At",
+    "end-at": "End At"
   }
 }

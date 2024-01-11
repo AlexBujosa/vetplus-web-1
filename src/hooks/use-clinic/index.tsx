@@ -11,6 +11,7 @@ import {
   SAVE_CLINIC_IMAGE,
   UPDATE_CLINIC,
   UPDATE_APPOINTMENT_RESUMEN,
+  GET_ALL_BREED,
 } from '@/graphql/clinic'
 import { useAtom, useAtomValue } from 'jotai'
 import { Employee, employeesAtom } from './employeesAtom'
@@ -30,6 +31,8 @@ export function useClinic() {
   const [currentEmployees] = useAtom(employeesAtom)
   const user = useAtomValue(userAtom)
   const queryClient = useQueryClient()
+
+  const actualClinic: Clinic | undefined = queryClient.getQueryData(['clinic'])
 
   const clinicServices = [
     'Peluqueria',
@@ -158,7 +161,10 @@ export function useClinic() {
     } = await client.mutate({
       mutation: UPDATE_CLINIC,
       variables: {
-        updateClinicInput: { schedule: { ...payload } },
+        updateClinicInput: {
+          schedule: { ...payload },
+          services: actualClinic?.services,
+        },
       },
     })
 
@@ -303,6 +309,14 @@ export function useClinic() {
     return getMyComments
   }
 
+  async function getAllBreeds() {
+    const {
+      data: { getAllBreed },
+    } = await client.query<any>({ query: GET_ALL_BREED })
+
+    return getAllBreed
+  }
+
   async function saveClinicImage(file: File) {
     const {
       data: { saveClinicImage },
@@ -343,6 +357,7 @@ export function useClinic() {
     reassignAppointment,
     saveClinicImage,
     updateAppointmentResumen,
+    getAllBreeds,
   }
 }
 

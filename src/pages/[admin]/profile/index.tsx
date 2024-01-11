@@ -114,32 +114,34 @@ function GeneralDescription() {
   }
 
   return (
-    <div className='col-span-2 grid bg-white rounded-lg shadow-elevation-1'>
-        <div className='px-[30px] py-[15px] border-b border-b-neutral-gray-500 h-fit'>
-          <Title.Medium
+    <div className='grid col-span-2 bg-white rounded-lg shadow-elevation-1'>
+      <div className='px-[30px] py-[15px] border-b border-b-neutral-gray-500 h-fit'>
+        <Title.Medium
           className='font-semibold'
           text={t('general-description')}
         />
-        </div>
-        <div className='grid grid-cols-2 grid-rows-auto gap-y-10 gap-x-32 px-[30px] py-[38px]'>
-           {Object.keys(data).map((key) => (
+      </div>
+      <div className='grid grid-cols-2 grid-rows-auto gap-y-10 gap-x-32 px-[30px] py-[38px]'>
+        {Object.keys(data).map((key) => (
           <div className='flex flex-row items-center gap-x-[30px]' key={key}>
             <Body.Large className='text-black' text={key} />
 
             {data[key]}
           </div>
         ))}
-        </div>
       </div>
+    </div>
   )
 }
 
 const schema = yup.object({
-  names: yup.string(),
-  surnames: yup.string(),
-  document: yup.string(),
-  address: yup.string(),
-  telephone_number: yup.string(),
+  names: yup.string().required(),
+  surnames: yup.string().required(),
+  document: yup
+    .string()
+    .matches(/^[0-9]{11}$/, 'La cedula debe tener 11 digitos'),
+  address: yup.string().required(),
+  telephone_number: yup.string().required(),
   // image: yup.string(),
 })
 

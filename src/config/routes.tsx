@@ -18,6 +18,7 @@ import ClientsDetailPage from '@/pages/[admin]/clients/detail-page'
 import AppointmentDetail from '@/pages/[admin]/appointments/appointment-detail'
 import AppointmentForm from '@/pages/[admin]/appointments/appointment-form'
 import QueuePage from '@/pages/[admin]/queue'
+import ClientAppointmentPage from '@/pages/[admin]/clients/client-appointment-detail'
 
 type Routes = {
   auth: Route
@@ -127,6 +128,12 @@ let routes: Routes = {
         href: '/appointment-detail/:appointmentId',
         page: <AppointmentForm />,
         allowedRoles,
+      },
+      'client-appointment/:appointmentId': {
+        show: false,
+        href: '/client-appointment/:appointmentId',
+        page: <ClientAppointmentPage />,
+        allowedRoles: [Role.CLINIC_OWNER],
       },
     },
   },

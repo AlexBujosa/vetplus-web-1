@@ -8,6 +8,7 @@
     "dashboard": "Dashboard",
     "clients": "Clientes",
     "appointment": "Cita",
+    "appointment-details": "Detalles de Cita",
     "appointments": "Citas",
     "employees": "Empleados",
     "configuration": "Configuración",
@@ -119,11 +120,15 @@
     "pet-name": "Nombre de Mascota",
     "appointment-date": "Fecha de Cita",
     "last-deworming": "Ultima desparacitación",
+    "deworming": "Desparacitación",
     "required-veterinarian": "Debes seleccionar un veterinario antes de aceptar la cita.",
     "succesfull-denied-appointment": "La cita fue rechazada satisfactoriamente",
     "suffering": "Padecimientos",
     "working-days": "Dias laborables",
     "non-working-days": "Dias no laborables",
-    "help": "Ayuda"
+    "help": "Ayuda",
+    "years": "Años",
+    "start-at": "Fecha Inicio",
+    "end-at": "Fecha Fin"
   }
 }

@@ -1,5 +1,18 @@
 import { gql } from '@apollo/client'
 
+export const GET_ALL_BREED = gql`
+  query {
+    getAllBreed {
+      id
+      id_specie
+      name
+      created_at
+      updated_at
+      status
+    }
+  }
+`
+
 export const GET_MY_EMPLOYEES = gql`
   query GetMyEmployees {
     getMyEmployees {
@@ -107,6 +120,9 @@ export const GET_ALL_CLIENTS = gql`
           id
           image
           name
+          id_breed
+          dob
+          gender
         }
         AppointmentOwner {
           start_at

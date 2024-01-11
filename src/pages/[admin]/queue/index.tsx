@@ -9,7 +9,7 @@ import Modal from '@/components/molecules/modal'
 import Button from '@/components/button'
 import Select from '@/components/select'
 import Image from '@/components/image'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useClinic } from '@/hooks/use-clinic'
 import { AppointmentStatus, type Appointment } from '@/types/clinic'
@@ -277,7 +277,7 @@ function NotificationModal(props: NotificationModalProps) {
   const { getMyEmployeesForSelect, respondToAppointment } = useClinic()
   const employees = getMyEmployeesForSelect()
 
-  const { mutateAsync } = useMutation({
+  const { mutateAsync, error, isPending } = useMutation({
     mutationFn: ({
       appointmentStatus,
       veterinarianId,
@@ -295,45 +295,43 @@ function NotificationModal(props: NotificationModalProps) {
 
   const queryClient = useQueryClient()
 
-  const onSubmit = async ({ status }: { status: AppointmentStatus }) => {
+  const onSubmit = ({ status }: { status: AppointmentStatus }) => {
     if (status === AppointmentStatus.ACCEPTED && veterinarianId === '') {
       toast.error(t('required-veterinarian'))
       return
     }
 
-    try {
-      await mutateAsync({
+    toast.promise(
+      mutateAsync({
         appointmentStatus: status,
         veterinarianId,
-      })
-
-      setVeterinarianId('')
-
-      // @ts-ignore
-      setAppointment((prevAppointment) => {
-        return {
-          ...prevAppointment,
-          appointment_status: status,
-        }
-      })
-
-      queryClient.invalidateQueries()
-
-      if (status === AppointmentStatus.ACCEPTED) {
-        toast.success(t('succesfull-appointment'))
-      } else {
-        toast.success(t('succesfull-denied-appointment'))
+      }),
+      {
+        loading: 'Loading...',
+        success:
+          status === AppointmentStatus.ACCEPTED
+            ? t('succesfull-appointment')
+            : t('succesfull-denied-appointment'),
+        error: error?.message ?? '',
       }
+    )
 
-      handleClose()
-    } catch (error) {
-      toast.error(t('something-wrong'))
-    }
+    setVeterinarianId('')
+
+    // @ts-ignore
+    setAppointment((prevAppointment) => {
+      return {
+        ...prevAppointment,
+        appointment_status: status,
+      }
+    })
+
+    queryClient.invalidateQueries()
+
+    handleClose()
   }
 
-  const [veterinarianId, setVeterinarianId] = useAtom(
-    queueAtom(appointment?.Veterinarian.id ?? '')
-  )
+  const [veterinarianId, setVeterinarianId] = useAtom(queueAtom(''))
 
   const formik = useFormik({
     initialValues: {
@@ -428,9 +426,6 @@ function NotificationModal(props: NotificationModalProps) {
                   />
                 )}
               </span>
-              {/* <Button icon={<Check />} label={t('accept')} />
-                <Button icon={<Close />} label={t('deny')} />
-                <Button label={t('save')} /> */}
             </div>
 
             <aside className='flex flex-row gap-x-7'>
@@ -440,11 +435,11 @@ function NotificationModal(props: NotificationModalProps) {
                 name='status'
                 type='submit'
                 label={t('accept')}
-                loading={formik.isSubmitting}
+                loading={isPending}
                 onClick={() =>
                   formik.setFieldValue('status', AppointmentStatus.ACCEPTED)
                 }
-                disabled={formik.isSubmitting}
+                disabled={isPending}
               />
               <Button
                 className='bg-base-semantic-danger-300 hover:bg-base-semantic-danger-400'
@@ -455,8 +450,8 @@ function NotificationModal(props: NotificationModalProps) {
                   formik.setFieldValue('status', AppointmentStatus.DENIED)
                 }
                 label={t('deny')}
-                loading={formik.isSubmitting}
-                disabled={formik.isSubmitting}
+                loading={isPending}
+                disabled={isPending}
               />
             </aside>
             {/* <Button label={t('save')} disabled /> */}

@@ -17,7 +17,6 @@ import {
 import dayjs from 'dayjs'
 import Image from '@/components/image'
 import { FileOpenOutlined, KeyboardBackspace, Save } from '@mui/icons-material'
-import Button from '@/components/button'
 import Select from '@/components/select'
 import { useClinic } from '@/hooks/use-clinic'
 import { Headline } from '@/components/typography'
@@ -36,8 +35,6 @@ export default function AppointmentDetail() {
   const appointments = useAtomValue(appointmentsAtom)
   const navigate = useNavigate()
   const { t } = useTranslation()
-
-  console.log({ appointments })
 
   return (
     <>
