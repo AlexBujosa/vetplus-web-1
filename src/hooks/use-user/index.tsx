@@ -12,7 +12,6 @@ import { useQueryClient } from '@tanstack/react-query'
 
 export default function useUser() {
   const [user, setUser] = useAtom(userAtom)
-  const queryClient = useQueryClient()
 
   async function getUserProfile() {
     const {
@@ -61,10 +60,6 @@ export default function useUser() {
           old_image: user?.image,
         },
       },
-    })
-
-    queryClient.invalidateQueries({
-      queryKey: ['profile'],
     })
 
     return saveUserImage

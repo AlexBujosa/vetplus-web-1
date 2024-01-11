@@ -259,25 +259,22 @@ function ProfileForm(props: TabsProps) {
     })
 
   async function onSubmit(data: EditUserForm) {
+    let imageResult
     if (picture) {
-      toast.promise(mutateImageAsync({ picture }), {
-        success: `Image ${picture.name} - was saved succesfully`,
-        error: t('something-wrong'),
-        loading: 'Loading data...',
-      })
+      imageResult = await mutateImageAsync({ picture })
     }
 
-    console.log({ data })
+    const uploadPayload = picture
+      ? { ...data, image: imageResult.image }
+      : { ...data }
 
-    toast.promise(mutateAsync({ ...data }), {
+    toast.promise(mutateAsync(uploadPayload), {
       success: t('updated-fields'),
       error: t('something-wrong'),
       loading: 'Loading data...',
     })
 
-    queryClient.invalidateQueries({
-      queryKey: ['profile'],
-    })
+    queryClient.invalidateQueries()
   }
 
   const onDrop = useCallback(
@@ -287,9 +284,32 @@ function ProfileForm(props: TabsProps) {
     [picture]
   )
 
+  const typeValidator = (file: File) => {
+    // 3MB limit
+    const imageFormats = ['image/jpeg', 'image/png', 'image/jpg']
+    const isValidFormat = imageFormats.indexOf(file.type) !== -1
+
+    if (!isValidFormat) {
+      return {
+        code: 'wrong-format',
+        message: 'File is not an image',
+      }
+    }
+
+    if (file.size > 3 * 1024 * 1024) {
+      return {
+        code: 'size-too-large',
+        message: 'Image file is larger than 3MB',
+      }
+    }
+
+    return null
+  }
+
   const { isDragActive, getRootProps, getInputProps } = useDropzone({
     onDrop,
     maxFiles: 1,
+    validator: typeValidator,
   })
 
   const removeFile = () => setPicture(null)
