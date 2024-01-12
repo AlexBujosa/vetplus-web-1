@@ -274,7 +274,9 @@ function ProfileForm(props: TabsProps) {
       loading: 'Loading data...',
     })
 
-    queryClient.invalidateQueries()
+    queryClient.invalidateQueries({
+      queryKey: ['profile'],
+    })
   }
 
   const onDrop = useCallback(
@@ -285,7 +287,6 @@ function ProfileForm(props: TabsProps) {
   )
 
   const typeValidator = (file: File) => {
-    // 3MB limit
     const imageFormats = ['image/jpeg', 'image/png', 'image/jpg']
     const isValidFormat = imageFormats.indexOf(file.type) !== -1
 

@@ -26,6 +26,8 @@ export default function ClientAppointmentPage() {
 
   if (!appointment) return navigate(-1)
 
+  console.log(appointment.observations.deworming.date)
+
   return (
     <div className='max-w-4xl mx-auto my-8'>
       <div className='flex items-center mb-6 space-x-4'>
@@ -86,51 +88,72 @@ export default function ClientAppointmentPage() {
                 <p className='font-semibold'>{t('last-deworming')}</p>
                 <p>{t('date')}</p>
                 <p>
-                  {dayjs(appointment.observations.deworming.date).format(
-                    'LLLL'
-                  )}
+                  {appointment.observations.deworming.date
+                    ? dayjs(appointment.observations.deworming.date).format(
+                        'LLLL'
+                      )
+                    : 'N/A'}
                 </p>
               </div>
               <div>
-                <p className='font-semibold'>{t('product')}</p>
-                <p>{appointment.observations.deworming.product}</p>
+                <p className='font-semibold'>{t('dewormer')}</p>
+                <p>
+                  {appointment.observations.deworming.product
+                    ? appointment.observations.deworming.product
+                    : 'N/A'}
+                </p>
               </div>
             </div>
           </div>
         </div>
         <div className='grid grid-cols-1 gap-6 pb-6 mb-6 border-b md:grid-cols-2'>
-          <div>
-            <h2 className='mb-4 text-xl font-bold'>{t('vaccines')}</h2>
-            <p className='font-semibold'>
-              {t('brand')}: {appointment.observations.vaccines.vaccineBrand}
-            </p>
-            <p>
-              {t('batch')}: {appointment.observations.vaccines.vaccineBatch}
-            </p>
-          </div>
+          {appointment.observations.vaccines && (
+            <div>
+              <h2 className='mb-4 text-xl font-bold'>{t('vaccines')}</h2>
+              <p className='font-semibold'>
+                {t('date')}:{' '}
+                {dayjs(appointment.observations.vaccines.date).format('LLL') ??
+                  'N/A'}
+              </p>
+
+              <p className='font-semibold'>
+                {t('brand')}:{' '}
+                {appointment.observations.vaccines.vaccineBrand === ''
+                  ? 'N/A'
+                  : appointment.observations.vaccines.vaccineBrand}
+              </p>
+              <p className='font-semibld'>
+                {t('batch')}:{' '}
+                {appointment.observations.vaccines.vaccineBatch === ''
+                  ? 'N/A'
+                  : appointment.observations.vaccines.vaccineBatch}
+              </p>
+            </div>
+          )}
 
           {appointment.observations.reproductiveTimeline && (
             <div className='p-4 border'>
               <h2 className='mb-2 text-lg font-bold'>
                 {t('reproductive-history')}
               </h2>
-              {appointment.observations.reproductiveTimeline.dateLastHeat && (
-                <p>
-                  {t('last-heat-date')}:{' '}
-                  {dayjs(
-                    appointment.observations.reproductiveTimeline.dateLastHeat
-                  ).format('LLL')}
-                </p>
-              )}
+              <p>
+                {t('last-heat-date')}:{' '}
+                {appointment.observations.reproductiveTimeline.dateLastHeat
+                  ? dayjs(
+                      appointment.observations.reproductiveTimeline.dateLastHeat
+                    ).format('LLL')
+                  : 'N/A'}
+              </p>
 
-              {appointment.observations.reproductiveTimeline.dateLastBirth && (
-                <p>
-                  {t('date-last-birth')}:{' '}
-                  {dayjs(
-                    appointment.observations.reproductiveTimeline.dateLastBirth
-                  ).format('LLL')}
-                </p>
-              )}
+              <p>
+                {t('date-last-birth')}:{' '}
+                {appointment.observations.reproductiveTimeline.dateLastBirth
+                  ? dayjs(
+                      appointment.observations.reproductiveTimeline
+                        .dateLastBirth
+                    ).format('LLL')
+                  : 'N/A'}
+              </p>
             </div>
           )}
         </div>

@@ -66,6 +66,9 @@ export default function ClientsDetailPage() {
         <GeneralDescription client={clinicClient} />
         <ClientPets
           pets={clinicClient.User.Pet}
+          haveAppointments={
+            clientAppointments ? clientAppointments.length > 0 : undefined
+          }
           setPet={setPet}
           actualPet={pet}
         />
@@ -137,11 +140,12 @@ function GeneralDescription({ client }: { client: any }) {
 
 function ClientPets(props: {
   pets: Pet[]
+  haveAppointments: boolean | undefined
   setPet: Dispatch<SetStateAction<Pet | undefined>>
   actualPet: Pet | undefined
 }) {
   const { t } = useTranslation()
-  const { pets, setPet, actualPet } = props
+  const { pets, setPet, actualPet, haveAppointments } = props
 
   const { getAllBreeds } = useClinic()
 
@@ -169,8 +173,10 @@ function ClientPets(props: {
           return (
             <div
               className={cn(
-                'grid px-[30px] grid-cols-5 py-3 hover:bg-base-neutral-gray-300 hover:cursor-pointer select-none',
-                isActualPet && 'bg-base-primary-200 hover:bg-base-primary-200'
+                'grid px-[30px] grid-cols-5 py-3 hover:bg-base-neutral-gray-300 select-none',
+                haveAppointments &&
+                  isActualPet &&
+                  'bg-base-primary-200 hover:bg-base-primary-200'
               )}
               key={id}
               onClick={() => {
