@@ -286,31 +286,15 @@ function ProfileForm(props: TabsProps) {
     [picture]
   )
 
-  const typeValidator = (file: File) => {
-    const imageFormats = ['image/jpeg', 'image/png', 'image/jpg']
-    const isValidFormat = imageFormats.indexOf(file.type) !== -1
-
-    if (!isValidFormat) {
-      return {
-        code: 'wrong-format',
-        message: 'File is not an image',
-      }
-    }
-
-    if (file.size > 3 * 1024 * 1024) {
-      return {
-        code: 'size-too-large',
-        message: 'Image file is larger than 3MB',
-      }
-    }
-
-    return null
-  }
-
   const { isDragActive, getRootProps, getInputProps } = useDropzone({
     onDrop,
     maxFiles: 1,
-    validator: typeValidator,
+    accept: {
+      'image/jpeg': ['.jpeg'],
+      'image/png': ['.png'],
+      'image/jpg': ['.jpg'],
+    },
+    maxSize: 3 * 1024 * 1024,
   })
 
   const removeFile = () => setPicture(null)
@@ -329,7 +313,10 @@ function ProfileForm(props: TabsProps) {
 
   return (
     <CustomTabPanel value={value} index={0}>
-      <div {...getRootProps({ className: 'dropzone' })}>
+      <div
+        {...getRootProps({ className: 'dropzone' })}
+        onClick={(e) => e.stopPropagation()}
+      >
         <div
           className='flex flex-col items-center justify-center mt-2 text-gray-500 border-2 border-gray-500 border-dashed h-52 bg-gray-50'
           {...getRootProps()}
