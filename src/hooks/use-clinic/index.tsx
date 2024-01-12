@@ -140,7 +140,7 @@ export function useClinic() {
     return request
   }
 
-  async function updateClinic(payload: UpdateClinicForm) {
+  async function updateClinic(payload: UpdateClinicForm & { schedule: any }) {
     const {
       data: { updateClinic },
     } = await client.mutate({
