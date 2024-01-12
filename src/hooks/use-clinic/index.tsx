@@ -372,4 +372,5 @@ export type UpdateClinicForm = {
   telephone_number: string
   address: string
   services: string[]
+  schedule: any
 }

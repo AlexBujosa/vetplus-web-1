@@ -1,6 +1,12 @@
-import { ApolloClient, DefaultOptions, InMemoryCache } from '@apollo/client'
+import {
+  ApolloClient,
+  DefaultOptions,
+  InMemoryCache,
+  from,
+} from '@apollo/client'
 import { setContext } from '@apollo/client/link/context'
 import { createUploadLink } from 'apollo-upload-client'
+import { removeTypenameFromVariables } from '@apollo/client/link/remove-typename'
 
 const httpLink = createUploadLink({
   uri: import.meta.env.VITE_GRAPHQL_ENDPOINT,
@@ -30,8 +36,12 @@ const authLink = setContext((_, { headers }) => {
   }
 })
 
+const removeTypenameLink = removeTypenameFromVariables()
+
+const link = from([removeTypenameLink, authLink, httpLink])
+
 const client = new ApolloClient({
-  link: authLink.concat(httpLink),
+  link,
   cache: new InMemoryCache(),
   defaultOptions,
 })

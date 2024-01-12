@@ -26,8 +26,6 @@ export default function ClientAppointmentPage() {
 
   if (!appointment) return navigate(-1)
 
-  console.log(appointment.observations.deworming.date)
-
   return (
     <div className='max-w-4xl mx-auto my-8'>
       <div className='flex items-center mb-6 space-x-4'>

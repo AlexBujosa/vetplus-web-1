@@ -27,8 +27,8 @@ function Modal(props: Props) {
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           {tabs && (
             <Tabs value={value} onChange={handleChange}>
-              {tabs.map((value) => {
-                return <Tab label={value} />
+              {tabs.map((value, index) => {
+                return <Tab key={index} label={value} />
               })}
             </Tabs>
           )}
