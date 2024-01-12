@@ -1,4 +1,3 @@
- 
 import {
   Table as MuiTable,
   TableBody,
@@ -26,7 +25,7 @@ export default function Table(props: Props) {
   if (!rows || rows.length === 0) {
     return (
       <TableContainer className='bg-white rounded-lg shadow-elevation-1'>
-        <MuiTable sx={{ minWidth: 650 }}>
+        <MuiTable sx={{ minWidth: 650 }} stickyHeader>
           <TableHeader columns={columns} />
         </MuiTable>
       </TableContainer>
@@ -34,8 +33,11 @@ export default function Table(props: Props) {
   }
 
   return (
-    <TableContainer className='bg-white rounded-lg shadow-elevation-1'>
-      <MuiTable sx={{ minWidth: 650 }}>
+    <TableContainer
+      className='bg-white rounded-lg shadow-elevation-1 scroll-smooth'
+      style={{ maxHeight: 600 }}
+    >
+      <MuiTable sx={{ minWidth: 650 }} stickyHeader>
         <TableHeader columns={columns} />
         <Body rows={rows} navigate={navigate} />
       </MuiTable>
@@ -76,7 +78,9 @@ function Body(props: { rows: Row[]; navigate: any }) {
           sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
         >
           {row.values.map((value, index) => (
-            <TableCell key={index} align="left">{value}</TableCell>
+            <TableCell key={index} align='left'>
+              {value}
+            </TableCell>
           ))}
         </TableRow>
       ))}

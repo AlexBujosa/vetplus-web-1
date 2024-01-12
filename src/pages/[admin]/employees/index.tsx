@@ -171,12 +171,10 @@ function EmployeesRowsValues(employees: Employee[], nameFilter: string): Row[] {
 
       const { names, surnames } = Employee
 
-      if (!names || !surnames) return false
-
       return (
         nameFilter === '' ||
-        names.toLowerCase().includes(nameFilter.toLowerCase()) ||
-        surnames.toLowerCase().includes(nameFilter.toLowerCase())
+        (names && names.toLowerCase().includes(nameFilter.toLowerCase())) ||
+        (surnames && surnames.toLowerCase().includes(nameFilter.toLowerCase()))
       )
     })
     .map((employee) => {
@@ -192,8 +190,10 @@ function EmployeesRowsValues(employees: Employee[], nameFilter: string): Row[] {
         image,
       } = Employee
 
+      const fullName = surnames ? `${names} ${surnames}` : names
+
       const values = [
-        <Profile profile={`${names} ${surnames}`} image={image} />,
+        <Profile profile={fullName} image={image} />,
         <Body.Medium className='text-base-neutral-gray-900' text={email} />,
         <StatusBadge status={status} />,
         <Badge
