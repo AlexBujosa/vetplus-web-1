@@ -26,9 +26,7 @@ import sdq from 'sdq'
 yup.addMethod(yup.string, 'isDocument', function (errorMessage) {
   // @ts-ignore
   return this.test(`test-document`, errorMessage, (value: string) => {
-    // @ts-ignore
-    const { path, createError } = this
-    return sdq.isCedula(value) || createError({ path, message: errorMessage })
+    return sdq.isCedula(value)
   })
 })
 
