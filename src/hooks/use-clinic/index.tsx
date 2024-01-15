@@ -12,6 +12,9 @@ import {
   UPDATE_CLINIC,
   UPDATE_APPOINTMENT_RESUMEN,
   GET_ALL_BREED,
+  GET_ALL_CLINIC_SERVICES,
+  GET_CLINIC_SERVICES,
+  GET_ALL_SERVICES,
 } from '@/graphql/clinic'
 import { useAtom, useAtomValue } from 'jotai'
 import { Employee, employeesAtom } from './employeesAtom'
@@ -34,13 +37,6 @@ export function useClinic() {
   const queryClient = useQueryClient()
 
   const actualClinic: Clinic | undefined = queryClient.getQueryData(['clinic'])
-
-  const clinicServices = [
-    'Peluqueria',
-    'Dentales',
-    'Consulta y Examen Rutinario',
-    'Consulta Dermatologica',
-  ]
 
   const { data: clinic } = useQuery({
     queryKey: ['clinic'],
@@ -267,6 +263,31 @@ export function useClinic() {
     return reassignAppoinment
   }
 
+  async function getClinicServices({ id_clinic }: { id_clinic: string }) {
+    const {
+      data: { getAllClinicServices },
+    } = await client.query({
+      query: GET_CLINIC_SERVICES,
+      variables: {
+        genericByIdInput: {
+          id: id_clinic,
+        },
+      },
+    })
+
+    return getAllClinicServices
+  }
+
+  async function getAllServices() {
+    const {
+      data: { getAllProcedure },
+    } = await client.query({
+      query: GET_ALL_SERVICES,
+    })
+
+    return getAllProcedure
+  }
+
   function getMyEmployeesForSelect():
     | { value: string; label: string }[]
     | null {
@@ -344,7 +365,8 @@ export function useClinic() {
   }
 
   return {
-    clinicServices,
+    getClinicServices,
+    getAllServices,
     getMyClinic,
     getMyEmployees,
     getMyClients,

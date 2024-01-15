@@ -5,7 +5,6 @@ import { AddOutlined, SearchOutlined } from '@mui/icons-material'
 import { Box, InputAdornment, Skeleton, Modal as MuiModal } from '@mui/material'
 import Table, { Row } from '@/components/table'
 import { useClinic } from '@/hooks/use-clinic'
-import StarsReview from '@/components/stars-review'
 import { Profile } from '@/components/profile'
 import StatusBadge from '@/components/status-badge'
 import { Employee } from '@/hooks/use-clinic/employeesAtom'
@@ -16,7 +15,6 @@ import Modal from '@/components/molecules/modal'
 import * as yup from 'yup'
 import { useFormik } from 'formik'
 import toast from 'react-hot-toast'
-import calculateStars from '@/utils/calcScore'
 import { Badge } from '@/components/badge'
 
 const schema = yup.object({
@@ -131,7 +129,7 @@ function EmployeesTable(props: { nameFilter: string }) {
     t('email'),
     t('status'),
     t('specialty'),
-    t('review'),
+    t('telephone-number'),
   ]
 
   const { getMyEmployees } = useClinic()
@@ -185,7 +183,7 @@ function EmployeesRowsValues(employees: Employee[], nameFilter: string): Row[] {
         names,
         surnames,
         email,
-        VeterinarianSummaryScore,
+        telephone_number,
         VeterinariaSpecialties,
         image,
       } = Employee
@@ -200,7 +198,10 @@ function EmployeesRowsValues(employees: Employee[], nameFilter: string): Row[] {
           className='text-base-primary-600 bg-base-primary-50'
           label={VeterinariaSpecialties?.specialties ?? 'Sin especialidad'}
         />,
-        <StarsReview review={calculateStars(VeterinarianSummaryScore)} />,
+        <Body.Medium
+          className='text-base-neutral-gray-900'
+          text={telephone_number ?? 'N/A'}
+        />,
       ]
 
       return {

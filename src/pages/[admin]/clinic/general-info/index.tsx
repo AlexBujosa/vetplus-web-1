@@ -194,7 +194,7 @@ function GeneralDescription() {
 
   return (
     <SectionCard className='col-span-2' title={t('general-description')}>
-      <div className='grid grid-cols-2 grid-rows-auto gap-y-10 gap-x-32 px-[30px] py-[38px]'>
+      <div className='grid grid-cols-2 grid-rows-auto gap-y-2 px-[30px] py-[38px]'>
         {values.map(({ label, value }) => {
           return (
             <div key={label} className='flex items-start gap-x-[20px]'>
@@ -209,11 +209,12 @@ function GeneralDescription() {
 
         <Title.Small text={t('working-days')} />
 
-        <ul>
+        <ul className='grid grid-cols-2'>
           {workingDays.map(({ day, startTime, endTime }: Day) => {
             return (
               <li key={day}>
-                {day}: {startTime} - {endTime}
+                <span className='font-bold'>{t(day.toLowerCase())}</span>:{' '}
+                {startTime} - {endTime}
               </li>
             )
           })}
@@ -221,9 +222,13 @@ function GeneralDescription() {
 
         <Title.Small text={t('non-working-days')} />
 
-        <ul>
+        <ul className='grid grid-cols-2'>
           {nonWorkingDays.map((day) => {
-            return <li key={day}>{day}</li>
+            return (
+              <li key={day} className='font-bold'>
+                {day}
+              </li>
+            )
           })}
         </ul>
       </div>
@@ -381,18 +386,23 @@ const style = {
 const schema = yup.object({
   name: yup.string().required(),
   email: yup.string().email(),
-  telephone_number: yup.string().required(),
+  telephone_number: yup.string().length(10, 'Invalid phone number').required(),
   address: yup.string().required(),
 })
 
 function ProfileModalSection() {
   const { t } = useTranslation()
 
-  const { getMyClinic, updateClinic, clinicServices } = useClinic()
+  const { getMyClinic, updateClinic, getAllServices } = useClinic()
 
   const { data } = useQuery({
     queryKey: ['clinic'],
     queryFn: getMyClinic,
+  })
+
+  const { data: clinicServices } = useQuery({
+    queryKey: ['clinic-services'],
+    queryFn: getAllServices,
   })
 
   const { mutateAsync, isPending: isLoading } = useMutation({
@@ -406,22 +416,6 @@ function ProfileModalSection() {
       mutationFn: ({ picture }: { picture: Picture }) =>
         saveClinicImage(picture),
     })
-
-  if (!data) return
-
-  const { name, email, telephone_number, address, schedule } = data
-
-  const [selectedServices, setSelectedServices] = useState<string[]>(
-    data.services ?? []
-  )
-
-  const initialValues: UpdateClinicForm = {
-    name,
-    email,
-    telephone_number,
-    address,
-    services: data.services,
-  }
 
   const queryClient = useQueryClient()
 
@@ -453,12 +447,6 @@ function ProfileModalSection() {
     }
   }
 
-  const formik = useFormik({
-    initialValues,
-    validationSchema: schema,
-    onSubmit,
-  })
-
   const [picture, setPicture] = useState<Picture | null>(null)
 
   const onDrop = useCallback(
@@ -486,6 +474,31 @@ function ProfileModalSection() {
       </button>
     </li>
   )
+
+  const { name, email, telephone_number, address, schedule, services } =
+    data ?? {
+      name: '',
+      email: '',
+      telephone_number: '',
+      address: '',
+      services: [],
+    }
+
+  const [selectedServices, setSelectedServices] = useState<string[]>(services)
+
+  const initialValues: UpdateClinicForm = {
+    name,
+    email,
+    telephone_number,
+    address,
+    services,
+  }
+
+  const formik = useFormik({
+    initialValues,
+    validationSchema: schema,
+    onSubmit,
+  })
 
   return (
     <article className='py-5'>
@@ -550,8 +563,8 @@ function ProfileModalSection() {
 
         <Input
           variant='outlined'
-          name='telephone-number'
-          label={t('telephone-number')}
+          name='telephone_number'
+          label={t('telephone_number')}
           value={formik.values.telephone_number}
           onChange={formik.handleChange}
           error={
@@ -610,8 +623,9 @@ function ProfileModalSection() {
             </Stack>
           )}
         >
-          {clinicServices.map((name) => (
-            <MenuItem key={name} value={name}>
+          {/* @ts-ignore */}
+          {clinicServices.map(({ id, name }) => (
+            <MenuItem key={id} value={name}>
               {name}
             </MenuItem>
           ))}
@@ -624,7 +638,7 @@ function ProfileModalSection() {
           loading={isLoading || isLoadingImage}
           disabled={
             isEqual(formik.values, initialValues) &&
-            isEqual(data.services, selectedServices) &&
+            isEqual(data?.services, selectedServices) &&
             !picture
           }
         />
@@ -672,12 +686,12 @@ function ScheduleModalSection() {
       !clinic.schedule.workingDays ||
       clinic.schedule.workingDays.length === 0
         ? [
-            { day: 'Monday', endTime: '17:00:00', startTime: '08:00:00' },
-            { day: 'Tuesday', endTime: '17:00:00', startTime: '08:00:00' },
-            { day: 'Wednesday', endTime: '17:00:00', startTime: '08:00:00' },
-            { day: 'Thursday', endTime: '17:00:00', startTime: '08:00:00' },
-            { day: 'Friday', endTime: '17:00:00', startTime: '08:00:00' },
-            { day: 'Saturday', endTime: '12:00:00', startTime: '08:00:00' },
+            { day: t('monday'), endTime: '17:00:00', startTime: '08:00:00' },
+            { day: t('tuesday'), endTime: '17:00:00', startTime: '08:00:00' },
+            { day: t('wednesday'), endTime: '17:00:00', startTime: '08:00:00' },
+            { day: t('thursday'), endTime: '17:00:00', startTime: '08:00:00' },
+            { day: t('friday'), endTime: '17:00:00', startTime: '08:00:00' },
+            { day: t('saturday'), endTime: '12:00:00', startTime: '08:00:00' },
           ]
         : // @ts-expect-error
           clinic.schedule.workingDays.map(({ day, startTime, endTime }) => ({
@@ -704,7 +718,10 @@ function ScheduleModalSection() {
           {formik.values.workingDays.map((day, index) => {
             return (
               <ListItem key={day.day}>
-                <ListItemText className='w-8' primary={day.day} />
+                <ListItemText
+                  className='w-8'
+                  primary={t(day.day.toLowerCase())}
+                />
 
                 <span className='flex gap-x-3'>
                   <input

@@ -130,6 +130,16 @@
     "help": "Ayuda",
     "years": "Años",
     "start-at": "Fecha Inicio",
-    "end-at": "Fecha Fin"
+    "end-at": "Fecha Fin",
+    "monday": "Lunes",
+    "tuesday": "Martes",
+    "wednesday": "Miercoles",
+    "thursday": "Jueves",
+    "friday": "Viernes",
+    "saturday": "Sabado",
+    "disable": "Disable",
+    "enable": "Enable",
+    "system-users": "Usuarios del Sistema",
+    "system-clinics": "Clinicas del Sistema"
   }
 }

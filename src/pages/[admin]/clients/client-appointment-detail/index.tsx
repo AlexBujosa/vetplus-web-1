@@ -18,13 +18,19 @@ export default function ClientAppointmentPage() {
     'verified-appointments',
   ])
 
-  if (!appointments) return navigate(-1)
+  if (!appointments) {
+    navigate(-1)
+    return
+  }
 
   const appointment = appointments.find(({ id }) => {
     return id === appointmentId
   })
 
-  if (!appointment) return navigate(-1)
+  if (!appointment) {
+    navigate(-1)
+    return
+  }
 
   return (
     <div className='max-w-4xl mx-auto my-8'>

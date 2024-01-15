@@ -127,6 +127,14 @@
     "help": "Help",
     "years": "Years",
     "start-at": "Start At",
-    "end-at": "End At"
+    "end-at": "End At",
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday",
+    "system-users": "System Users",
+    "system-clinics": "System Clinics"
   }
 }
