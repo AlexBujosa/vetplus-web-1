@@ -617,6 +617,7 @@ function ProfileModalSection() {
             </Stack>
           )}
         >
+          {/* @ts-ignore */}
           {clinicServices.map(({ id, name }) => (
             <MenuItem key={id} value={name}>
               {name}
