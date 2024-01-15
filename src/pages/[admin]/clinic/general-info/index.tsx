@@ -194,7 +194,7 @@ function GeneralDescription() {
 
   return (
     <SectionCard className='col-span-2' title={t('general-description')}>
-      <div className='grid grid-cols-2 grid-rows-auto gap-y-10 gap-x-32 px-[30px] py-[38px]'>
+      <div className='grid grid-cols-2 grid-rows-auto gap-y-2 px-[30px] py-[38px]'>
         {values.map(({ label, value }) => {
           return (
             <div key={label} className='flex items-start gap-x-[20px]'>
@@ -209,7 +209,7 @@ function GeneralDescription() {
 
         <Title.Small text={t('working-days')} />
 
-        <ul>
+        <ul className='grid grid-cols-2'>
           {workingDays.map(({ day, startTime, endTime }: Day) => {
             return (
               <li key={day}>
@@ -222,9 +222,13 @@ function GeneralDescription() {
 
         <Title.Small text={t('non-working-days')} />
 
-        <ul>
+        <ul className='grid grid-cols-2'>
           {nonWorkingDays.map((day) => {
-            return <li key={day}>{day}</li>
+            return (
+              <li key={day} className='font-bold'>
+                {day}
+              </li>
+            )
           })}
         </ul>
       </div>
