@@ -39,7 +39,7 @@ export default function Sidebar() {
             width={24}
             height={24}
           />
-          Ayuda
+          {t('help')}
         </button>
       </div>
 
