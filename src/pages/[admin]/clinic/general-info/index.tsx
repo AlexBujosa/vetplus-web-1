@@ -381,7 +381,7 @@ const style = {
 const schema = yup.object({
   name: yup.string().required(),
   email: yup.string().email(),
-  telephone_number: yup.string().required(),
+  telephone_number: yup.string().length(10, 'Invalid phone number').required(),
   address: yup.string().required(),
 })
 
@@ -550,8 +550,8 @@ function ProfileModalSection() {
 
         <Input
           variant='outlined'
-          name='telephone-number'
-          label={t('telephone-number')}
+          name='telephone_number'
+          label={t('telephone_number')}
           value={formik.values.telephone_number}
           onChange={formik.handleChange}
           error={
