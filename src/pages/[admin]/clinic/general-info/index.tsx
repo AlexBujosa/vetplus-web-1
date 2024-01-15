@@ -388,12 +388,19 @@ const schema = yup.object({
 function ProfileModalSection() {
   const { t } = useTranslation()
 
-  const { getMyClinic, updateClinic, clinicServices } = useClinic()
+  const { getMyClinic, updateClinic, getAllServices } = useClinic()
 
   const { data } = useQuery({
     queryKey: ['clinic'],
     queryFn: getMyClinic,
   })
+
+  const { data: clinicServices, isLoading: loadingServices } = useQuery({
+    queryKey: ['clinic-services'],
+    queryFn: getAllServices,
+  })
+
+  console.log({ clinicServices })
 
   const { mutateAsync, isPending: isLoading } = useMutation({
     mutationFn: updateClinic,
@@ -407,7 +414,7 @@ function ProfileModalSection() {
         saveClinicImage(picture),
     })
 
-  if (!data) return
+  if (!data || loadingServices) return
 
   const { name, email, telephone_number, address, schedule } = data
 
@@ -610,8 +617,8 @@ function ProfileModalSection() {
             </Stack>
           )}
         >
-          {clinicServices.map((name) => (
-            <MenuItem key={name} value={name}>
+          {clinicServices.map(({ id, name }) => (
+            <MenuItem key={id} value={name}>
               {name}
             </MenuItem>
           ))}

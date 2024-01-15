@@ -423,3 +423,23 @@ export const SAVE_CLINIC_IMAGE = gql`
     }
   }
 `
+
+export const GET_CLINIC_SERVICES = gql`
+  query ($genericByIdInput: GenericByIdInput!) {
+    getAllClinicServices(genericByIdInput: $genericByIdInput) {
+      services
+    }
+  }
+`
+
+export const GET_ALL_SERVICES = gql`
+  query {
+    getAllProcedure {
+      id
+      name
+      created_at
+      updated_at
+      status
+    }
+  }
+`
