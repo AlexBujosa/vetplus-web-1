@@ -34,7 +34,7 @@ export default function Header() {
       text: 'Queue',
       icon: <ChecklistOutlined />,
       to: routes.admin.pages.queue.href,
-      condition: role !== Role.VETERINARIAN,
+      condition: role === Role.CLINIC_OWNER,
     },
   ]
 

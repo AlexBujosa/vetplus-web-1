@@ -8,7 +8,12 @@ import EmployeesDetailPage from '@/pages/[admin]/employees/detail-page'
 import ForgotPassword from '@/pages/[auth]/forgot-password'
 import { Navigate } from 'react-router'
 import Login from '@/pages/[auth]/login'
-import { ChecklistOutlined, StoreOutlined } from '@mui/icons-material'
+import {
+  ChecklistOutlined,
+  LocalHospital,
+  People,
+  StoreOutlined,
+} from '@mui/icons-material'
 import GeneralViewPage from '@/pages/[admin]/clinic/general-info'
 import AuthLayout from '@/layout/auth'
 import Layout from '@/layout/admin'
@@ -19,6 +24,8 @@ import AppointmentDetail from '@/pages/[admin]/appointments/appointment-detail'
 import AppointmentForm from '@/pages/[admin]/appointments/appointment-form'
 import QueuePage from '@/pages/[admin]/queue'
 import ClientAppointmentPage from '@/pages/[admin]/clients/client-appointment-detail'
+import SystemUsers from '@/pages/[admin]/system-users'
+import SystemClinics from '@/pages/[admin]/system-clinics'
 
 type Routes = {
   auth: Route
@@ -40,11 +47,12 @@ type Route = {
   >
 }
 
-export const allowedRoles = [Role.CLINIC_OWNER, Role.VETERINARIAN]
+export const allowedRoles = [Role.CLINIC_OWNER, Role.VETERINARIAN, Role.ADMIN]
 
 export const defaultRoute: Record<string, string> = {
   VETERINARIAN: '/appointments',
   CLINIC_OWNER: '/clients',
+  ADMIN: '/system-users',
 }
 
 let routes: Routes = {
@@ -78,20 +86,20 @@ let routes: Routes = {
         href: '/queue',
         page: <QueuePage />,
         icon: <ChecklistOutlined />,
-        allowedRoles: [Role.CLINIC_OWNER],
         show: false,
+        allowedRoles: [Role.CLINIC_OWNER],
       },
       'clients-detail': {
         show: false,
         href: '/clients/:email',
         page: <ClientsDetailPage />,
-        allowedRoles,
+        allowedRoles: [Role.CLINIC_OWNER],
       },
       appointments: {
         href: '/appointments',
         page: <AppointmentsPage />,
         icon: <EventOutlinedIcon />,
-        allowedRoles,
+        allowedRoles: [Role.CLINIC_OWNER, Role.VETERINARIAN],
       },
       employees: {
         href: '/employees',
@@ -121,19 +129,33 @@ let routes: Routes = {
         show: false,
         href: '/appointment-detail',
         page: <AppointmentDetail />,
-        allowedRoles,
+        allowedRoles: [Role.CLINIC_OWNER, Role.VETERINARIAN],
       },
       'appointment-detail/:appointmentId': {
         show: false,
         href: '/appointment-detail/:appointmentId',
         page: <AppointmentForm />,
-        allowedRoles,
+        allowedRoles: [Role.CLINIC_OWNER, Role.VETERINARIAN],
       },
       'client-appointment/:appointmentId': {
         show: false,
         href: '/client-appointment/:appointmentId',
         page: <ClientAppointmentPage />,
         allowedRoles: [Role.CLINIC_OWNER],
+      },
+      'system-users': {
+        show: true,
+        icon: <People />,
+        href: '/system-users',
+        page: <SystemUsers />,
+        allowedRoles: [Role.ADMIN],
+      },
+      'system-clinics': {
+        show: true,
+        icon: <LocalHospital />,
+        href: '/system-clinics',
+        page: <SystemClinics />,
+        allowedRoles: [Role.ADMIN],
       },
     },
   },

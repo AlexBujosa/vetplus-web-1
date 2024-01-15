@@ -10,6 +10,10 @@ import { useTranslation } from 'react-i18next'
 import { KeyboardBackspace, PersonOutlined } from '@mui/icons-material'
 import ProfileImage from '@/components/profile-image'
 import calculateStars from '@/utils/calcScore'
+import Button from '@/components/button'
+import { useState } from 'react'
+import cn from '@/utils/cn'
+import { useClinic } from '@/hooks/use-clinic'
 
 export default function EmployeesDetailPage() {
   const params = useParams()
@@ -31,7 +35,10 @@ export default function EmployeesDetailPage() {
 
   return (
     <main className='flex flex-col gap-y-[40px]'>
-      <EmployeeHeader employee={clinicEmployee.Employee} />
+      <EmployeeHeader
+        employee={clinicEmployee.Employee}
+        status={clinicEmployee.status}
+      />
       <GeneralDescription
         employee={clinicEmployee.Employee}
         status={clinicEmployee.status}
@@ -40,27 +47,52 @@ export default function EmployeesDetailPage() {
   )
 }
 
-function EmployeeHeader({ employee }: { employee: Employee }) {
+function EmployeeHeader({
+  employee,
+  status,
+}: {
+  employee: Employee
+  status: boolean
+}) {
+  const [employeeStatus, setEmployeeStatus] = useState<boolean>(status)
   const navigate = useNavigate()
+  const { t } = useTranslation()
+  const {} = useClinic()
 
   // @ts-ignore
   const { names, surnames, image } = employee
 
   const fullName = `${names} ${surnames}`
 
+  const handleStatusChange = () => {
+    setEmployeeStatus((prevStatus) => !prevStatus)
+  }
+
   return (
-    <section className='flex flex-col gap-y-7'>
-      <div className='flex flex-row gap-x-[20px]'>
-        <IconButton
-          onClick={() => navigate(routes.admin.pages.employees.href)}
-          children={<KeyboardBackspace className='text-black' />}
-        />
-        <Headline.Medium text={fullName} />
+    <section className='flex flex-row items-center justify-between'>
+      <div className='flex flex-col gap-y-7'>
+        <div className='flex flex-row gap-x-[20px]'>
+          <IconButton
+            onClick={() => navigate(routes.admin.pages.employees.href)}
+            children={<KeyboardBackspace className='text-black' />}
+          />
+          <Headline.Medium text={fullName} />
+        </div>
+
+        <div className='flex flex-row items-center justify-between gap-x-5'>
+          <ProfileWithRole image={image} />
+        </div>
       </div>
 
-      <div className='flex flex-row items-center justify-between gap-x-5'>
-        <ProfileWithRole image={image} />
-      </div>
+      <Button
+        className={cn(
+          employeeStatus
+            ? 'bg-base-semantic-danger-600 hover:bg-base-semantic-danger-500'
+            : 'bg-base-primary-600 hover:bg-base-primary-500'
+        )}
+        label={employeeStatus ? t('disable') : t('enable')}
+        onClick={handleStatusChange}
+      />
     </section>
   )
 }
@@ -114,23 +146,23 @@ function GeneralDescription({
   }
 
   return (
-      <div className='col-span-2 grid bg-white rounded-lg shadow-elevation-1'>
-        <div className='px-[30px] py-[15px] border-b border-b-neutral-gray-500 h-fit'>
-          <Title.Medium
+    <div className='grid col-span-2 bg-white rounded-lg shadow-elevation-1'>
+      <div className='px-[30px] py-[15px] border-b border-b-neutral-gray-500 h-fit'>
+        <Title.Medium
           className='font-semibold'
           text={t('general-description')}
         />
-        </div>
-        <div className='grid grid-cols-2 grid-rows-auto gap-y-10 gap-x-32 px-[30px] py-[38px]'>
-           {Object.keys(data).map((key) => (
+      </div>
+      <div className='grid grid-cols-2 grid-rows-auto gap-y-10 gap-x-32 px-[30px] py-[38px]'>
+        {Object.keys(data).map((key) => (
           <div className='flex flex-row items-center gap-x-[30px]' key={key}>
             <Body.Large className='text-black' text={key} />
 
             {data[key]}
           </div>
         ))}
-        </div>
       </div>
+    </div>
   )
 }
 

@@ -133,6 +133,8 @@
     "wednesday": "Wednesday",
     "thursday": "Thursday",
     "friday": "Friday",
-    "saturday": "Saturday"
+    "saturday": "Saturday",
+    "system-users": "System Users",
+    "system-clinics": "System Clinics"
   }
 }
