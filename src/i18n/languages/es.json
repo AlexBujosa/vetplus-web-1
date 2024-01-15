@@ -130,6 +130,12 @@
     "help": "Ayuda",
     "years": "Años",
     "start-at": "Fecha Inicio",
-    "end-at": "Fecha Fin"
+    "end-at": "Fecha Fin",
+    "monday": "Lunes",
+    "tuesday": "Martes",
+    "wednesday": "Miercoles",
+    "thursday": "Jueves",
+    "friday": "Viernes",
+    "saturday": "Sabado"
   }
 }

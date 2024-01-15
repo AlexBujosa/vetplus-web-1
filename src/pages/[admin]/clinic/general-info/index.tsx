@@ -213,7 +213,8 @@ function GeneralDescription() {
           {workingDays.map(({ day, startTime, endTime }: Day) => {
             return (
               <li key={day}>
-                {day}: {startTime} - {endTime}
+                <span className='font-bold'>{t(day.toLowerCase())}</span>:{' '}
+                {startTime} - {endTime}
               </li>
             )
           })}
@@ -395,12 +396,10 @@ function ProfileModalSection() {
     queryFn: getMyClinic,
   })
 
-  const { data: clinicServices, isLoading: loadingServices } = useQuery({
+  const { data: clinicServices } = useQuery({
     queryKey: ['clinic-services'],
     queryFn: getAllServices,
   })
-
-  console.log({ clinicServices })
 
   const { mutateAsync, isPending: isLoading } = useMutation({
     mutationFn: updateClinic,
@@ -413,22 +412,6 @@ function ProfileModalSection() {
       mutationFn: ({ picture }: { picture: Picture }) =>
         saveClinicImage(picture),
     })
-
-  if (!data || loadingServices) return
-
-  const { name, email, telephone_number, address, schedule } = data
-
-  const [selectedServices, setSelectedServices] = useState<string[]>(
-    data.services ?? []
-  )
-
-  const initialValues: UpdateClinicForm = {
-    name,
-    email,
-    telephone_number,
-    address,
-    services: data.services,
-  }
 
   const queryClient = useQueryClient()
 
@@ -460,12 +443,6 @@ function ProfileModalSection() {
     }
   }
 
-  const formik = useFormik({
-    initialValues,
-    validationSchema: schema,
-    onSubmit,
-  })
-
   const [picture, setPicture] = useState<Picture | null>(null)
 
   const onDrop = useCallback(
@@ -493,6 +470,31 @@ function ProfileModalSection() {
       </button>
     </li>
   )
+
+  const { name, email, telephone_number, address, schedule, services } =
+    data ?? {
+      name: '',
+      email: '',
+      telephone_number: '',
+      address: '',
+      services: [],
+    }
+
+  const [selectedServices, setSelectedServices] = useState<string[]>(services)
+
+  const initialValues: UpdateClinicForm = {
+    name,
+    email,
+    telephone_number,
+    address,
+    services,
+  }
+
+  const formik = useFormik({
+    initialValues,
+    validationSchema: schema,
+    onSubmit,
+  })
 
   return (
     <article className='py-5'>
@@ -632,7 +634,7 @@ function ProfileModalSection() {
           loading={isLoading || isLoadingImage}
           disabled={
             isEqual(formik.values, initialValues) &&
-            isEqual(data.services, selectedServices) &&
+            isEqual(data?.services, selectedServices) &&
             !picture
           }
         />
@@ -680,12 +682,12 @@ function ScheduleModalSection() {
       !clinic.schedule.workingDays ||
       clinic.schedule.workingDays.length === 0
         ? [
-            { day: 'Monday', endTime: '17:00:00', startTime: '08:00:00' },
-            { day: 'Tuesday', endTime: '17:00:00', startTime: '08:00:00' },
-            { day: 'Wednesday', endTime: '17:00:00', startTime: '08:00:00' },
-            { day: 'Thursday', endTime: '17:00:00', startTime: '08:00:00' },
-            { day: 'Friday', endTime: '17:00:00', startTime: '08:00:00' },
-            { day: 'Saturday', endTime: '12:00:00', startTime: '08:00:00' },
+            { day: t('monday'), endTime: '17:00:00', startTime: '08:00:00' },
+            { day: t('tuesday'), endTime: '17:00:00', startTime: '08:00:00' },
+            { day: t('wednesday'), endTime: '17:00:00', startTime: '08:00:00' },
+            { day: t('thursday'), endTime: '17:00:00', startTime: '08:00:00' },
+            { day: t('friday'), endTime: '17:00:00', startTime: '08:00:00' },
+            { day: t('saturday'), endTime: '12:00:00', startTime: '08:00:00' },
           ]
         : // @ts-expect-error
           clinic.schedule.workingDays.map(({ day, startTime, endTime }) => ({
@@ -712,7 +714,10 @@ function ScheduleModalSection() {
           {formik.values.workingDays.map((day, index) => {
             return (
               <ListItem key={day.day}>
-                <ListItemText className='w-8' primary={day.day} />
+                <ListItemText
+                  className='w-8'
+                  primary={t(day.day.toLowerCase())}
+                />
 
                 <span className='flex gap-x-3'>
                   <input
