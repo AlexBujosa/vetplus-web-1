@@ -131,7 +131,7 @@ function EmployeesTable(props: { nameFilter: string }) {
     t('email'),
     t('status'),
     t('specialty'),
-    t('review'),
+    t('telephone-number'),
   ]
 
   const { getMyEmployees } = useClinic()
@@ -185,7 +185,7 @@ function EmployeesRowsValues(employees: Employee[], nameFilter: string): Row[] {
         names,
         surnames,
         email,
-        VeterinarianSummaryScore,
+        telephone_number,
         VeterinariaSpecialties,
         image,
       } = Employee
@@ -200,7 +200,10 @@ function EmployeesRowsValues(employees: Employee[], nameFilter: string): Row[] {
           className='text-base-primary-600 bg-base-primary-50'
           label={VeterinariaSpecialties?.specialties ?? 'Sin especialidad'}
         />,
-        <StarsReview review={calculateStars(VeterinarianSummaryScore)} />,
+        <Body.Medium
+          className='text-base-neutral-gray-900'
+          text={telephone_number ?? 'N/A'}
+        />,
       ]
 
       return {
