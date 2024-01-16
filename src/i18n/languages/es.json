@@ -137,9 +137,10 @@
     "thursday": "Jueves",
     "friday": "Viernes",
     "saturday": "Sabado",
-    "disable": "Disable",
-    "enable": "Enable",
+    "disable": "Deshabilitar",
+    "enable": "Habilitar",
     "system-users": "Usuarios del Sistema",
-    "system-clinics": "Clinicas del Sistema"
+    "system-clinics": "Clinicas del Sistema",
+    "document": "Documento"
   }
 }
