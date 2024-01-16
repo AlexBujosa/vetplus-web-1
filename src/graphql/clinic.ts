@@ -443,3 +443,11 @@ export const GET_ALL_SERVICES = gql`
     }
   }
 `
+
+export const CHANGE_EMPLOYEE_STATUS = gql`
+  mutation ($turnEmployeeStatusInput: TurnEmployeeStatusInput!) {
+    changeEmployeeStatus(turnEmployeeStatusInput: $turnEmployeeStatusInput) {
+      result
+    }
+  }
+`

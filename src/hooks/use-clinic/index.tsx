@@ -12,9 +12,9 @@ import {
   UPDATE_CLINIC,
   UPDATE_APPOINTMENT_RESUMEN,
   GET_ALL_BREED,
-  GET_ALL_CLINIC_SERVICES,
   GET_CLINIC_SERVICES,
   GET_ALL_SERVICES,
+  CHANGE_EMPLOYEE_STATUS,
 } from '@/graphql/clinic'
 import { useAtom, useAtomValue } from 'jotai'
 import { Employee, employeesAtom } from './employeesAtom'
@@ -364,6 +364,34 @@ export function useClinic() {
     return saveClinicImage
   }
 
+  async function changeEmployeeStatus({
+    id_clinic,
+    id_employee,
+    new_status,
+  }: {
+    id_clinic: string
+    id_employee: string
+    new_status: boolean
+  }) {
+    const variables = {
+      turnEmployeeStatusInput: {
+        id: id_clinic,
+        id_employee,
+        status: new_status,
+      },
+    }
+
+    const {
+      data: { changeEmployeeStatus },
+    } = await client.mutate({
+      mutation: CHANGE_EMPLOYEE_STATUS,
+
+      variables,
+    })
+
+    return changeEmployeeStatus
+  }
+
   return {
     getClinicServices,
     getAllServices,
@@ -385,6 +413,7 @@ export function useClinic() {
     saveClinicImage,
     updateAppointmentResumen,
     getAllBreeds,
+    changeEmployeeStatus,
   }
 }
 

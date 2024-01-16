@@ -1,4 +1,4 @@
-import { useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Employee } from '@/hooks/use-clinic/employeesAtom'
 import StarsReview from '@/components/stars-review'
@@ -14,31 +14,33 @@ import Button from '@/components/button'
 import { useState } from 'react'
 import cn from '@/utils/cn'
 import { useClinic } from '@/hooks/use-clinic'
+import { Clinic } from '@/types/clinic'
+import toast from 'react-hot-toast'
 
 export default function EmployeesDetailPage() {
   const params = useParams()
   const { email: employeeEmail } = params
-  const client = useQueryClient()
+  const { getMyEmployees } = useClinic()
 
-  // @ts-ignore
-  const clinicEmployees:
-    | { id_employee: string; Employee: Employee; status: boolean }[]
-    | undefined = client.getQueryData(['employees'])
+  const { data: clinicEmployees } = useQuery({
+    queryKey: ['employees'],
+    queryFn: getMyEmployees,
+  })
 
   if (!clinicEmployees) return null
 
-  const clinicEmployee = clinicEmployees.find(({ Employee }) => {
-    return Employee.email === employeeEmail
-  })
+  // @ts-ignore
+  const clinicEmployee = clinicEmployees.find(
+    ({ Employee }: { Employee: any }) => {
+      return Employee.email === employeeEmail
+    }
+  )
 
   if (!clinicEmployee) return null
 
   return (
     <main className='flex flex-col gap-y-[40px]'>
-      <EmployeeHeader
-        employee={clinicEmployee.Employee}
-        status={clinicEmployee.status}
-      />
+      <EmployeeHeader employee={clinicEmployee} />
       <GeneralDescription
         employee={clinicEmployee.Employee}
         status={clinicEmployee.status}
@@ -47,25 +49,56 @@ export default function EmployeesDetailPage() {
   )
 }
 
-function EmployeeHeader({
-  employee,
-  status,
-}: {
-  employee: Employee
-  status: boolean
-}) {
-  const [employeeStatus, setEmployeeStatus] = useState<boolean>(status)
+function EmployeeHeader({ employee }: { employee: any }) {
+  const [employeeStatus, setEmployeeStatus] = useState<boolean>(employee.status)
   const navigate = useNavigate()
   const { t } = useTranslation()
-  const {} = useClinic()
+  const queryClient = useQueryClient()
 
   // @ts-ignore
-  const { names, surnames, image } = employee
+  const { names, surnames, image } = employee.Employee
 
   const fullName = `${names} ${surnames}`
 
+  const { changeEmployeeStatus } = useClinic()
+
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: changeEmployeeStatus,
+  })
+
+  const clinic: Clinic | undefined = queryClient.getQueryData(['clinic'])
+
   const handleStatusChange = () => {
+    if (!clinic) return
+
+    toast.promise(
+      mutateAsync({
+        id_clinic: clinic.id,
+        id_employee: employee.id_employee,
+        new_status: !employeeStatus,
+      }),
+      {
+        error: 'Something bad happened',
+        loading: 'Loading...',
+        success: 'Employee status changed succesfully',
+      }
+    )
+
     setEmployeeStatus((prevStatus) => !prevStatus)
+
+    // queryClient.setQueryData(['employees'], (oldData: any) => {
+    //   // @ts-ignore
+    //   const newData = oldData.map((item) =>
+    //     // @ts-ignore
+    //     item.id_employee === employee.id_employee
+    //       ? { ...item, status: !employeeStatus }
+    //       : item
+    //   )
+    //   console.log({ newData: newData[0].status })
+    //   return newData
+    // })
+
+    queryClient.invalidateQueries()
   }
 
   return (
@@ -85,6 +118,8 @@ function EmployeeHeader({
       </div>
 
       <Button
+        loading={isPending}
+        disabled={isPending}
         className={cn(
           employeeStatus
             ? 'bg-base-semantic-danger-600 hover:bg-base-semantic-danger-500'
