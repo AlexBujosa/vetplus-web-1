@@ -624,7 +624,7 @@ function ProfileModalSection() {
           )}
         >
           {/* @ts-ignore */}
-          {clinicServices.map(({ id, name }) => (
+          {clinicServices?.map(({ id, name }) => (
             <MenuItem key={id} value={name}>
               {name}
             </MenuItem>
