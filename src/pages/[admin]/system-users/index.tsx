@@ -101,7 +101,6 @@ export default function FullFeaturedCrudGrid() {
       width: 80,
       align: 'left',
       headerAlign: 'left',
-      editable: true,
     },
     { editable: true, field: 'names', headerName: 'Names', width: 100 },
     { editable: true, field: 'surnames', headerName: 'Surnames', width: 100 },

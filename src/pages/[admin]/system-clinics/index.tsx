@@ -124,9 +124,8 @@ export default function SystemClinics() {
       width: 80,
       align: 'left',
       headerAlign: 'left',
-      editable: true,
     },
-    { editable: true, field: 'id_owner', headerName: 'Owner Id', width: 100 },
+    { field: 'id_owner', headerName: 'Owner Id', width: 100 },
     {
       editable: true,
       field: 'name',
