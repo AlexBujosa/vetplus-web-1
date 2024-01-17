@@ -137,6 +137,10 @@
     "system-users": "System Users",
     "system-clinics": "System Clinics",
     "document": "Document",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "google-maps-url": "Google Maps URL",
+    "owner-email": "Clinic Owner Email",
+    "clinic-email": "Clinic Email",
+    "clinic-name": "Clinic Name"
   }
 }

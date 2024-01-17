@@ -504,7 +504,10 @@ function ProfileModalSection() {
     <article className='py-5'>
       <Title.Large text={t('image')} />
 
-      <div {...getRootProps({ className: 'dropzone' })}>
+      <div
+        {...getRootProps({ className: 'dropzone' })}
+        onClick={(e) => e.stopPropagation()}
+      >
         <div
           className='flex flex-col items-center justify-center mt-2 text-gray-500 border-2 border-gray-500 border-dashed h-52 bg-gray-50'
           {...getRootProps()}

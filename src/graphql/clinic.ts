@@ -416,8 +416,8 @@ export const GET_APPOINTMENTS_PER_DATETIME = gql`
 `
 
 export const SAVE_CLINIC_IMAGE = gql`
-  mutation ($saveClinicImageInput: UploadClinicImageInput!) {
-    uploadClinicImage(uploadClinicImageInput: $saveClinicImageInput) {
+  mutation ($uploadClinicImageInput: UploadClinicImageInput!) {
+    uploadClinicImage(uploadClinicImageInput: $uploadClinicImageInput) {
       result
       image
     }
@@ -478,6 +478,14 @@ export const GET_ALL_CLINICS = gql`
 export const UPDATE_CLINIC_BY_ADMIN = gql`
   mutation ($updateClinicByAdminInput: UpdateClinicByAdminInput!) {
     updateClinicByAdmin(updateClinicByAdminInput: $updateClinicByAdminInput) {
+      result
+    }
+  }
+`
+
+export const CREATE_CLINIC = gql`
+  mutation ($addClinicInput: AddClinicInput!) {
+    registerClinic(addClinicInput: $addClinicInput) {
       result
     }
   }

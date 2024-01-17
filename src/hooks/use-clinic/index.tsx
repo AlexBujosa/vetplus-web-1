@@ -17,6 +17,7 @@ import {
   CHANGE_EMPLOYEE_STATUS,
   GET_ALL_CLINICS,
   UPDATE_CLINIC_BY_ADMIN,
+  CREATE_CLINIC,
 } from '@/graphql/clinic'
 import { useAtom, useAtomValue } from 'jotai'
 import { Employee, employeesAtom } from './employeesAtom'
@@ -345,14 +346,14 @@ export function useClinic() {
     return getAllBreed
   }
 
-  async function saveClinicImage(file: File) {
+  async function saveClinicImage(file: File, id_owner?: string) {
     const {
       data: { saveClinicImage },
     } = await client.mutate({
       mutation: SAVE_CLINIC_IMAGE,
-
       variables: {
-        saveClinicImageInput: {
+        uploadClinicImageInput: {
+          id_owner,
           image: file,
           old_image: clinic?.image,
         },
@@ -415,7 +416,23 @@ export function useClinic() {
     return updateClinicByAdmin
   }
 
+  async function createClinic(payload: any) {
+    const {
+      data: { registerClinic },
+    } = await client.mutate({
+      mutation: CREATE_CLINIC,
+      variables: {
+        addClinicInput: {
+          ...payload,
+        },
+      },
+    })
+
+    return registerClinic
+  }
+
   return {
+    createClinic,
     getClinicServices,
     getAllServices,
     getMyClinic,
