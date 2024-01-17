@@ -15,6 +15,8 @@ import {
   GET_CLINIC_SERVICES,
   GET_ALL_SERVICES,
   CHANGE_EMPLOYEE_STATUS,
+  GET_ALL_CLINICS,
+  UPDATE_CLINIC_BY_ADMIN,
 } from '@/graphql/clinic'
 import { useAtom, useAtomValue } from 'jotai'
 import { Employee, employeesAtom } from './employeesAtom'
@@ -392,10 +394,32 @@ export function useClinic() {
     return changeEmployeeStatus
   }
 
+  async function getAllClinics() {
+    const {
+      data: { getAllClinic },
+    } = await client.query({
+      query: GET_ALL_CLINICS,
+    })
+
+    return getAllClinic
+  }
+
+  async function updateClinicByAdmin(payload: UpdateClinicByAdmin) {
+    const {
+      data: { updateClinicByAdmin },
+    } = await client.mutate({
+      mutation: UPDATE_CLINIC_BY_ADMIN,
+      variables: { updateClinicByAdminInput: { ...payload } },
+    })
+
+    return updateClinicByAdmin
+  }
+
   return {
     getClinicServices,
     getAllServices,
     getMyClinic,
+    getAllClinics,
     getMyEmployees,
     getMyClients,
     getMyClinicComments,
@@ -412,6 +436,7 @@ export function useClinic() {
     reassignAppointment,
     saveClinicImage,
     updateAppointmentResumen,
+    updateClinicByAdmin,
     getAllBreeds,
     changeEmployeeStatus,
   }
@@ -423,4 +448,11 @@ export type UpdateClinicForm = {
   telephone_number: string
   address: string
   services: string[]
+}
+
+export type UpdateClinicByAdmin = UpdateClinicForm & {
+  id: string
+  google_maps_url: string
+  image: string
+  schedule: any
 }

@@ -451,3 +451,34 @@ export const CHANGE_EMPLOYEE_STATUS = gql`
     }
   }
 `
+
+export const GET_ALL_CLINICS = gql`
+  query {
+    getAllClinic {
+      id
+      id_owner
+      name
+      telephone_number
+      google_maps_url
+      email
+      image
+      address
+      created_at
+      updated_at
+      status
+      services
+      ClinicSummaryScore {
+        total_points
+        total_users
+      }
+    }
+  }
+`
+
+export const UPDATE_CLINIC_BY_ADMIN = gql`
+  mutation ($updateClinicByAdminInput: UpdateClinicByAdminInput!) {
+    updateClinicByAdmin(updateClinicByAdminInput: $updateClinicByAdminInput) {
+      result
+    }
+  }
+`

@@ -3,12 +3,14 @@ import {
   REGISTER_SPECIALTY,
   SAVE_USER_IMAGE,
   UPDATE_USER,
+  UPDATE_USER_BY_ADMIN,
 } from '@/graphql/user'
 import { useAtom } from 'jotai'
 import { userAtom } from './userAtom'
 import client from '@/utils/apolloClient'
 import { Picture } from '@/pages/[admin]/clinic/general-info'
-import { useQueryClient } from '@tanstack/react-query'
+import { Role } from '@/types/role'
+import { GET_ALL_USERS } from '@/graphql/admin'
 
 export default function useUser() {
   const [user, setUser] = useAtom(userAtom)
@@ -65,7 +67,37 @@ export default function useUser() {
     return saveUserImage
   }
 
-  return { getUserProfile, updateUser, updateSpecialty, saveUserImage }
+  async function updateUserByAdmin(payload: EditUserByAdmin) {
+    const {
+      data: { updateUserByAdmin },
+    } = await client.mutate<any>({
+      mutation: UPDATE_USER_BY_ADMIN,
+      variables: {
+        updateUserInput: { ...payload },
+      },
+    })
+
+    return updateUserByAdmin
+  }
+
+  async function getAllUsers() {
+    const {
+      data: { findAll },
+    } = await client.query({
+      query: GET_ALL_USERS,
+    })
+
+    return findAll
+  }
+
+  return {
+    getUserProfile,
+    getAllUsers,
+    updateUser,
+    updateSpecialty,
+    saveUserImage,
+    updateUserByAdmin,
+  }
 }
 
 export type EditUserForm = {
@@ -75,4 +107,11 @@ export type EditUserForm = {
   address: string
   telephone_number: string
   image: string
+}
+
+export type EditUserByAdmin = EditUserForm & {
+  id: string
+  role: Role
+  email: string
+  provider: string
 }

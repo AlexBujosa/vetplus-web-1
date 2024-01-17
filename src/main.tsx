@@ -10,8 +10,8 @@ import client from '@/utils/apolloClient.ts'
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      refetchInterval: 1000,
-      refetchOnWindowFocus: 'always',
+      // refetchInterval: 1000,
+      // refetchOnWindowFocus: 'always',
     },
   },
 })

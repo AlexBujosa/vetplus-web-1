@@ -1,113 +1,42 @@
 import * as React from 'react'
 import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import AddIcon from '@mui/icons-material/Add'
 import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/DeleteOutlined'
 import SaveIcon from '@mui/icons-material/Save'
 import CancelIcon from '@mui/icons-material/Close'
 import {
-  GridRowsProp,
   GridRowModesModel,
   GridRowModes,
   DataGrid,
   GridColDef,
-  GridToolbarContainer,
   GridActionsCellItem,
   GridEventListener,
   GridRowId,
   GridRowModel,
   GridRowEditStopReasons,
 } from '@mui/x-data-grid'
-import {
-  randomCreatedDate,
-  randomTraderName,
-  randomId,
-  randomArrayItem,
-} from '@mui/x-data-grid-generator'
-import { useQuery } from '@tanstack/react-query'
-import useAdmin from '@/hooks/use-admin'
-
-const roles = ['Market', 'Finance', 'Development']
-const randomRole = () => {
-  return randomArrayItem(roles)
-}
-
-const initialRows: GridRowsProp = [
-  {
-    id: randomId(),
-    name: randomTraderName(),
-    age: 25,
-    joinDate: randomCreatedDate(),
-    role: randomRole(),
-  },
-  {
-    id: randomId(),
-    name: randomTraderName(),
-    age: 36,
-    joinDate: randomCreatedDate(),
-    role: randomRole(),
-  },
-  {
-    id: randomId(),
-    name: randomTraderName(),
-    age: 19,
-    joinDate: randomCreatedDate(),
-    role: randomRole(),
-  },
-  {
-    id: randomId(),
-    name: randomTraderName(),
-    age: 28,
-    joinDate: randomCreatedDate(),
-    role: randomRole(),
-  },
-  {
-    id: randomId(),
-    name: randomTraderName(),
-    age: 23,
-    joinDate: randomCreatedDate(),
-    role: randomRole(),
-  },
-]
-
-interface EditToolbarProps {
-  setRows: (newRows: (oldRows: GridRowsProp) => GridRowsProp) => void
-  setRowModesModel: (
-    newModel: (oldModel: GridRowModesModel) => GridRowModesModel
-  ) => void
-}
-
-function EditToolbar(props: EditToolbarProps) {
-  const { setRows, setRowModesModel } = props
-
-  const handleClick = () => {
-    const id = randomId()
-    setRows((oldRows) => [...oldRows, { id, name: '', age: '', isNew: true }])
-    setRowModesModel((oldModel) => ({
-      ...oldModel,
-      [id]: { mode: GridRowModes.Edit, fieldToFocus: 'name' },
-    }))
-  }
-
-  return (
-    <GridToolbarContainer>
-      <Button color='primary' startIcon={<AddIcon />} onClick={handleClick}>
-        Add record
-      </Button>
-    </GridToolbarContainer>
-  )
-}
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { Title } from '@/components/typography'
+import { useTranslation } from 'react-i18next'
+import useUser from '@/hooks/use-user'
+import toast from 'react-hot-toast'
 
 export default function FullFeaturedCrudGrid() {
-  const { getAllUsers } = useAdmin()
+  const [rows, setRows] = React.useState([])
+  const { updateUserByAdmin, getAllUsers } = useUser()
 
-  const { data: users } = useQuery({
+  const { isLoading } = useQuery({
     queryKey: ['users'],
-    queryFn: getAllUsers,
+    queryFn: async () => {
+      const data = await getAllUsers()
+      setRows(data)
+      return data
+    },
   })
 
-  const [rows, setRows] = React.useState(users)
+  const { mutateAsync } = useMutation({
+    mutationFn: updateUserByAdmin,
+  })
+
   const [rowModesModel, setRowModesModel] = React.useState<GridRowModesModel>(
     {}
   )
@@ -129,32 +58,41 @@ export default function FullFeaturedCrudGrid() {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } })
   }
 
-  const handleDeleteClick = (id: GridRowId) => () => {
-    setRows(rows.filter((row) => row.id !== id))
-  }
-
   const handleCancelClick = (id: GridRowId) => () => {
     setRowModesModel({
       ...rowModesModel,
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
     })
 
+    // @ts-ignore
     const editedRow = rows.find((row) => row.id === id)
+    // @ts-ignore
     if (editedRow!.isNew) {
+      // @ts-ignore
       setRows(rows.filter((row) => row.id !== id))
     }
   }
 
-  const processRowUpdate = (newRow: GridRowModel) => {
-    const updatedRow = { ...newRow, isNew: false }
-    console.log({ updatedRow })
-    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)))
-    return updatedRow
+  const processRowUpdate = async (newRow: GridRowModel) => {
+    const { created_at, updated_at, __typename, provider, ...rest } = newRow
+    // @ts-ignore
+    const updatedUser = { ...newRow }
+    // @ts-ignore
+    toast.promise(mutateAsync({ ...rest }), {
+      success: t('updated-fields'),
+      loading: t('loading'),
+      error: t('something-wrong'),
+    })
+    // @ts-ignore
+    setRows(rows.map((row) => (row.id === newRow.id ? newRow : row)))
+    return newRow
   }
 
   const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
     setRowModesModel(newRowModesModel)
   }
+
+  const { t } = useTranslation()
 
   const columns: GridColDef[] = [
     {
@@ -167,7 +105,7 @@ export default function FullFeaturedCrudGrid() {
     },
     { editable: true, field: 'names', headerName: 'Names', width: 100 },
     { editable: true, field: 'surnames', headerName: 'Surnames', width: 100 },
-    { editable: true, field: 'email', headerName: 'Email', width: 200 },
+    { editable: true, field: 'email', headerName: 'Email', width: 150 },
     { editable: true, field: 'document', headerName: 'Document', width: 150 },
     { editable: true, field: 'address', headerName: 'Address' },
     {
@@ -235,19 +173,12 @@ export default function FullFeaturedCrudGrid() {
     },
   ]
 
+  if (isLoading) return <>Is Loading...</>
+
   return (
-    <Box
-      sx={{
-        height: 500,
-        width: '100%',
-        '& .actions': {
-          color: 'text.secondary',
-        },
-        '& .textPrimary': {
-          color: 'text.primary',
-        },
-      }}
-    >
+    <Box className='max-h-[600px] flex flex-col gap-y-5'>
+      <Title.Large text={t('system-users')} />
+
       <DataGrid
         rows={rows}
         columns={columns}

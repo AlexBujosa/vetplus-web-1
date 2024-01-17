@@ -31,6 +31,14 @@ export const UPDATE_USER = gql`
   }
 `
 
+export const UPDATE_USER_BY_ADMIN = gql`
+  mutation ($updateUserInput: UpdateUserByAdminInput!) {
+    updateUserByAdmin(updateUserInput: $updateUserInput) {
+      result
+    }
+  }
+`
+
 export const REGISTER_SPECIALTY = gql`
   mutation ($addSpecialtyInput: AddSpecialtyInput!) {
     registerSpecialty(addSpecialtyInput: $addSpecialtyInput) {

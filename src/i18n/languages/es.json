@@ -141,6 +141,7 @@
     "enable": "Habilitar",
     "system-users": "Usuarios del Sistema",
     "system-clinics": "Clinicas del Sistema",
-    "document": "Documento"
+    "document": "Documento",
+    "loading": "Cargando..."
   }
 }

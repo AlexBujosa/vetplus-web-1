@@ -78,9 +78,9 @@ function EmployeeHeader({ employee }: { employee: any }) {
         new_status: !employeeStatus,
       }),
       {
-        error: 'Something bad happened',
-        loading: 'Loading...',
-        success: 'Employee status changed succesfully',
+        success: t('updated-fields'),
+        loading: t('loading'),
+        error: t('something-wrong'),
       }
     )
 

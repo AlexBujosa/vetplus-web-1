@@ -136,6 +136,7 @@
     "saturday": "Saturday",
     "system-users": "System Users",
     "system-clinics": "System Clinics",
-    "document": "Document"
+    "document": "Document",
+    "loading": "Loading..."
   }
 }

@@ -310,12 +310,12 @@ function NotificationModal(props: NotificationModalProps) {
         veterinarianId,
       }),
       {
-        loading: 'Loading...',
+        loading: t('loading'),
         success:
           status === AppointmentStatus.ACCEPTED
             ? t('succesfull-appointment')
             : t('succesfull-denied-appointment'),
-        error: error?.message ?? '',
+        error: t('something-wrong')
       }
     )
 
