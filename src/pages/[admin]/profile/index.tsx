@@ -51,7 +51,7 @@ function Header() {
   if (!user || !role) return null
 
   const { names, surnames } = user
-  const fullName = `${names} ${surnames}`
+  const fullName = surnames ? `${names} ${surnames}` : names
 
   return (
     <section className='flex flex-col gap-y-7'>

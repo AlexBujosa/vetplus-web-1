@@ -294,7 +294,7 @@ function VeterinaryCell(props: {
         </div>
       ) : (
         <Profile
-          profile={`${veterinarian?.names} ${veterinarian?.surnames}`}
+          profile={veterinarian.surnames ? `${veterinarian?.names} ${veterinarian?.surnames}` : veterinarian.names}
           image={veterinarian.image}
         />
       )}
