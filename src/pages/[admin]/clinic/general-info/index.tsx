@@ -49,6 +49,8 @@ import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { Badge } from '@/components/badge'
+import { useAtomValue } from 'jotai'
+import { userAtom } from '@/hooks/use-user/userAtom'
 
 export type Picture = File & {
   path: Key
@@ -413,16 +415,22 @@ function ProfileModalSection() {
 
   const { mutateAsync: mutateImageAsync, isPending: isLoadingImage } =
     useMutation({
-      mutationFn: ({ picture }: { picture: Picture }) =>
-        saveClinicImage(picture),
+      mutationFn: ({
+        picture,
+        id_owner,
+      }: {
+        picture: Picture
+        id_owner: string
+      }) => saveClinicImage(picture, id_owner),
     })
 
   const queryClient = useQueryClient()
+  const user = useAtomValue(userAtom)
 
   const onSubmit = async (data: UpdateClinicForm) => {
     try {
-      if (picture) {
-        await mutateImageAsync({ picture }),
+      if (picture && user) {
+        await mutateImageAsync({ picture, id_owner: user.id }),
           toast.success(`Image ${picture.name} - was saved succesfully`)
       }
     } catch (error) {
