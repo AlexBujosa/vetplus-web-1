@@ -58,7 +58,7 @@ function EmployeeHeader({ employee }: { employee: any }) {
   // @ts-ignore
   const { names, surnames, image } = employee.Employee
 
-  const fullName = `${names} ${surnames}`
+  const fullName = surnames ? `${names} ${surnames}` : names
 
   const { changeEmployeeStatus } = useClinic()
 
