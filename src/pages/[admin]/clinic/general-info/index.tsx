@@ -212,7 +212,7 @@ function GeneralDescription() {
         <Title.Small text={t('working-days')} />
 
         <ul className='grid grid-cols-2'>
-          {workingDays.map(({ day, startTime, endTime }: Day) => {
+          {workingDays?.map(({ day, startTime, endTime }: Day) => {
             return (
               <li key={day}>
                 <span className='font-bold'>{t(day.toLowerCase())}</span>:{' '}
@@ -225,7 +225,7 @@ function GeneralDescription() {
         <Title.Small text={t('non-working-days')} />
 
         <ul className='grid grid-cols-2'>
-          {nonWorkingDays.map((day) => {
+          {nonWorkingDays?.map((day) => {
             return (
               <li key={day} className='font-bold'>
                 {day}
@@ -260,7 +260,7 @@ function ClinicServices() {
     <SectionCard title={t('services')}>
       <div className='grid grid-cols-2 gap-y-10 grid-rows-auto px-[30px] py-[38px]'>
         {services
-          ? services.map((value, index) => {
+          ? services?.map((value, index) => {
               return (
                 <Service
                   icon={icons[index] ?? <HomeWorkOutlined />}
@@ -611,7 +611,7 @@ function ProfileModalSection() {
           input={<OutlinedInput label='Multiple Select' />}
           renderValue={(selected) => (
             <Stack gap={1} direction='row' flexWrap='wrap'>
-              {selected.map((value) => (
+              {selected?.map((value) => (
                 <Chip
                   key={value}
                   label={value}
