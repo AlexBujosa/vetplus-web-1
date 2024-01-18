@@ -31,6 +31,7 @@ import { CloudUploadOutlined } from '@mui/icons-material'
 import { isEqual } from 'lodash'
 import useUser from '@/hooks/use-user'
 import { Role } from '@/types/role'
+import _ from 'lodash'
 
 export default function SystemClinics() {
   const [rows, setRows] = React.useState([])
@@ -159,7 +160,6 @@ export default function SystemClinics() {
       width: 100,
     },
     { field: 'created_at', headerName: 'Created At', width: 150 },
-    { field: 'updated_at', headerName: 'Updated At', width: 150 },
     {
       editable: true,
       field: 'status',
@@ -247,7 +247,7 @@ export default function SystemClinics() {
           <Modal
             title={`${t('create')} ${t('veterinary-clinic')}`}
             tabs={[t('create')]}
-            sections={[<CreateClinicForm />]}
+            sections={[<CreateClinicForm handleModalClose={handleClose} />]}
           />
         </Box>
       </MuiModal>
@@ -255,7 +255,9 @@ export default function SystemClinics() {
   )
 }
 
-function CreateClinicForm() {
+function CreateClinicForm(props: { handleModalClose: () => void }) {
+  const { handleModalClose } = props
+
   const schema = yup.object({
     name: yup.string().required(),
     telephone_number: yup
@@ -264,7 +266,7 @@ function CreateClinicForm() {
       .required(),
     google_maps_url: yup.string(),
     'clinic-email': yup.string().email(),
-    'owner-email': yup.string().email(),
+    'owner-email': yup.string().email().required(),
     address: yup.string().required(),
   })
 
@@ -330,17 +332,17 @@ function CreateClinicForm() {
         google_maps_url: data['google_maps_url'],
         email: data['clinic-email'],
         address: data.address,
-        image: '',
       }
 
+      const payloadWithoutEmptyFields = _.omitBy(payload, _.isEmpty)
+
+      await mutateAsync(payloadWithoutEmptyFields)
+
       toast.promise(
-        Promise.all([
-          mutateAsync(payload),
-          mutateImageAsync({
-            picture,
-            id_owner: clinicOwnerId,
-          }),
-        ]),
+        mutateImageAsync({
+          picture,
+          id_owner: clinicOwnerId,
+        }),
         {
           success: t('updated-fields'),
           loading: t('loading'),
@@ -348,6 +350,7 @@ function CreateClinicForm() {
         }
       )
 
+      handleModalClose()
       queryClient.invalidateQueries()
     } catch (error) {
       toast.error('Something bad happened at editing the data.')
