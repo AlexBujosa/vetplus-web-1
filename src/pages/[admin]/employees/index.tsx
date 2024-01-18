@@ -5,7 +5,6 @@ import { AddOutlined, SearchOutlined } from '@mui/icons-material'
 import { Box, InputAdornment, Skeleton, Modal as MuiModal } from '@mui/material'
 import Table, { Row } from '@/components/table'
 import { useClinic } from '@/hooks/use-clinic'
-import StarsReview from '@/components/stars-review'
 import { Profile } from '@/components/profile'
 import StatusBadge from '@/components/status-badge'
 import { Employee } from '@/hooks/use-clinic/employeesAtom'
@@ -16,7 +15,6 @@ import Modal from '@/components/molecules/modal'
 import * as yup from 'yup'
 import { useFormik } from 'formik'
 import toast from 'react-hot-toast'
-import calculateStars from '@/utils/calcScore'
 import { Badge } from '@/components/badge'
 
 const schema = yup.object({
@@ -30,6 +28,11 @@ const initialValues = {
 export default function EmployeesPage() {
   const { t } = useTranslation()
   const { sendInvitationToClinic } = useClinic()
+  const [name, setName] = useState<string>('')
+
+  const handleNameFilterChange = (event: any) => {
+    setName(event.target.value)
+  }
 
   const [open, setOpen] = useState(false)
   const handleOpen = () => setOpen(true)
@@ -38,10 +41,14 @@ export default function EmployeesPage() {
   const onSubmit = async (data: { email: string }) => {
     try {
       await sendInvitationToClinic(data.email)
-      toast.success('Invitation was succesfull')
+      toast.success(t('invite-employee-succesfull'))
       handleClose()
     } catch (error: any) {
-      toast.error(error.response.errors[0].message ?? t('something-wrong'))
+      toast.error(
+        error.message === 'EMAIL_NOT_FOUND'
+          ? t('email-not-found')
+          : t('something-wrong')
+      )
       console.error(error.response.errors)
     }
   }
@@ -61,6 +68,8 @@ export default function EmployeesPage() {
           className='w-[300px] bg-white text-base-neutral-gray-700 shadow-elevation-1'
           variant='outlined'
           placeholder={t('search-employees')}
+          value={name}
+          onChange={handleNameFilterChange}
           InputProps={{
             startAdornment: (
               <InputAdornment position='start'>
@@ -79,7 +88,7 @@ export default function EmployeesPage() {
         />
       </div>
 
-      <EmployeesTable />
+      <EmployeesTable nameFilter={name} />
 
       <MuiModal open={open} onClose={handleClose}>
         <Box sx={style}>
@@ -111,15 +120,16 @@ export default function EmployeesPage() {
   )
 }
 
-function EmployeesTable() {
+function EmployeesTable(props: { nameFilter: string }) {
+  const { nameFilter } = props
   const { t } = useTranslation()
 
   const columns = [
     t('name'),
     t('email'),
     t('status'),
-    t('speciality'),
-    t('review'),
+    t('specialty'),
+    t('telephone-number'),
   ]
 
   const { getMyEmployees } = useClinic()
@@ -129,16 +139,13 @@ function EmployeesTable() {
   })
 
   let rows
-  debugger
 
   if (loading) {
     rows = TableLoadingRows()
+  } else {
+    // @ts-ignore
+    rows = EmployeesRowsValues(data ?? [], nameFilter)
   }
-
-  if (!data) return null
-
-  // @ts-ignore
-  rows = EmployeesRowsValues(data.ClinicEmployees ?? [])
 
   function TableLoadingRows(): Row[] {
     return [
@@ -152,36 +159,56 @@ function EmployeesTable() {
   return <Table columns={columns} rows={rows} />
 }
 
-function EmployeesRowsValues(employees: Employee[]): Row[] {
-  return employees.map((employee) => {
-    // @ts-ignore
-    const { Employee, status } = employee
+function EmployeesRowsValues(employees: Employee[], nameFilter: string): Row[] {
+  return employees
+    .filter((employee) => {
+      // @ts-ignore
+      const { Employee }: { Employee: Employee } = employee
 
-    const {
-      names,
-      surnames,
-      email,
-      VeterinarianSummaryScore,
-      VeterinariaSpecialties,
-      image,
-    } = Employee
+      if (!Employee) return false
 
-    const values = [
-      <Profile profile={`${names} ${surnames}`} image={image} />,
-      <Body.Medium className='text-base-neutral-gray-900' text={email} />,
-      <StatusBadge status={status} />,
-      <Badge
-        className='text-base-primary-600 bg-base-primary-50'
-        label={VeterinariaSpecialties?.specialties ?? 'Sin especialidad'}
-      />,
-      <StarsReview review={calculateStars(VeterinarianSummaryScore)} />,
-    ]
+      const { names, surnames } = Employee
 
-    return {
-      key: email,
-      values,
-    }
-  })
+      return (
+        nameFilter === '' ||
+        (names && names.toLowerCase().includes(nameFilter.toLowerCase())) ||
+        (surnames && surnames.toLowerCase().includes(nameFilter.toLowerCase()))
+      )
+    })
+    .map((employee) => {
+      // @ts-ignore
+      const { Employee, status } = employee
+
+      const {
+        names,
+        surnames,
+        email,
+        telephone_number,
+        VeterinariaSpecialties,
+        image,
+      } = Employee
+
+      const fullName = surnames ? `${names} ${surnames}` : names
+
+      const values = [
+        <Profile profile={fullName} image={image} />,
+        <Body.Medium className='text-base-neutral-gray-900' text={email} />,
+        <StatusBadge status={status} />,
+        <Badge
+          className='text-base-primary-600 bg-base-primary-50'
+          label={VeterinariaSpecialties?.specialties ?? 'Sin especialidad'}
+        />,
+        <Body.Medium
+          className='text-base-neutral-gray-900'
+          text={telephone_number ?? 'N/A'}
+        />,
+      ]
+
+      return {
+        key: email,
+        values,
+      }
+    })
 }
 
 const style = {

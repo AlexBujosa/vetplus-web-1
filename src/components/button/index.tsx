@@ -32,8 +32,8 @@ const button = cva(
         tertiary: ['bg-none', 'hover:bg-base-neutral-gray-400'],
       },
       size: {
-        small: ['text-md', 'py-[10px]', 'px-2', 'h-[50px]'],
-        medium: ['text-2xl', 'py-[17px]', 'px-3'],
+        small: ['text-md', 'py-[10px]', 'px-3', 'h-[50px]'],
+        medium: ['text-2xl', 'py-[17px]', 'px-4'],
       },
     },
     defaultVariants: {

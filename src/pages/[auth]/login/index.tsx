@@ -1,4 +1,3 @@
-import { Body } from '@/components/typography'
 import Button from '@/components/button'
 import Input from '@/components/input'
 import { IconButton, InputAdornment } from '@mui/material'
@@ -6,10 +5,10 @@ import Visibility from '@mui/icons-material/Visibility'
 import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import * as yup from 'yup'
 import { useFormik } from 'formik'
-import { Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import useAuth, { LoginSubmitForm } from '@/hooks/use-auth'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 const schema = yup.object({
   email: yup.string().email().required(),
@@ -23,12 +22,11 @@ const initialValues: LoginSubmitForm = {
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false)
-  const { loginWithEmail } = useAuth()
+  const { loginWithEmail, loginWithGoogle } = useAuth()
 
   const onSubmit = async (data: LoginSubmitForm) => {
     try {
       await loginWithEmail(data)
-      toast.success('Login was succesfull')
     } catch (error: any) {
       toast.error(error.message)
     }
@@ -47,6 +45,8 @@ export default function Login() {
   ) => {
     event.preventDefault()
   }
+
+  const { t } = useTranslation()
 
   return (
     <>
@@ -100,12 +100,19 @@ export default function Login() {
         />
       </form>
 
-      <Link className='text-center text-base-primary-500' to='/forgot-password'>
+      <Button
+        className='w-full'
+        intent='outline'
+        label={t('login-with-google')}
+        onClick={loginWithGoogle}
+      />
+
+      {/* <Link className='text-center text-base-primary-500' to='/forgot-password'>
         <Body.Medium
           className='font-medium'
           text='¿No puedes iniciar sesión?'
         />
-      </Link>
+      </Link> */}
     </>
   )
 }
