@@ -19,7 +19,7 @@ function Modal(props: Props) {
 
   return (
     <article className='bg-white px-[30px] py-[20px]'>
-      <div className='flex flex-row items-center justify-between '>
+      <div className='flex flex-row items-center justify-between mb-2'>
         <Title.Small className='text-2xl' text={title} />
       </div>
 
@@ -27,8 +27,8 @@ function Modal(props: Props) {
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           {tabs && (
             <Tabs value={value} onChange={handleChange}>
-              {tabs.map((value) => {
-                return <Tab label={value} />
+              {tabs.map((value, index) => {
+                return <Tab key={index} label={value} />
               })}
             </Tabs>
           )}

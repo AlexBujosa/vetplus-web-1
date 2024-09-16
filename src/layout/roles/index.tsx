@@ -11,8 +11,9 @@ export function RolesAuthRoute(props: IRolesAuthRouteProps) {
   const { allowedRoles } = props
   const navigate = useNavigate()
   const role = useAtomValue(roleAtom)
+  const isLoggedIn = localStorage.getItem('token')
 
-  if (!allowedRoles.includes(role!)) {
+  if (!allowedRoles.includes(role!) || !isLoggedIn) {
     navigate(-1)
   }
 

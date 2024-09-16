@@ -1,12 +1,9 @@
 import useUser from '@/hooks/use-user'
 import cn from '@/utils/cn'
-import {
-  ManageAccountsOutlined,
-  NotificationsOutlined,
-} from '@mui/icons-material'
+import { ChecklistOutlined, ManageAccountsOutlined } from '@mui/icons-material'
 import { Box, Divider, Popover, Stack, Switch } from '@mui/material'
 import { Body, Title } from '../typography'
-import { useAtom } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { userAtom } from '@/hooks/use-user/userAtom'
 import useAuth from '@/hooks/use-auth'
 
@@ -19,34 +16,53 @@ import { routes } from '@/config/routes'
 import dayjs from 'dayjs'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
+import { roleAtom } from '@/hooks/use-auth/roleAtom'
+import { Role } from '@/types/role'
 import('dayjs/locale/es')
 import('dayjs/locale/en')
 
 export default function Header() {
+  const role = useAtomValue(roleAtom)
+
+  const links = [
+    {
+      text: 'User Profile',
+      icon: <ManageAccountsOutlined />,
+      to: routes.admin.pages['user-profile'].href,
+    },
+    {
+      text: 'Queue',
+      icon: <ChecklistOutlined />,
+      to: routes.admin.pages.queue.href,
+      condition: role === Role.CLINIC_OWNER,
+    },
+  ]
+
   return (
     <header className='flex items-center justify-between w-full h-[60px] px-8 border border-base-neutral-gray-500 bg-base-neutral-white text-base-neutral-gray-700'>
       <LanguageSwitch />
       <div className='flex flex-row items-center gap-x-[20px]'>
-        <NavLink
-          className={({ isActive }) =>
-            cn(
-              isActive ? 'text-base-primary-500' : 'text-base-neutral-gray-700'
+        {links.map(({ condition, to, icon }, index) => {
+          if (condition === undefined || condition)
+            return (
+              <NavLink
+                key={index}
+                className={({ isActive }) =>
+                  cn(
+                    isActive
+                      ? 'text-base-primary-500'
+                      : 'text-base-neutral-gray-700'
+                  )
+                }
+                to={to}
+              >
+                {icon}
+              </NavLink>
             )
-          }
-          to={routes.admin.pages['user-profile'].href}
-        >
-          <ManageAccountsOutlined />
-        </NavLink>
-        <NavLink
-          className={({ isActive }) =>
-            cn(
-              isActive ? 'text-base-primary-500' : 'text-base-neutral-gray-700'
-            )
-          }
-          to={routes.admin.pages.notifications.href}
-        >
-          <NotificationsOutlined />
-        </NavLink>
+
+          if (!condition) return null
+        })}
+
         <Profile />
       </div>
     </header>
@@ -135,14 +151,16 @@ function ProfileWithName() {
 
   if (!user) return null
 
-  const { image, names, surnames, email } = user
+  const { image, names, surnames, email, role } = user
+  const fullName = surnames ? names.concat(' ', surnames) : names
 
   return (
     <div className='flex flex-row gap-x-5'>
       <ProfileImage className='w-[60px] h-[60px]' src={image} loading />
 
       <span>
-        <Title.Medium text={`${names} ${surnames}`} />
+        <Title.Medium text={fullName} />
+        <Body.Medium className='text-base-neutral-gray-700' text={role} />
         <Body.Medium className='text-base-neutral-gray-700' text={email} />
       </span>
     </div>

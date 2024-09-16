@@ -5,11 +5,11 @@ import { Toaster } from 'react-hot-toast'
 
 export default function Layout() {
   return (
-    <main className='flex h-screen'>
+    <main className='flex min-h-screen'>
       <Sidebar />
       <div className='flex-grow'>
         <Header />
-        <div className='flex flex-col gap-y-[30px] p-[35px] h-full bg-base-neutral-gray-200'>
+        <div className='flex flex-col gap-y-[40px] p-[35px] h-full bg-base-neutral-gray-200'>
           <Outlet />
           <Toaster position='top-right' />
         </div>
